@@ -3,21 +3,30 @@ module Lexer exposing (..)
 import Regex exposing (..)
 import List exposing (..)
 import List.Extra exposing (minimumBy)
+import Maybe.Extra
 
 
 type alias TokenMatch tokenType =
-    { token : Result String tokenType
+    { token : LexResult tokenType
     , match : String
+    , submatches : List (Maybe String)
     , startIndex : Int
     , endIndex : Int
     , length : Int
     }
 
 
+type LexResult tokenType
+    = LexError String
+    | Ignore
+    | Good tokenType
+
+
 makeTokenMatch : TokenConstructor tokenType -> Regex.Match -> TokenMatch tokenType
 makeTokenMatch constructor match =
-    { token = constructor match.match
+    { token = constructor match.match match.submatches
     , match = match.match
+    , submatches = match.submatches
     , startIndex = match.index
     , endIndex = match.index + (String.length match.match)
     , length = String.length match.match
@@ -25,7 +34,7 @@ makeTokenMatch constructor match =
 
 
 type alias TokenConstructor tokenType =
-    String -> Result String tokenType
+    String -> List (Maybe String) -> LexResult tokenType
 
 
 type alias Rule tokenType =
@@ -42,20 +51,46 @@ type alias Grammar tokenType =
 plainToken : tokenType -> TokenConstructor tokenType
 plainToken token =
     -- Convenience function for tokens with no extras
-    always (Ok token)
+    always (always (Good token))
 
 
 floatToken : (Float -> tokenType) -> TokenConstructor tokenType
 floatToken token =
-    (\string ->
-        String.toFloat string
-            |> Result.map token
+    (\match _ ->
+        case String.toFloat match of
+            Ok val ->
+                Good (token val)
+
+            Err error ->
+                LexError error
     )
 
 
-stringToken : (String -> tokenType) -> TokenConstructor tokenType
-stringToken token =
-    (\string -> Ok (token string))
+stringToken : (String -> tokenType) -> Int -> TokenConstructor tokenType
+stringToken token captureGroup =
+    (\match submatches ->
+        case captureGroup of
+            0 ->
+                Good (token match)
+
+            _ ->
+                let
+                    submatch =
+                        List.Extra.getAt (captureGroup - 1) submatches
+                            |> Maybe.Extra.join
+                in
+                    case submatch of
+                        Nothing ->
+                            LexError "No match found"
+
+                        Just val ->
+                            Good (token val)
+    )
+
+
+ignore : TokenConstructor tokenType
+ignore =
+    always (always Ignore)
 
 
 lex : Grammar tokenType -> String -> Result (List String) (List tokenType)
@@ -113,7 +148,7 @@ consumeMatches_ tokenMatches originalString index =
                     []
 
                 remainingChars ->
-                    [ notATokenError_ remainingChars ]
+                    [ Err (remainingChars ++ " is not a valid token") ]
 
         firstTokenMatch :: _ ->
             let
@@ -128,8 +163,19 @@ consumeMatches_ tokenMatches originalString index =
                 restOfMatches : List (TokenMatch tokenType)
                 restOfMatches =
                     removeMatchesUpTo_ nextIndex tokenMatches
+
+                continuation =
+                    consumeMatches_ restOfMatches originalString nextIndex
             in
-                result :: (consumeMatches_ restOfMatches originalString nextIndex)
+                case result of
+                    Ignore ->
+                        continuation
+
+                    LexError error ->
+                        Err error :: continuation
+
+                    Good token ->
+                        Ok token :: continuation
 
 
 
@@ -137,7 +183,7 @@ consumeMatches_ tokenMatches originalString index =
 -- Returns the result of the consumption as well as the next index to consume
 
 
-consumeNext_ : TokenMatch tokenType -> String -> Int -> ( Result String tokenType, Int )
+consumeNext_ : TokenMatch tokenType -> String -> Int -> ( LexResult tokenType, Int )
 consumeNext_ nextMatch originalString index =
     if nextMatch.startIndex == index then
         ( nextMatch.token
@@ -149,9 +195,9 @@ consumeNext_ nextMatch originalString index =
         )
 
 
-notATokenError_ : String -> Result String a
+notATokenError_ : String -> LexResult tokenType
 notATokenError_ val =
-    Err (val ++ " is not a valid token")
+    LexError (val ++ " is not a valid token")
 
 
 getNextMatch_ : List (TokenMatch tokenType) -> Maybe (TokenMatch tokenType)

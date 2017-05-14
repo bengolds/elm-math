@@ -1,0 +1,20 @@
+<div id="quill"></div>
+<div id="main"></div>
+<script src="elm.js"></script>
+<link rel="stylesheet" href="node_modules/mathquill/build/mathquill.css"/>
+<script src="node_modules/jquery/dist/jquery.min.js"></script>
+<script src="node_modules/mathquill/build/mathquill.js"></script>
+<script>
+    var node = document.getElementById('main');
+    var app = Elm.Mathquill.embed(node);
+
+    var MQ = MathQuill.getInterface(2);
+    MQ.MathField(document.querySelector('#quill'),
+        {
+            handlers : {
+                edit : function(field) {
+                    app.ports.mathquillEdited.send(field.latex());
+                }
+            }
+        });
+</script>
