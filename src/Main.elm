@@ -1,12 +1,8 @@
 module Main exposing (..)
 
 import Html exposing (..)
-import Svg exposing (..)
-import Svg.Attributes exposing (..)
-import Html.Attributes exposing (min, max, value, step)
-import Html.Events exposing (onInput)
-import String
-import Peano exposing (generatePeanoCurve, SquareBounds, Point)
+import Mathquill exposing (mathField, onEdit)
+import Parser exposing (..)
 
 
 main : Program Never Model Msg
@@ -23,17 +19,13 @@ main =
 -- MODEL
 
 
-type alias Function =
-    Float -> Float
-
-
 type alias Model =
-    { curveDepth : Int }
+    { inputString : String }
 
 
 initialModel : Model
 initialModel =
-    { curveDepth = 1 }
+    { inputString = "" }
 
 
 init : ( Model, Cmd Msg )
@@ -46,23 +38,14 @@ init =
 
 
 type Msg
-    = NoOp
-    | CurveDepthChanged String
+    = QuillEdited String
 
 
 update : Msg -> Model -> ( Model, Cmd Msg )
 update msg model =
     case msg of
-        NoOp ->
-            ( model, Cmd.none )
-
-        CurveDepthChanged newCurveDepth ->
-            ( { model | curveDepth = parseScaleString newCurveDepth }, Cmd.none )
-
-
-parseScaleString : String -> Int
-parseScaleString input =
-    Result.withDefault 0 (String.toInt input)
+        QuillEdited newString ->
+            ( { model | inputString = newString }, Cmd.none )
 
 
 
@@ -78,62 +61,140 @@ subscriptions model =
 -- VIEW
 
 
+type Expr
+    = Variable String
+    | MyInt Int
+    | MyFloat Float
+    | MyFunction Function
+
+
+type Function
+    = Sin Expr
+    | Cos Expr
+    | Tan Expr
+    | Frac Expr Expr
+    | Add Expr Expr
+
+
+
+--type alias Function2 =
+--{ funcType : Function2Type
+--, arg1 : Expr
+--, arg2 : Expr
+--}
+
+
+
+--type Function2Type
+--= Frac
+--| Plus
+--| Minus
+
+
 view : Model -> Html Msg
 view model =
     div []
-        [ plot (\x -> x) 800 800 model.curveDepth
+        [ mathField [ onEdit QuillEdited ]
+        , br [] []
+        , text model.inputString
+        , br [] []
+        , text (toString (run expr model.inputString))
         ]
 
 
-plot : Function -> Int -> Int -> Int -> Html Msg
-plot func plotWidth plotHeight depth =
-    let
-        bounds : SquareBounds
-        bounds =
-            SquareBounds (toFloat plotHeight) 0 (toFloat plotWidth) 0
-
-        stringPoints : String
-        stringPoints =
-            generatePeanoCurve depth bounds ( Peano.Left, Peano.Bottom )
-                |> pointsToSvgFormat
-    in
-        div []
-            [ svg [ width (toString plotWidth), height (toString plotHeight) ]
-                [ polyline [ fill "none", stroke "black", points stringPoints ] []
-                ]
-            , input
-                [ type_ "range"
-                , Html.Attributes.min "0"
-                , Html.Attributes.max "5"
-                , value (toString depth)
-                , step "1"
-                , onInput CurveDepthChanged
-                ]
-                []
+expr : Parser Expr
+expr =
+    inContext "expression" <|
+        oneOf
+            [ lazy (\_ -> bracketExpr)
+            , Parser.map MyFunction (lazy (\_ -> functionParser))
+            , Parser.map MyFloat float
             ]
 
 
-pointsToSvgFormat : List Point -> String
-pointsToSvgFormat points =
-    let
-        stringPoints =
-            List.map (\{ x, y } -> (toString x) ++ "," ++ (toString y) ++ " ") points
-    in
-        String.concat stringPoints
+bracketExpr : Parser Expr
+bracketExpr =
+    inContext "brackets" <|
+        succeed identity
+            |. oneOf
+                [ symbol "("
+                , command "left("
+                , symbol "["
+                , command "left["
+                , symbol "{"
+                , command "left{"
+                ]
+            |= expr
+            |. oneOf
+                [ symbol ")"
+                , command "right)"
+                , symbol "]"
+                , command "right]"
+                , symbol "}"
+                , command "right}"
+                ]
 
 
-generatePoints : Int -> Function -> List ( Float, Float )
-generatePoints numPoints function =
-    let
-        xValues =
-            List.map toFloat (List.range 1 numPoints)
-
-        yValues =
-            List.map function xValues
-    in
-        List.map2 (,) xValues yValues
+functionParser : Parser Function
+functionParser =
+    oneOf
+        [ lazy (\_ -> function1Parser)
+        , lazy (\_ -> function2Parser)
+        , lazy (\_ -> infixParser)
+        ]
 
 
-scalePoints : Float -> Float -> List ( Float, Float ) -> List ( Float, Float )
-scalePoints xScale yScale points =
-    List.map (\( x, y ) -> ( x * xScale, y * yScale )) points
+function1Parser : Parser Function
+function1Parser =
+    oneOf
+        [ (succeed Sin |. command "sin")
+        , (succeed Cos |. command "cos")
+        , (succeed Tan |. command "tan")
+        , (succeed Tan |. symbol "tan")
+        ]
+        |= lazy (\_ -> expr)
+
+
+function2Parser : Parser Function
+function2Parser =
+    oneOf
+        [ (succeed Frac |. command "frac") ]
+        |= lazy (\_ -> arg expr)
+        |= lazy (\_ -> arg expr)
+
+
+infixParser : Parser Function
+infixParser =
+    inContext "infix" <|
+        delayedCommitMap Add myInt <|
+            (symbol "+"
+                |= lazy (\_ -> expr)
+            )
+
+
+
+--delayedCommitMap Add (lazy (\_ -> expr)) <|
+--(succeed identity
+--|. symbol "+"
+--|= lazy (\_ -> expr)
+--)
+
+
+myInt =
+    Parser.map MyInt int
+
+
+command : String -> Parser ()
+command name =
+    inContext "command" <|
+        delayedCommit (symbol "\\") <|
+            keyword name
+
+
+arg : Parser a -> Parser a
+arg parser =
+    inContext "argument" <|
+        succeed identity
+            |. symbol "{"
+            |= parser
+            |. symbol "}"

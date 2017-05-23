@@ -1,8 +1,26 @@
---port module Mathquill exposing (editableField, subscriptions, mathquillIncoming)
---port module Mathquill exposing (..)
-
-
-module Mathquill exposing (..)
+module Mathquill
+    exposing
+        ( onEdit
+        , onEnter
+        , onMoveOutOf
+        , onSelectOutOf
+        , onDeleteOutOf
+        , onUpOutOf
+        , onDownOutOf
+        , ExitDirection
+        , spaceBehavesLikeTab
+        , restrictMismatchedBrackets
+        , sumStartsWithNEquals
+        , supSubsRequireOperand
+        , autoSubscriptNumerals
+        , NavigationDirection
+        , leftRightIntoCmdGoes
+        , charsThatBreakOutOfSupSub
+        , autoCommands
+        , autoOperatorNames
+        , mathField
+        , staticMath
+        )
 
 import Html exposing (Html, div, text, button)
 import Html.Keyed
@@ -21,12 +39,12 @@ onEnter msg =
     on "enter" <| Decode.succeed msg
 
 
-type Direction
+type ExitDirection
     = Right
     | Left
 
 
-decodeDirection : Decode.Decoder Direction
+decodeDirection : Decode.Decoder ExitDirection
 decodeDirection =
     Decode.field "direction" Decode.int
         |> Decode.map
@@ -38,17 +56,17 @@ decodeDirection =
             )
 
 
-onMoveOutOf : (Direction -> msg) -> Html.Attribute msg
+onMoveOutOf : (ExitDirection -> msg) -> Html.Attribute msg
 onMoveOutOf msg =
     on "moveOutOf" <| Decode.map msg <| decodeDirection
 
 
-onSelectOutOf : (Direction -> msg) -> Html.Attribute msg
+onSelectOutOf : (ExitDirection -> msg) -> Html.Attribute msg
 onSelectOutOf msg =
     on "selectOutOf" <| Decode.map msg <| decodeDirection
 
 
-onDeleteOutOf : (Direction -> msg) -> Html.Attribute msg
+onDeleteOutOf : (ExitDirection -> msg) -> Html.Attribute msg
 onDeleteOutOf msg =
     on "deleteOutOf" <| Decode.map msg <| decodeDirection
 
@@ -63,44 +81,44 @@ onDownOutOf msg =
     on "downOutOf" <| Decode.succeed msg
 
 
-emptyAttribute : Html.Attribute msg
-emptyAttribute =
+emptyAttribute_ : Html.Attribute msg
+emptyAttribute_ =
     attribute "empty-attribute-blank-ignore" ""
 
 
-boolAttribute : String -> (Bool -> Html.Attribute msg)
-boolAttribute attrName =
+boolAttribute_ : String -> (Bool -> Html.Attribute msg)
+boolAttribute_ attrName =
     (\value ->
         if value then
             attribute attrName ""
         else
-            emptyAttribute
+            emptyAttribute_
     )
 
 
 spaceBehavesLikeTab : Bool -> Html.Attribute msg
 spaceBehavesLikeTab =
-    boolAttribute "space-behaves-like-tab"
+    boolAttribute_ "space-behaves-like-tab"
 
 
 restrictMismatchedBrackets : Bool -> Html.Attribute msg
 restrictMismatchedBrackets =
-    boolAttribute "restrict-mismatched-brackets"
+    boolAttribute_ "restrict-mismatched-brackets"
 
 
 sumStartsWithNEquals : Bool -> Html.Attribute msg
 sumStartsWithNEquals =
-    boolAttribute "sum-starts-with-n-equals"
+    boolAttribute_ "sum-starts-with-n-equals"
 
 
 supSubsRequireOperand : Bool -> Html.Attribute msg
 supSubsRequireOperand =
-    boolAttribute "sup-subs-require-operand"
+    boolAttribute_ "sup-subs-require-operand"
 
 
 autoSubscriptNumerals : Bool -> Html.Attribute msg
 autoSubscriptNumerals =
-    boolAttribute "auto-subscript-numerals"
+    boolAttribute_ "auto-subscript-numerals"
 
 
 type NavigationDirection
@@ -119,14 +137,14 @@ leftRightIntoCmdGoes dir =
             attribute "left-right-into-cmd-goes" "down"
 
         Default ->
-            emptyAttribute
+            emptyAttribute_
 
 
-stringAttribute : String -> String -> Html.Attribute msg
-stringAttribute name string =
+stringAttribute_ : String -> String -> Html.Attribute msg
+stringAttribute_ name string =
     case string of
         "" ->
-            emptyAttribute
+            emptyAttribute_
 
         _ ->
             attribute name string
@@ -134,17 +152,17 @@ stringAttribute name string =
 
 charsThatBreakOutOfSupSub : String -> Html.Attribute msg
 charsThatBreakOutOfSupSub =
-    stringAttribute "chars-that-break-out-of-sup-sub"
+    stringAttribute_ "chars-that-break-out-of-sup-sub"
 
 
 autoCommands : String -> Html.Attribute msg
 autoCommands =
-    stringAttribute "auto-commands"
+    stringAttribute_ "auto-commands"
 
 
 autoOperatorNames : String -> Html.Attribute msg
 autoOperatorNames =
-    stringAttribute "auto-operator-names"
+    stringAttribute_ "auto-operator-names"
 
 
 mathField : List (Html.Attribute msg) -> Html msg
