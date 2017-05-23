@@ -1,0 +1,12 @@
+<div id="main"></div>
+<link rel="import" href="src/mathquill-import.html">
+<script src="elm.js"></script>
+<style>
+    .elm-mq-edit:not(.mq-editable-field) {
+        display: none;
+    }
+</style>
+<script>
+    var node = document.getElementById('main');
+    var app = Elm.Main.embed(node);
+</script>
