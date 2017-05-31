@@ -3,8 +3,19 @@ module ParserUtils exposing (..)
 import Parser exposing (..)
 import Char
 import String
-import Html exposing (Html, text, div, ul, li)
-import Html.Attributes exposing (class)
+import List.Extra exposing (groupWhileTransitively, last)
+import Html exposing (Html, text, div, ul, li, span)
+import Html.Attributes exposing (class, style)
+
+
+pairwiseMap : (a -> a -> b) -> List a -> List b
+pairwiseMap fn list =
+    case list of
+        x :: y :: rest ->
+            fn x y :: pairwiseMap fn (y :: rest)
+
+        _ ->
+            []
 
 
 isLetter : Char -> Bool
@@ -89,19 +100,52 @@ contextStack : List Context -> String -> Html msg
 contextStack stack source =
     -- MAKE THIS WORK WITH ROW/COLUMN
     let
-        splits =
-            List.map (\context -> context.row) stack
+        startContext : Context
+        startContext =
+            { col = 0, row = 0, description = "none" }
+
+        endContext : Context
+        endContext =
+            { col = (String.length source) + 1, row = 1, description = "none" }
+
+        enhancedStack =
+            ([ startContext ] ++ List.reverse stack ++ [ endContext ])
+                |> pairwiseMap
+                    (\curr next ->
+                        { description = curr.description
+                        , substring = String.slice (curr.col - 1) (next.col - 1) source
+                        }
+                    )
+                |> groupWhileTransitively (\curr next -> curr.substring == "")
+                |> List.map
+                    (\contexts ->
+                        { descriptions = List.map (.description) contexts
+                        , substring = last contexts |> Maybe.map .substring |> Maybe.withDefault ""
+                        }
+                    )
+
+        colors : List String
+        colors =
+            [ "darkred", "darksalmon", "darkseagreen", "darkslateblue", "darkslategray", "darkturquoise", "darkviolet", "deeppink", "deepskyblue" ]
     in
-        div [] [ text (toString (splitSource splits source)) ]
+        div [ class "contextStack" ]
+            (enhancedStack
+                |> List.map2
+                    (\color context ->
+                        span
+                            [ style [ ( "color", color ) ] ]
+                            [ text context.substring
+                            , tooltip
+                                [ text <| "Contexts: " ++ String.join "→" context.descriptions ]
+                            ]
+                    )
+                    colors
+            )
 
 
-
---case stack of
---[] ->
---source
---stack
---|> List.map formatContext
---|> div [ class "contextStack" ]
+tooltip : List (Html msg) -> Html msg
+tooltip contents =
+    div [ class "tooltip" ] contents
 
 
 splitSource : List Int -> String -> List String
@@ -116,9 +160,3 @@ splitSource splits source =
                     List.map ((-) x) xs
             in
                 String.left x source :: splitSource remainingSplits (String.dropLeft x source)
-
-
-formatContext : Context -> Html msg
-formatContext context =
-    div [ class "context" ]
-        [ text (toString context) ]

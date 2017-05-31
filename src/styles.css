@@ -48,4 +48,18 @@
     height: 8px;
 }
 
+.contextStack span {
+    position: relative;
+    white-space: nowrap
+}
+.contextStack span .tooltip {
+    display: none;
+    position: absolute;
+}
+
+.contextStack span:hover .tooltip,
+.contextStack span .tooltip.debug{
+    display: block;
+}
+
 
