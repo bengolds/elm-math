@@ -73,7 +73,7 @@ prettyPrintError err =
                 _ ->
                     text (toString err.problem)
     in
-        div []
+        div [ class "error" ]
             [ problemDiv
             , contextStack err.context err.source
             ]

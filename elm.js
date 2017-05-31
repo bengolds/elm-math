@@ -14997,7 +14997,11 @@ var _user$project$ParserUtils$prettyPrintError = function (err) {
 	}();
 	return A2(
 		_elm_lang$html$Html$div,
-		{ctor: '[]'},
+		{
+			ctor: '::',
+			_0: _elm_lang$html$Html_Attributes$class('error'),
+			_1: {ctor: '[]'}
+		},
 		{
 			ctor: '::',
 			_0: problemDiv,
