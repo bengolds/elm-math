@@ -14725,6 +14725,20 @@ var _user$project$ParserUtils$problemAsNode = function (problem) {
 			});
 	}
 };
+var _user$project$ParserUtils$getFailMessage = function (problems) {
+	return _elm_lang$core$List$head(
+		A2(
+			_elm_lang$core$List$filterMap,
+			function (problem) {
+				var _p3 = problem;
+				if (_p3.ctor === 'Fail') {
+					return _elm_lang$core$Maybe$Just(_p3._0);
+				} else {
+					return _elm_lang$core$Maybe$Nothing;
+				}
+			},
+			problems));
+};
 var _user$project$ParserUtils$list = F2(
 	function (object, separator) {
 		return A3(
@@ -14755,17 +14769,17 @@ var _user$project$ParserUtils$chainl = F2(
 	function (object, combiner) {
 		return A2(
 			_elm_tools$parser$Parser$map,
-			function (_p3) {
-				var _p4 = _p3;
+			function (_p4) {
+				var _p5 = _p4;
 				return A3(
 					_elm_lang$core$List$foldl,
 					F2(
-						function (_p5, a1) {
-							var _p6 = _p5;
-							return A2(_p6._0, a1, _p6._1);
+						function (_p6, a1) {
+							var _p7 = _p6;
+							return A2(_p7._0, a1, _p7._1);
 						}),
-					_p4._0,
-					_p4._1);
+					_p5._0,
+					_p5._1);
 			},
 			A2(
 				_user$project$ParserUtils_ops['|*'],
@@ -14779,17 +14793,17 @@ var _user$project$ParserUtils$chainr = F2(
 	function (object, combiner) {
 		return A2(
 			_elm_tools$parser$Parser$map,
-			function (_p7) {
-				var _p8 = _p7;
+			function (_p8) {
+				var _p9 = _p8;
 				return A3(
 					_elm_lang$core$List$foldr,
 					F2(
-						function (_p9, a1) {
-							var _p10 = _p9;
-							return A2(_p10._1, _p10._0, a1);
+						function (_p10, a1) {
+							var _p11 = _p10;
+							return A2(_p11._1, _p11._0, a1);
 						}),
-					_p8._1,
-					_p8._0);
+					_p9._1,
+					_p9._0);
 			},
 			A2(
 				_user$project$ParserUtils_ops['|*'],
@@ -14811,16 +14825,16 @@ var _user$project$ParserUtils$isLetter = function (c) {
 };
 var _user$project$ParserUtils$pairwiseMap = F2(
 	function (fn, list) {
-		var _p11 = list;
-		if ((_p11.ctor === '::') && (_p11._1.ctor === '::')) {
-			var _p12 = _p11._1._0;
+		var _p12 = list;
+		if ((_p12.ctor === '::') && (_p12._1.ctor === '::')) {
+			var _p13 = _p12._1._0;
 			return {
 				ctor: '::',
-				_0: A2(fn, _p11._0, _p12),
+				_0: A2(fn, _p12._0, _p13),
 				_1: A2(
 					_user$project$ParserUtils$pairwiseMap,
 					fn,
-					{ctor: '::', _0: _p12, _1: _p11._1._1})
+					{ctor: '::', _0: _p13, _1: _p12._1._1})
 			};
 		} else {
 			return {ctor: '[]'};
@@ -14969,27 +14983,40 @@ var _user$project$ParserUtils$contextStack = F2(
 	});
 var _user$project$ParserUtils$prettyPrintError = function (err) {
 	var problemDiv = function () {
-		var _p13 = err.problem;
-		if (_p13.ctor === 'BadOneOf') {
-			return A2(
-				_elm_lang$html$Html$div,
-				{
-					ctor: '::',
-					_0: _elm_lang$html$Html_Attributes$class('tree'),
-					_1: {ctor: '[]'}
-				},
-				{
-					ctor: '::',
-					_0: _elm_lang$html$Html$text('I\'m looking for a: '),
-					_1: {
+		var _p14 = err.problem;
+		if (_p14.ctor === 'BadOneOf') {
+			var _p16 = _p14._0;
+			var _p15 = _user$project$ParserUtils$getFailMessage(_p16);
+			if (_p15.ctor === 'Just') {
+				return A2(
+					_elm_lang$html$Html$div,
+					{ctor: '[]'},
+					{
 						ctor: '::',
-						_0: A2(
-							_elm_lang$html$Html$ul,
-							{ctor: '[]'},
-							A2(_elm_lang$core$List$map, _user$project$ParserUtils$problemAsNode, _p13._0)),
+						_0: _elm_lang$html$Html$text(_p15._0),
 						_1: {ctor: '[]'}
-					}
-				});
+					});
+			} else {
+				return A2(
+					_elm_lang$html$Html$div,
+					{
+						ctor: '::',
+						_0: _elm_lang$html$Html_Attributes$class('tree'),
+						_1: {ctor: '[]'}
+					},
+					{
+						ctor: '::',
+						_0: _elm_lang$html$Html$text('I\'m looking for a: '),
+						_1: {
+							ctor: '::',
+							_0: A2(
+								_elm_lang$html$Html$ul,
+								{ctor: '[]'},
+								A2(_elm_lang$core$List$map, _user$project$ParserUtils$problemAsNode, _p16)),
+							_1: {ctor: '[]'}
+						}
+					});
+			}
 		} else {
 			return _elm_lang$html$Html$text(
 				_elm_lang$core$Basics$toString(err.problem));
@@ -15267,7 +15294,11 @@ var _user$project$LatexParser$factor = A2(
 								_1: {
 									ctor: '::',
 									_0: _user$project$LatexParser$functions,
-									_1: {ctor: '[]'}
+									_1: {
+										ctor: '::',
+										_0: _elm_tools$parser$Parser$fail('Couldn\'t build a factor'),
+										_1: {ctor: '[]'}
+									}
 								}
 							}
 						}

@@ -3,7 +3,7 @@ module ParserUtils exposing (..)
 import Parser exposing (..)
 import Char
 import String
-import List.Extra exposing (groupWhileTransitively, last)
+import List.Extra exposing (groupWhileTransitively, last, find)
 import Html exposing (Html, text, div, ul, li, span)
 import Html.Attributes exposing (class, style)
 
@@ -65,10 +65,15 @@ prettyPrintError err =
         problemDiv =
             case err.problem of
                 BadOneOf problems ->
-                    div [ class "tree" ] <|
-                        [ text "I'm looking for a: "
-                        , ul [] (List.map problemAsNode problems)
-                        ]
+                    case getFailMessage problems of
+                        Just message ->
+                            div [] [ text message ]
+
+                        Nothing ->
+                            div [ class "tree" ] <|
+                                [ text "I'm looking for a: "
+                                , ul [] (List.map problemAsNode problems)
+                                ]
 
                 _ ->
                     text (toString err.problem)
@@ -77,6 +82,21 @@ prettyPrintError err =
             [ problemDiv
             , contextStack err.context err.source
             ]
+
+
+getFailMessage : List Problem -> Maybe String
+getFailMessage problems =
+    List.filterMap
+        (\problem ->
+            case problem of
+                Fail message ->
+                    Just message
+
+                _ ->
+                    Nothing
+        )
+        problems
+        |> List.head
 
 
 problemAsNode : Parser.Problem -> Html msg

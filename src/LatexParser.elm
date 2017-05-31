@@ -83,6 +83,7 @@ factor =
                     , parenthesized expr
                     , negative factor
                     , functions
+                    , fail "Couldn't build a factor"
                     ]
 
 
