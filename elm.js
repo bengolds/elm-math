@@ -14657,88 +14657,6 @@ var _elm_tools$parser$Parser$AtLeast = function (a) {
 var _elm_tools$parser$Parser$zeroOrMore = _elm_tools$parser$Parser$AtLeast(0);
 var _elm_tools$parser$Parser$oneOrMore = _elm_tools$parser$Parser$AtLeast(1);
 
-var _user$project$ParserUtils$splitSource = F2(
-	function (splits, source) {
-		var _p0 = splits;
-		if (_p0.ctor === '[]') {
-			return {
-				ctor: '::',
-				_0: source,
-				_1: {ctor: '[]'}
-			};
-		} else {
-			var _p1 = _p0._0;
-			var remainingSplits = A2(
-				_elm_lang$core$List$map,
-				F2(
-					function (x, y) {
-						return x - y;
-					})(_p1),
-				_p0._1);
-			return {
-				ctor: '::',
-				_0: A2(_elm_lang$core$String$left, _p1, source),
-				_1: A2(
-					_user$project$ParserUtils$splitSource,
-					remainingSplits,
-					A2(_elm_lang$core$String$dropLeft, _p1, source))
-			};
-		}
-	});
-var _user$project$ParserUtils$tooltip = function (contents) {
-	return A2(
-		_elm_lang$html$Html$div,
-		{
-			ctor: '::',
-			_0: _elm_lang$html$Html_Attributes$class('tooltip'),
-			_1: {ctor: '[]'}
-		},
-		contents);
-};
-var _user$project$ParserUtils$problemAsNode = function (problem) {
-	var _p2 = problem;
-	if (_p2.ctor === 'BadOneOf') {
-		return A2(
-			_elm_lang$html$Html$li,
-			{ctor: '[]'},
-			{
-				ctor: '::',
-				_0: _elm_lang$html$Html$text('Or one of these: '),
-				_1: {
-					ctor: '::',
-					_0: A2(
-						_elm_lang$html$Html$ul,
-						{ctor: '[]'},
-						A2(_elm_lang$core$List$map, _user$project$ParserUtils$problemAsNode, _p2._0)),
-					_1: {ctor: '[]'}
-				}
-			});
-	} else {
-		return A2(
-			_elm_lang$html$Html$li,
-			{ctor: '[]'},
-			{
-				ctor: '::',
-				_0: _elm_lang$html$Html$text(
-					_elm_lang$core$Basics$toString(problem)),
-				_1: {ctor: '[]'}
-			});
-	}
-};
-var _user$project$ParserUtils$getFailMessage = function (problems) {
-	return _elm_lang$core$List$head(
-		A2(
-			_elm_lang$core$List$filterMap,
-			function (problem) {
-				var _p3 = problem;
-				if (_p3.ctor === 'Fail') {
-					return _elm_lang$core$Maybe$Just(_p3._0);
-				} else {
-					return _elm_lang$core$Maybe$Nothing;
-				}
-			},
-			problems));
-};
 var _user$project$ParserUtils$list = F2(
 	function (object, separator) {
 		return A3(
@@ -14760,7 +14678,15 @@ var _user$project$ParserUtils$list = F2(
 					object)));
 	});
 var _user$project$ParserUtils_ops = _user$project$ParserUtils_ops || {};
-_user$project$ParserUtils_ops['|*'] = _elm_tools$parser$Parser$map2(
+_user$project$ParserUtils_ops['|%'] = F2(
+	function (p1, p2) {
+		return A2(
+			_elm_tools$parser$Parser$andThen,
+			_elm_lang$core$Basics$always(p2),
+			p1);
+	});
+var _user$project$ParserUtils_ops = _user$project$ParserUtils_ops || {};
+_user$project$ParserUtils_ops['|+'] = _elm_tools$parser$Parser$map2(
 	F2(
 		function (v0, v1) {
 			return {ctor: '_Tuple2', _0: v0, _1: v1};
@@ -14769,44 +14695,44 @@ var _user$project$ParserUtils$chainl = F2(
 	function (object, combiner) {
 		return A2(
 			_elm_tools$parser$Parser$map,
-			function (_p4) {
-				var _p5 = _p4;
+			function (_p0) {
+				var _p1 = _p0;
 				return A3(
 					_elm_lang$core$List$foldl,
 					F2(
-						function (_p6, a1) {
-							var _p7 = _p6;
-							return A2(_p7._0, a1, _p7._1);
+						function (_p2, a1) {
+							var _p3 = _p2;
+							return A2(_p3._0, a1, _p3._1);
 						}),
-					_p5._0,
-					_p5._1);
+					_p1._0,
+					_p1._1);
 			},
 			A2(
-				_user$project$ParserUtils_ops['|*'],
+				_user$project$ParserUtils_ops['|+'],
 				object,
 				A2(
 					_elm_tools$parser$Parser$repeat,
 					_elm_tools$parser$Parser$zeroOrMore,
-					A2(_user$project$ParserUtils_ops['|*'], combiner, object))));
+					A2(_user$project$ParserUtils_ops['|+'], combiner, object))));
 	});
 var _user$project$ParserUtils$chainr = F2(
 	function (object, combiner) {
 		return A2(
 			_elm_tools$parser$Parser$map,
-			function (_p8) {
-				var _p9 = _p8;
+			function (_p4) {
+				var _p5 = _p4;
 				return A3(
 					_elm_lang$core$List$foldr,
 					F2(
-						function (_p10, a1) {
-							var _p11 = _p10;
-							return A2(_p11._1, _p11._0, a1);
+						function (_p6, a1) {
+							var _p7 = _p6;
+							return A2(_p7._1, _p7._0, a1);
 						}),
-					_p9._1,
-					_p9._0);
+					_p5._1,
+					_p5._0);
 			},
 			A2(
-				_user$project$ParserUtils_ops['|*'],
+				_user$project$ParserUtils_ops['|+'],
 				A2(
 					_elm_tools$parser$Parser$repeat,
 					_elm_tools$parser$Parser$zeroOrMore,
@@ -14825,52 +14751,242 @@ var _user$project$ParserUtils$isLetter = function (c) {
 };
 var _user$project$ParserUtils$pairwiseMap = F2(
 	function (fn, list) {
-		var _p12 = list;
-		if ((_p12.ctor === '::') && (_p12._1.ctor === '::')) {
-			var _p13 = _p12._1._0;
+		var _p8 = list;
+		if ((_p8.ctor === '::') && (_p8._1.ctor === '::')) {
+			var _p9 = _p8._1._0;
 			return {
 				ctor: '::',
-				_0: A2(fn, _p12._0, _p13),
+				_0: A2(fn, _p8._0, _p9),
 				_1: A2(
 					_user$project$ParserUtils$pairwiseMap,
 					fn,
-					{ctor: '::', _0: _p13, _1: _p12._1._1})
+					{ctor: '::', _0: _p9, _1: _p8._1._1})
 			};
 		} else {
 			return {ctor: '[]'};
 		}
 	});
-var _user$project$ParserUtils$contextStack = F2(
-	function (stack, source) {
-		var colors = {
+
+var _user$project$ParserDebugger$tooltip = function (contents) {
+	return A2(
+		_elm_lang$html$Html$div,
+		{
 			ctor: '::',
-			_0: 'darkred',
-			_1: {
+			_0: _elm_lang$html$Html_Attributes$class('tooltip'),
+			_1: {ctor: '[]'}
+		},
+		contents);
+};
+var _user$project$ParserDebugger$markAtErrorLocation = F2(
+	function (index, groupedContexts) {
+		var _p0 = A2(
+			_elm_lang$core$Debug$log,
+			'groupedContexts',
+			{ctor: '_Tuple2', _0: groupedContexts, _1: index});
+		var _p1 = groupedContexts;
+		if (_p1.ctor === '[]') {
+			return {ctor: '[]'};
+		} else {
+			var _p3 = _p1._1;
+			var _p2 = _p1._0;
+			var length = _elm_lang$core$String$length(_p2.substring);
+			return ((_elm_lang$core$Native_Utils.cmp(index, length) < 0) || _elm_lang$core$Native_Utils.eq(index, 0)) ? {
 				ctor: '::',
-				_0: 'darksalmon',
-				_1: {
+				_0: _elm_lang$core$Native_Utils.update(
+					_p2,
+					{
+						errorLocation: _elm_lang$core$Maybe$Just(index)
+					}),
+				_1: _p3
+			} : {
+				ctor: '::',
+				_0: _p2,
+				_1: A2(_user$project$ParserDebugger$markAtErrorLocation, index - length, _p3)
+			};
+		}
+	});
+var _user$project$ParserDebugger$groupContextsByLocation = function (contexts) {
+	var getLastSubstring = function (groupOfContexts) {
+		return A2(
+			_elm_lang$core$Maybe$withDefault,
+			'',
+			A2(
+				_elm_lang$core$Maybe$map,
+				function (_) {
+					return _.substring;
+				},
+				_elm_community$list_extra$List_Extra$last(groupOfContexts)));
+	};
+	return A2(
+		_elm_lang$core$List$map,
+		function (contexts) {
+			return {
+				descriptions: A2(
+					_elm_lang$core$List$map,
+					function (_) {
+						return _.description;
+					},
+					contexts),
+				substring: getLastSubstring(contexts),
+				errorLocation: _elm_lang$core$Maybe$Nothing
+			};
+		},
+		A2(
+			_elm_community$list_extra$List_Extra$groupWhileTransitively,
+			F2(
+				function (curr, _p4) {
+					return _elm_lang$core$Native_Utils.eq(curr.substring, '');
+				}),
+			contexts));
+};
+var _user$project$ParserDebugger$addSubstringsToContexts = F2(
+	function (contexts, source) {
+		var addSubstring = F2(
+			function (context1, context2) {
+				return {
+					description: context1.description,
+					substring: A3(_elm_lang$core$String$slice, context1.col - 1, context2.col - 1, source)
+				};
+			});
+		var endContext = {
+			col: _elm_lang$core$String$length(source) + 1,
+			row: 1,
+			description: 'none'
+		};
+		var startContext = {col: 0, row: 0, description: 'none'};
+		var extendedContexts = A2(
+			_elm_lang$core$Basics_ops['++'],
+			{
+				ctor: '::',
+				_0: startContext,
+				_1: {ctor: '[]'}
+			},
+			A2(
+				_elm_lang$core$Basics_ops['++'],
+				_elm_lang$core$List$reverse(contexts),
+				{
 					ctor: '::',
-					_0: 'darkseagreen',
-					_1: {
+					_0: endContext,
+					_1: {ctor: '[]'}
+				}));
+		return A2(_user$project$ParserUtils$pairwiseMap, addSubstring, extendedContexts);
+	});
+var _user$project$ParserDebugger$spanFromContextGroup = F2(
+	function (context, color) {
+		var substringSpan = function () {
+			var _p5 = context.errorLocation;
+			if (_p5.ctor === 'Just') {
+				var _p6 = _p5._0;
+				var arrow = A2(
+					_elm_lang$html$Html$div,
+					{
 						ctor: '::',
-						_0: 'darkslateblue',
+						_0: _elm_lang$html$Html_Attributes$class('errorArrow'),
+						_1: {ctor: '[]'}
+					},
+					{
+						ctor: '::',
+						_0: _elm_lang$html$Html$text('↓'),
+						_1: {ctor: '[]'}
+					});
+				var post = A2(_elm_lang$core$String$dropLeft, _p6 + 1, context.substring);
+				var errorChar = A3(_elm_lang$core$String$slice, _p6, _p6 + 1, context.substring);
+				var pre = A2(_elm_lang$core$String$left, _p6, context.substring);
+				return A2(
+					_elm_lang$html$Html$span,
+					{ctor: '[]'},
+					{
+						ctor: '::',
+						_0: _elm_lang$html$Html$text(pre),
 						_1: {
 							ctor: '::',
-							_0: 'darkslategray',
-							_1: {
-								ctor: '::',
-								_0: 'darkturquoise',
-								_1: {
+							_0: A2(
+								_elm_lang$html$Html$span,
+								{
 									ctor: '::',
-									_0: 'darkviolet',
+									_0: _elm_lang$html$Html_Attributes$class('errorChar'),
+									_1: {ctor: '[]'}
+								},
+								{
+									ctor: '::',
+									_0: _elm_lang$html$Html$text(errorChar),
 									_1: {
 										ctor: '::',
-										_0: 'deeppink',
-										_1: {
-											ctor: '::',
-											_0: 'deepskyblue',
-											_1: {ctor: '[]'}
-										}
+										_0: arrow,
+										_1: {ctor: '[]'}
+									}
+								}),
+							_1: {
+								ctor: '::',
+								_0: _elm_lang$html$Html$text(post),
+								_1: {ctor: '[]'}
+							}
+						}
+					});
+			} else {
+				return _elm_lang$html$Html$text(context.substring);
+			}
+		}();
+		return A2(
+			_elm_lang$html$Html$span,
+			{
+				ctor: '::',
+				_0: _elm_lang$html$Html_Attributes$style(
+					{
+						ctor: '::',
+						_0: {ctor: '_Tuple2', _0: 'color', _1: color},
+						_1: {ctor: '[]'}
+					}),
+				_1: {ctor: '[]'}
+			},
+			{
+				ctor: '::',
+				_0: substringSpan,
+				_1: {
+					ctor: '::',
+					_0: _user$project$ParserDebugger$tooltip(
+						{
+							ctor: '::',
+							_0: _elm_lang$html$Html$text(
+								A2(
+									_elm_lang$core$Basics_ops['++'],
+									'Contexts: ',
+									A2(_elm_lang$core$String$join, '→', context.descriptions))),
+							_1: {ctor: '[]'}
+						}),
+					_1: {ctor: '[]'}
+				}
+			});
+	});
+var _user$project$ParserDebugger$contextStack = function (error) {
+	var colors = {
+		ctor: '::',
+		_0: 'darkred',
+		_1: {
+			ctor: '::',
+			_0: 'darksalmon',
+			_1: {
+				ctor: '::',
+				_0: 'darkseagreen',
+				_1: {
+					ctor: '::',
+					_0: 'darkslateblue',
+					_1: {
+						ctor: '::',
+						_0: 'darkslategray',
+						_1: {
+							ctor: '::',
+							_0: 'darkturquoise',
+							_1: {
+								ctor: '::',
+								_0: 'darkviolet',
+								_1: {
+									ctor: '::',
+									_0: 'deeppink',
+									_1: {
+										ctor: '::',
+										_0: 'deepskyblue',
+										_1: {ctor: '[]'}
 									}
 								}
 							}
@@ -14878,164 +14994,152 @@ var _user$project$ParserUtils$contextStack = F2(
 					}
 				}
 			}
-		};
-		var endContext = {
-			col: _elm_lang$core$String$length(source) + 1,
-			row: 1,
-			description: 'none'
-		};
-		var startContext = {col: 0, row: 0, description: 'none'};
-		var enhancedStack = A2(
-			_elm_lang$core$List$map,
-			function (contexts) {
-				return {
-					descriptions: A2(
-						_elm_lang$core$List$map,
-						function (_) {
-							return _.description;
-						},
-						contexts),
-					substring: A2(
-						_elm_lang$core$Maybe$withDefault,
-						'',
-						A2(
-							_elm_lang$core$Maybe$map,
-							function (_) {
-								return _.substring;
-							},
-							_elm_community$list_extra$List_Extra$last(contexts)))
-				};
-			},
-			A2(
-				_elm_community$list_extra$List_Extra$groupWhileTransitively,
-				F2(
-					function (curr, next) {
-						return _elm_lang$core$Native_Utils.eq(curr.substring, '');
-					}),
-				A2(
-					_user$project$ParserUtils$pairwiseMap,
-					F2(
-						function (curr, next) {
-							return {
-								description: curr.description,
-								substring: A3(_elm_lang$core$String$slice, curr.col - 1, next.col - 1, source)
-							};
-						}),
-					A2(
-						_elm_lang$core$Basics_ops['++'],
-						{
-							ctor: '::',
-							_0: startContext,
-							_1: {ctor: '[]'}
-						},
-						A2(
-							_elm_lang$core$Basics_ops['++'],
-							_elm_lang$core$List$reverse(stack),
-							{
-								ctor: '::',
-								_0: endContext,
-								_1: {ctor: '[]'}
-							})))));
-		return A2(
-			_elm_lang$html$Html$div,
-			{
-				ctor: '::',
-				_0: _elm_lang$html$Html_Attributes$class('contextStack'),
-				_1: {ctor: '[]'}
-			},
-			A3(
-				_elm_lang$core$List$map2,
-				F2(
-					function (color, context) {
-						return A2(
-							_elm_lang$html$Html$span,
-							{
-								ctor: '::',
-								_0: _elm_lang$html$Html_Attributes$style(
-									{
-										ctor: '::',
-										_0: {ctor: '_Tuple2', _0: 'color', _1: color},
-										_1: {ctor: '[]'}
-									}),
-								_1: {ctor: '[]'}
-							},
-							{
-								ctor: '::',
-								_0: _elm_lang$html$Html$text(context.substring),
-								_1: {
-									ctor: '::',
-									_0: _user$project$ParserUtils$tooltip(
-										{
-											ctor: '::',
-											_0: _elm_lang$html$Html$text(
-												A2(
-													_elm_lang$core$Basics_ops['++'],
-													'Contexts: ',
-													A2(_elm_lang$core$String$join, '→', context.descriptions))),
-											_1: {ctor: '[]'}
-										}),
-									_1: {ctor: '[]'}
-								}
-							});
-					}),
-				colors,
-				enhancedStack));
-	});
-var _user$project$ParserUtils$prettyPrintError = function (err) {
-	var problemDiv = function () {
-		var _p14 = err.problem;
-		if (_p14.ctor === 'BadOneOf') {
-			var _p16 = _p14._0;
-			var _p15 = _user$project$ParserUtils$getFailMessage(_p16);
-			if (_p15.ctor === 'Just') {
-				return A2(
-					_elm_lang$html$Html$div,
-					{ctor: '[]'},
-					{
-						ctor: '::',
-						_0: _elm_lang$html$Html$text(_p15._0),
-						_1: {ctor: '[]'}
-					});
-			} else {
-				return A2(
-					_elm_lang$html$Html$div,
-					{
-						ctor: '::',
-						_0: _elm_lang$html$Html_Attributes$class('tree'),
-						_1: {ctor: '[]'}
-					},
-					{
-						ctor: '::',
-						_0: _elm_lang$html$Html$text('I\'m looking for a: '),
-						_1: {
-							ctor: '::',
-							_0: A2(
-								_elm_lang$html$Html$ul,
-								{ctor: '[]'},
-								A2(_elm_lang$core$List$map, _user$project$ParserUtils$problemAsNode, _p16)),
-							_1: {ctor: '[]'}
-						}
-					});
-			}
-		} else {
-			return _elm_lang$html$Html$text(
-				_elm_lang$core$Basics$toString(err.problem));
 		}
-	}();
+	};
+	var groupedContexts = A2(
+		_user$project$ParserDebugger$markAtErrorLocation,
+		error.col - 1,
+		_user$project$ParserDebugger$groupContextsByLocation(
+			A2(_user$project$ParserDebugger$addSubstringsToContexts, error.context, error.source)));
 	return A2(
 		_elm_lang$html$Html$div,
 		{
 			ctor: '::',
-			_0: _elm_lang$html$Html_Attributes$class('error'),
+			_0: _elm_lang$html$Html_Attributes$class('contextStack'),
+			_1: {ctor: '[]'}
+		},
+		A3(_elm_lang$core$List$map2, _user$project$ParserDebugger$spanFromContextGroup, groupedContexts, colors));
+};
+var _user$project$ParserDebugger$getFailMessage = function (problems) {
+	return _elm_lang$core$List$head(
+		A2(
+			_elm_lang$core$List$filterMap,
+			function (problem) {
+				var _p7 = problem;
+				if (_p7.ctor === 'Fail') {
+					return _elm_lang$core$Maybe$Just(_p7._0);
+				} else {
+					return _elm_lang$core$Maybe$Nothing;
+				}
+			},
+			problems));
+};
+var _user$project$ParserDebugger$failureDescription = function (problem) {
+	var _p8 = problem;
+	switch (_p8.ctor) {
+		case 'BadOneOf':
+			return A2(
+				_elm_lang$core$Maybe$withDefault,
+				'a oneOf with no fail message...',
+				_user$project$ParserDebugger$getFailMessage(_p8._0));
+		case 'BadFloat':
+			return 'a float, like 6.0 or 3e10';
+		case 'BadInt':
+			return 'an integer, like 1 or 2';
+		case 'ExpectingEnd':
+			return 'the end of the input';
+		case 'ExpectingSymbol':
+			return A2(_elm_lang$core$Basics_ops['++'], 'the symbol ', _p8._0);
+		case 'ExpectingKeyword':
+			return A2(_elm_lang$core$Basics_ops['++'], 'the keyword ', _p8._0);
+		case 'ExpectingVariable':
+			return 'a variable';
+		default:
+			return _elm_lang$core$Basics$toString(problem);
+	}
+};
+var _user$project$ParserDebugger$problemAsOneOfNode = function (problem) {
+	var _p9 = problem;
+	if (_p9.ctor === 'Fail') {
+		return _elm_lang$html$Html$text('');
+	} else {
+		return A2(
+			_elm_lang$html$Html$li,
+			{ctor: '[]'},
+			{
+				ctor: '::',
+				_0: _elm_lang$html$Html$text(
+					_user$project$ParserDebugger$failureDescription(problem)),
+				_1: {ctor: '[]'}
+			});
+	}
+};
+var _user$project$ParserDebugger$prettyPrintError = function (err) {
+	var errorMessagePrefix = function () {
+		var _p10 = _elm_lang$core$List$head(err.context);
+		if (_p10.ctor === 'Just') {
+			return A2(
+				_elm_lang$core$Basics_ops['++'],
+				'I\'m trying to build a ',
+				A2(_elm_lang$core$Basics_ops['++'], _p10._0.description, ', but '));
+		} else {
+			return 'I ran into an error while parsing: ';
+		}
+	}();
+	var errorMessageDiv = function () {
+		var _p11 = err.problem;
+		if (_p11.ctor === 'BadOneOf') {
+			return A2(
+				_elm_lang$html$Html$div,
+				{ctor: '[]'},
+				{
+					ctor: '::',
+					_0: _elm_lang$html$Html$text(
+						A2(_elm_lang$core$Basics_ops['++'], errorMessagePrefix, 'I needed to find:')),
+					_1: {
+						ctor: '::',
+						_0: A2(
+							_elm_lang$html$Html$div,
+							{
+								ctor: '::',
+								_0: _elm_lang$html$Html_Attributes$class('tree'),
+								_1: {ctor: '[]'}
+							},
+							A2(_elm_lang$core$List$map, _user$project$ParserDebugger$problemAsOneOfNode, _p11._0)),
+						_1: {ctor: '[]'}
+					}
+				});
+		} else {
+			return _elm_lang$html$Html$text(
+				A2(
+					_elm_lang$core$Basics_ops['++'],
+					errorMessagePrefix,
+					A2(
+						_elm_lang$core$Basics_ops['++'],
+						'I expected ',
+						_user$project$ParserDebugger$failureDescription(err.problem))));
+		}
+	}();
+	var headerDiv = A2(
+		_elm_lang$html$Html$h1,
+		{
+			ctor: '::',
+			_0: _elm_lang$html$Html_Attributes$class('debuggerHeader'),
 			_1: {ctor: '[]'}
 		},
 		{
 			ctor: '::',
-			_0: problemDiv,
+			_0: _elm_lang$html$Html$text('Parser Error'),
+			_1: {ctor: '[]'}
+		});
+	return A2(
+		_elm_lang$html$Html$div,
+		{
+			ctor: '::',
+			_0: _elm_lang$html$Html_Attributes$class('errorDebugger'),
+			_1: {ctor: '[]'}
+		},
+		{
+			ctor: '::',
+			_0: headerDiv,
 			_1: {
 				ctor: '::',
-				_0: A2(_user$project$ParserUtils$contextStack, err.context, err.source),
-				_1: {ctor: '[]'}
+				_0: _user$project$ParserDebugger$contextStack(err),
+				_1: {
+					ctor: '::',
+					_0: errorMessageDiv,
+					_1: {ctor: '[]'}
+				}
 			}
 		});
 };
@@ -15090,7 +15194,11 @@ var _user$project$LatexParser$parenthesized = function (parser) {
 				_1: {
 					ctor: '::',
 					_0: A2(leftRight, '[', ']'),
-					_1: {ctor: '[]'}
+					_1: {
+						ctor: '::',
+						_0: _elm_tools$parser$Parser$fail('a parentheses, like \\left(, \\left[, or \\left{'),
+						_1: {ctor: '[]'}
+					}
 				}
 			}
 		});
@@ -15263,10 +15371,19 @@ var _user$project$LatexParser$Function = F2(
 var _user$project$LatexParser$Variable = function (a) {
 	return {ctor: 'Variable', _0: a};
 };
-var _user$project$LatexParser$variable = A2(
-	_elm_tools$parser$Parser_ops['|='],
-	_elm_tools$parser$Parser$succeed(_user$project$LatexParser$Variable),
-	_user$project$LatexParser$identifier);
+var _user$project$LatexParser$variable = _elm_tools$parser$Parser$oneOf(
+	{
+		ctor: '::',
+		_0: A2(
+			_elm_tools$parser$Parser_ops['|='],
+			_elm_tools$parser$Parser$succeed(_user$project$LatexParser$Variable),
+			_user$project$LatexParser$identifier),
+		_1: {
+			ctor: '::',
+			_0: _elm_tools$parser$Parser$fail('a variable, like x or voltage'),
+			_1: {ctor: '[]'}
+		}
+	});
 var _user$project$LatexParser$Constant = function (a) {
 	return {ctor: 'Constant', _0: a};
 };
@@ -15284,19 +15401,24 @@ var _user$project$LatexParser$factor = A2(
 						_elm_tools$parser$Parser$float),
 					_1: {
 						ctor: '::',
-						_0: _user$project$LatexParser$variable,
+						_0: _user$project$LatexParser$negative(
+							A2(
+								_user$project$ParserUtils_ops['|%'],
+								_elm_tools$parser$Parser$keyword('dogs'),
+								_elm_tools$parser$Parser$succeed(
+									_user$project$LatexParser$Constant(3)))),
 						_1: {
 							ctor: '::',
-							_0: _user$project$LatexParser$parenthesized(_user$project$LatexParser$expr),
+							_0: _user$project$LatexParser$variable,
 							_1: {
 								ctor: '::',
-								_0: _user$project$LatexParser$negative(_user$project$LatexParser$factor),
+								_0: _user$project$LatexParser$parenthesized(_user$project$LatexParser$expr),
 								_1: {
 									ctor: '::',
 									_0: _user$project$LatexParser$functions,
 									_1: {
 										ctor: '::',
-										_0: _elm_tools$parser$Parser$fail('Couldn\'t build a factor'),
+										_0: _elm_tools$parser$Parser$fail('a factor'),
 										_1: {ctor: '[]'}
 									}
 								}
@@ -15373,7 +15495,11 @@ var _user$project$LatexParser$functions = _elm_tools$parser$Parser$lazy(
 						_1: {
 							ctor: '::',
 							_0: A2(_user$project$LatexParser$func2, _user$project$LatexParser$Divide, 'frac'),
-							_1: {ctor: '[]'}
+							_1: {
+								ctor: '::',
+								_0: _elm_tools$parser$Parser$fail('a function, like \\sin, \\cos, or \\tan'),
+								_1: {ctor: '[]'}
+							}
 						}
 					}
 				}
@@ -15382,51 +15508,51 @@ var _user$project$LatexParser$functions = _elm_tools$parser$Parser$lazy(
 var _user$project$LatexParser$func1 = F2(
 	function (fn, name) {
 		return A2(
-			_elm_tools$parser$Parser$inContext,
-			name,
+			_user$project$ParserUtils_ops['|%'],
+			_user$project$LatexParser$command(name),
 			A2(
-				_elm_tools$parser$Parser_ops['|='],
+				_elm_tools$parser$Parser$inContext,
+				name,
 				A2(
-					_elm_tools$parser$Parser_ops['|.'],
+					_elm_tools$parser$Parser_ops['|='],
 					_elm_tools$parser$Parser$succeed(fn),
-					_user$project$LatexParser$command(name)),
-				_elm_tools$parser$Parser$oneOf(
-					{
-						ctor: '::',
-						_0: _user$project$LatexParser$arg(_user$project$LatexParser$expr),
-						_1: {
+					_elm_tools$parser$Parser$oneOf(
+						{
 							ctor: '::',
-							_0: _user$project$LatexParser$parenthesized(_user$project$LatexParser$expr),
+							_0: _user$project$LatexParser$arg(_user$project$LatexParser$expr),
 							_1: {
 								ctor: '::',
-								_0: A2(_elm_tools$parser$Parser$delayedCommit, _user$project$LatexParser$spaces, _user$project$LatexParser$term),
-								_1: {ctor: '[]'}
+								_0: _user$project$LatexParser$parenthesized(_user$project$LatexParser$expr),
+								_1: {
+									ctor: '::',
+									_0: A2(_elm_tools$parser$Parser$delayedCommit, _user$project$LatexParser$spaces, _user$project$LatexParser$term),
+									_1: {ctor: '[]'}
+								}
 							}
-						}
-					})));
+						}))));
 	});
 var _user$project$LatexParser$func2 = F2(
 	function (fn, name) {
 		return A2(
-			_elm_tools$parser$Parser$inContext,
-			name,
+			_user$project$ParserUtils_ops['|%'],
+			_user$project$LatexParser$command(name),
 			A2(
-				_elm_tools$parser$Parser_ops['|='],
+				_elm_tools$parser$Parser$inContext,
+				name,
 				A2(
 					_elm_tools$parser$Parser_ops['|='],
 					A2(
-						_elm_tools$parser$Parser_ops['|.'],
+						_elm_tools$parser$Parser_ops['|='],
 						_elm_tools$parser$Parser$succeed(fn),
-						_user$project$LatexParser$command(name)),
-					_user$project$LatexParser$arg(_user$project$LatexParser$expr)),
-				_user$project$LatexParser$arg(_user$project$LatexParser$expr)));
+						_user$project$LatexParser$arg(_user$project$LatexParser$expr)),
+					_user$project$LatexParser$arg(_user$project$LatexParser$expr))));
 	});
 var _user$project$LatexParser$output = function (inputString) {
 	var _p6 = A2(_elm_tools$parser$Parser$run, _user$project$LatexParser$expr, inputString);
 	if (_p6.ctor === 'Ok') {
 		return _user$project$LatexParser$asDiv(_p6._0);
 	} else {
-		return _user$project$ParserUtils$prettyPrintError(_p6._0);
+		return _user$project$ParserDebugger$prettyPrintError(_p6._0);
 	}
 };
 

@@ -2,6 +2,7 @@ module LatexParser exposing (..)
 
 import Parser exposing (..)
 import ParserUtils exposing (..)
+import ParserDebugger
 import Html exposing (span, div, text, Html, br)
 import Html.Attributes exposing (class)
 
@@ -15,7 +16,7 @@ output inputString =
             asDiv expr
 
         Err err ->
-            ParserUtils.prettyPrintError err
+            ParserDebugger.prettyPrintError err
 
 
 asDiv : Expr -> Html msg
@@ -79,11 +80,11 @@ factor =
             \_ ->
                 oneOf <|
                     [ succeed Constant |= float
+                    , negative (keyword "dogs" |% succeed (Constant 3))
                     , variable
                     , parenthesized expr
-                    , negative factor
                     , functions
-                    , fail "Couldn't build a factor"
+                    , fail "a factor"
                     ]
 
 
@@ -120,38 +121,39 @@ functions =
                 , func1 Cos "cos"
                 , func1 Tan "tan"
                 , func2 Divide "frac"
+                , fail "a function, like \\sin, \\cos, or \\tan"
                 ]
 
 
 variable : Parser Expr
 variable =
-    succeed Variable |= identifier
-
-
-
---division =
---function Divide "frac" ( expr, expr )
+    oneOf
+        [ succeed Variable |= identifier
+        , fail "a variable, like x or voltage"
+        ]
 
 
 func1 : (Expr -> b) -> String -> Parser b
 func1 fn name =
-    inContext name <|
-        succeed fn
-            |. command name
-            |= oneOf
-                [ arg expr
-                , parenthesized expr
-                , delayedCommit spaces term
-                ]
+    command name
+        |% (inContext name <|
+                succeed fn
+                    |= oneOf
+                        [ arg expr
+                        , parenthesized expr
+                        , delayedCommit spaces term
+                        ]
+           )
 
 
 func2 : (Expr -> Expr -> c) -> String -> Parser c
 func2 fn name =
-    inContext name <|
-        succeed fn
-            |. command name
-            |= arg expr
-            |= arg expr
+    command name
+        |% (inContext name <|
+                succeed fn
+                    |= arg expr
+                    |= arg expr
+           )
 
 
 negative : Parser Expr -> Parser Expr
@@ -182,6 +184,7 @@ parenthesized parser =
             [ leftRight "(" ")"
             , leftRight "\\{" "\\}"
             , leftRight "[" "]"
+            , fail "a parentheses, like \\left(, \\left[, or \\left{"
             ]
 
 

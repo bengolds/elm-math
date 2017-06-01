@@ -20,9 +20,14 @@
     list-style: none;
     padding-left: 32px;
 }
+
+.tree ul {
+    -webkit-margin-after : 0px;
+    -webkit-margin-before : 0px;
+}
 .tree {
-    border: 1px solid black;
-    padding: 0px 16px;
+    /*border: 1px solid black;*/
+    /*padding: 0px 16px;*/
 }
 
 .tree li::before, .tree li::after {
@@ -63,9 +68,27 @@
     display: block;
 }
 
-.error {
-    display:flex;
+.errorDebugger > * {
+    margin: 0px 0px;
 }
-.error > * {
-    margin: 0px 16px;
+
+.debuggerHeader {
+    color: darkred;
+}
+
+.contextStack {
+    padding: 1.2em 8px;
+}
+
+.errorArrow {
+    position: absolute;
+    top: 0%;
+    left: 50%;
+    transform: translate(-50%, -100%);
+    color: red;
+}
+
+.errorChar {
+    font-weight: bold;
+    text-decoration: underline;
 }
