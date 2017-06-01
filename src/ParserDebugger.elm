@@ -1,18 +1,23 @@
 module ParserDebugger exposing (..)
 
+import ParserDebuggerCss exposing (..)
 import Parser exposing (..)
 import ParserUtils exposing (..)
 import String
 import List.Extra exposing (groupWhileTransitively, last, find)
 import Html exposing (Html, text, div, ul, li, span)
-import Html.Attributes exposing (class, style)
+import Html.Attributes exposing (style)
+
+
+{ id, class, classList } =
+    parserDebuggerNamespace
 
 
 prettyPrintError : Parser.Error -> Html msg
 prettyPrintError err =
     let
         headerDiv =
-            Html.h1 [ class "debuggerHeader" ]
+            Html.h1 [ class [ DebuggerHeader ] ]
                 [ text "Parser Error" ]
 
         errorMessagePrefix : String
@@ -29,13 +34,13 @@ prettyPrintError err =
                 BadOneOf problems ->
                     div []
                         [ text (errorMessagePrefix ++ "I needed to find:")
-                        , div [ class "tree" ] <| List.map problemAsOneOfNode problems
+                        , div [ Html.Attributes.class "tree" ] <| List.map problemAsOneOfNode problems
                         ]
 
                 _ ->
                     text <| errorMessagePrefix ++ "I expected " ++ failureDescription err.problem
     in
-        div [ class "errorDebugger" ]
+        div [ Html.Attributes.class "errorDebugger" ]
             [ headerDiv
             , contextStack err
             , errorMessageDiv
@@ -112,7 +117,7 @@ contextStack error =
         colors =
             [ "darkred", "darksalmon", "darkseagreen", "darkslateblue", "darkslategray", "darkturquoise", "darkviolet", "deeppink", "deepskyblue" ]
     in
-        div [ class "contextStack" ] <|
+        div [ Html.Attributes.class "contextStack" ] <|
             List.map2 spanFromContextGroup groupedContexts colors
 
 
@@ -132,11 +137,11 @@ spanFromContextGroup context color =
                             String.dropLeft (col + 1) context.substring
 
                         arrow =
-                            div [ class "errorArrow" ] [ text "↓" ]
+                            div [ Html.Attributes.class "errorArrow" ] [ text "↓" ]
                     in
                         span []
                             [ text pre
-                            , span [ class "errorChar" ]
+                            , span [ Html.Attributes.class "errorChar" ]
                                 [ text errorChar
                                 , arrow
                                 ]
@@ -214,4 +219,4 @@ markAtErrorLocation index groupedContexts =
 
 tooltip : List (Html msg) -> Html msg
 tooltip contents =
-    div [ class "tooltip" ] contents
+    div [ Html.Attributes.class "tooltip" ] contents
