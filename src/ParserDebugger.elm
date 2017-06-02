@@ -34,13 +34,13 @@ prettyPrintError err =
                 BadOneOf problems ->
                     div []
                         [ text (errorMessagePrefix ++ "I needed to find:")
-                        , div [ Html.Attributes.class "tree" ] <| List.map problemAsOneOfNode problems
+                        , div [ class [ OneOfList ] ] <| List.map problemAsOneOfNode problems
                         ]
 
                 _ ->
                     text <| errorMessagePrefix ++ "I expected " ++ failureDescription err.problem
     in
-        div [ Html.Attributes.class "errorDebugger" ]
+        div [ class [ ErrorDebugger ] ]
             [ headerDiv
             , contextStack err
             , errorMessageDiv
@@ -117,7 +117,7 @@ contextStack error =
         colors =
             [ "darkred", "darksalmon", "darkseagreen", "darkslateblue", "darkslategray", "darkturquoise", "darkviolet", "deeppink", "deepskyblue" ]
     in
-        div [ Html.Attributes.class "contextStack" ] <|
+        div [ class [ ContextStack ] ] <|
             List.map2 spanFromContextGroup groupedContexts colors
 
 
@@ -137,11 +137,11 @@ spanFromContextGroup context color =
                             String.dropLeft (col + 1) context.substring
 
                         arrow =
-                            div [ Html.Attributes.class "errorArrow" ] [ text "↓" ]
+                            div [ class [ ErrorArrow ] ] [ text "↓" ]
                     in
                         span []
                             [ text pre
-                            , span [ Html.Attributes.class "errorChar" ]
+                            , span [ class [ ErrorChar ] ]
                                 [ text errorChar
                                 , arrow
                                 ]
@@ -219,4 +219,4 @@ markAtErrorLocation index groupedContexts =
 
 tooltip : List (Html msg) -> Html msg
 tooltip contents =
-    div [ Html.Attributes.class "tooltip" ] contents
+    div [ class [ ContextTooltip ] ] contents

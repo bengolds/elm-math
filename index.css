@@ -1,3 +1,42 @@
 .parserDebuggerDebuggerHeader {
     color: #85144b;
 }
+
+.parserDebuggerContextStack {
+    padding: 1.2em 8px;
+}
+
+.parserDebuggerContextStack  span {
+    position: relative;
+    white-space: nowrap;
+}
+
+.parserDebuggerContextStack  span:hover > .parserDebuggerContextTooltip {
+    display: block;
+}
+
+.parserDebuggerContextStack  span > .parserDebuggerContextTooltip {
+    display: none;
+    position: absolute;
+}
+
+.parserDebuggerErrorDebugger > * {
+    margin: 0 0;
+}
+
+.parserDebuggerErrorArrow {
+    position: absolute;
+    top: 0%;
+    left: 50%;
+    transform: translate(-50%, -100%);
+    color: #FF4136;
+}
+
+.parserDebuggerErrorChar {
+    font-weight: bold;
+    text-decoration: underline;
+}
+
+.parserDebuggerOneOfList {
+    list-style: circle;
+}

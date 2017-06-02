@@ -20259,10 +20259,13 @@ var _user$project$ParserUtils$pairwiseMap = F2(
 
 var _user$project$ParserDebuggerCss$thisNamespace = 'parserDebugger';
 var _user$project$ParserDebuggerCss$parserDebuggerNamespace = _rtfeldman$elm_css_helpers$Html_CssHelpers$withNamespace(_user$project$ParserDebuggerCss$thisNamespace);
-var _user$project$ParserDebuggerCss$OneOfTree = {ctor: 'OneOfTree'};
+var _user$project$ParserDebuggerCss$ContextTooltip = {ctor: 'ContextTooltip'};
+var _user$project$ParserDebuggerCss$OneOfList = {ctor: 'OneOfList'};
 var _user$project$ParserDebuggerCss$ErrorChar = {ctor: 'ErrorChar'};
 var _user$project$ParserDebuggerCss$ErrorArrow = {ctor: 'ErrorArrow'};
 var _user$project$ParserDebuggerCss$DebuggerHeader = {ctor: 'DebuggerHeader'};
+var _user$project$ParserDebuggerCss$ErrorDebugger = {ctor: 'ErrorDebugger'};
+var _user$project$ParserDebuggerCss$ContextStack = {ctor: 'ContextStack'};
 var _user$project$ParserDebuggerCss$css = function (_p0) {
 	return _rtfeldman$elm_css$Css$stylesheet(
 		A2(_rtfeldman$elm_css$Css_Namespace$namespace, _user$project$ParserDebuggerCss$thisNamespace, _p0));
@@ -20277,22 +20280,163 @@ var _user$project$ParserDebuggerCss$css = function (_p0) {
 				_0: _rtfeldman$elm_css$Css$color(_rtfeldman$elm_css$Css_Colors$maroon),
 				_1: {ctor: '[]'}
 			}),
-		_1: {ctor: '[]'}
+		_1: {
+			ctor: '::',
+			_0: A2(
+				_rtfeldman$elm_css$Css$class,
+				_user$project$ParserDebuggerCss$ContextStack,
+				{
+					ctor: '::',
+					_0: A2(
+						_rtfeldman$elm_css$Css$padding2,
+						_rtfeldman$elm_css$Css$em(1.2),
+						_rtfeldman$elm_css$Css$px(8)),
+					_1: {
+						ctor: '::',
+						_0: _rtfeldman$elm_css$Css$descendants(
+							{
+								ctor: '::',
+								_0: _rtfeldman$elm_css$Css_Elements$span(
+									{
+										ctor: '::',
+										_0: _rtfeldman$elm_css$Css$position(_rtfeldman$elm_css$Css$relative),
+										_1: {
+											ctor: '::',
+											_0: _rtfeldman$elm_css$Css$whiteSpace(_rtfeldman$elm_css$Css$noWrap),
+											_1: {
+												ctor: '::',
+												_0: _rtfeldman$elm_css$Css$children(
+													{
+														ctor: '::',
+														_0: A2(
+															_rtfeldman$elm_css$Css$class,
+															_user$project$ParserDebuggerCss$ContextTooltip,
+															{
+																ctor: '::',
+																_0: _rtfeldman$elm_css$Css$display(_rtfeldman$elm_css$Css$none),
+																_1: {
+																	ctor: '::',
+																	_0: _rtfeldman$elm_css$Css$position(_rtfeldman$elm_css$Css$absolute),
+																	_1: {ctor: '[]'}
+																}
+															}),
+														_1: {ctor: '[]'}
+													}),
+												_1: {
+													ctor: '::',
+													_0: _rtfeldman$elm_css$Css$hover(
+														{
+															ctor: '::',
+															_0: _rtfeldman$elm_css$Css$children(
+																{
+																	ctor: '::',
+																	_0: A2(
+																		_rtfeldman$elm_css$Css$class,
+																		_user$project$ParserDebuggerCss$ContextTooltip,
+																		{
+																			ctor: '::',
+																			_0: _rtfeldman$elm_css$Css$display(_rtfeldman$elm_css$Css$block),
+																			_1: {ctor: '[]'}
+																		}),
+																	_1: {ctor: '[]'}
+																}),
+															_1: {ctor: '[]'}
+														}),
+													_1: {ctor: '[]'}
+												}
+											}
+										}
+									}),
+								_1: {ctor: '[]'}
+							}),
+						_1: {ctor: '[]'}
+					}
+				}),
+			_1: {
+				ctor: '::',
+				_0: A2(
+					_rtfeldman$elm_css$Css$class,
+					_user$project$ParserDebuggerCss$ErrorDebugger,
+					{
+						ctor: '::',
+						_0: _rtfeldman$elm_css$Css$children(
+							{
+								ctor: '::',
+								_0: _rtfeldman$elm_css$Css$everything(
+									{
+										ctor: '::',
+										_0: A2(_rtfeldman$elm_css$Css$margin2, _rtfeldman$elm_css$Css$zero, _rtfeldman$elm_css$Css$zero),
+										_1: {ctor: '[]'}
+									}),
+								_1: {ctor: '[]'}
+							}),
+						_1: {ctor: '[]'}
+					}),
+				_1: {
+					ctor: '::',
+					_0: A2(
+						_rtfeldman$elm_css$Css$class,
+						_user$project$ParserDebuggerCss$ErrorArrow,
+						{
+							ctor: '::',
+							_0: _rtfeldman$elm_css$Css$position(_rtfeldman$elm_css$Css$absolute),
+							_1: {
+								ctor: '::',
+								_0: _rtfeldman$elm_css$Css$top(
+									_rtfeldman$elm_css$Css$pct(0)),
+								_1: {
+									ctor: '::',
+									_0: _rtfeldman$elm_css$Css$left(
+										_rtfeldman$elm_css$Css$pct(50)),
+									_1: {
+										ctor: '::',
+										_0: _rtfeldman$elm_css$Css$transform(
+											A2(
+												_rtfeldman$elm_css$Css$translate2,
+												_rtfeldman$elm_css$Css$pct(-50),
+												_rtfeldman$elm_css$Css$pct(-100))),
+										_1: {
+											ctor: '::',
+											_0: _rtfeldman$elm_css$Css$color(_rtfeldman$elm_css$Css_Colors$red),
+											_1: {ctor: '[]'}
+										}
+									}
+								}
+							}
+						}),
+					_1: {
+						ctor: '::',
+						_0: A2(
+							_rtfeldman$elm_css$Css$class,
+							_user$project$ParserDebuggerCss$ErrorChar,
+							{
+								ctor: '::',
+								_0: _rtfeldman$elm_css$Css$fontWeight(_rtfeldman$elm_css$Css$bold),
+								_1: {
+									ctor: '::',
+									_0: _rtfeldman$elm_css$Css$textDecoration(_rtfeldman$elm_css$Css$underline),
+									_1: {ctor: '[]'}
+								}
+							}),
+						_1: {
+							ctor: '::',
+							_0: A2(
+								_rtfeldman$elm_css$Css$class,
+								_user$project$ParserDebuggerCss$OneOfList,
+								{
+									ctor: '::',
+									_0: _rtfeldman$elm_css$Css$listStyle(_rtfeldman$elm_css$Css$circle),
+									_1: {ctor: '[]'}
+								}),
+							_1: {ctor: '[]'}
+						}
+					}
+				}
+			}
+		}
 	});
-var _user$project$ParserDebuggerCss$ErrorDebugger = {ctor: 'ErrorDebugger'};
-var _user$project$ParserDebuggerCss$ContextStack = {ctor: 'ContextStack'};
 var _user$project$ParserDebuggerCss$None = {ctor: 'None'};
 
-var _user$project$ParserDebugger$tooltip = function (contents) {
-	return A2(
-		_elm_lang$html$Html$div,
-		{
-			ctor: '::',
-			_0: _elm_lang$html$Html_Attributes$class('tooltip'),
-			_1: {ctor: '[]'}
-		},
-		contents);
-};
 var _user$project$ParserDebugger$markAtErrorLocation = F2(
 	function (index, groupedContexts) {
 		var _p0 = A2(
@@ -20387,17 +20531,95 @@ var _user$project$ParserDebugger$addSubstringsToContexts = F2(
 				}));
 		return A2(_user$project$ParserUtils$pairwiseMap, addSubstring, extendedContexts);
 	});
+var _user$project$ParserDebugger$getFailMessage = function (problems) {
+	return _elm_lang$core$List$head(
+		A2(
+			_elm_lang$core$List$filterMap,
+			function (problem) {
+				var _p5 = problem;
+				if (_p5.ctor === 'Fail') {
+					return _elm_lang$core$Maybe$Just(_p5._0);
+				} else {
+					return _elm_lang$core$Maybe$Nothing;
+				}
+			},
+			problems));
+};
+var _user$project$ParserDebugger$failureDescription = function (problem) {
+	var _p6 = problem;
+	switch (_p6.ctor) {
+		case 'BadOneOf':
+			return A2(
+				_elm_lang$core$Maybe$withDefault,
+				'a oneOf with no fail message...',
+				_user$project$ParserDebugger$getFailMessage(_p6._0));
+		case 'BadFloat':
+			return 'a float, like 6.0 or 3e10';
+		case 'BadInt':
+			return 'an integer, like 1 or 2';
+		case 'ExpectingEnd':
+			return 'the end of the input';
+		case 'ExpectingSymbol':
+			return A2(_elm_lang$core$Basics_ops['++'], 'the symbol ', _p6._0);
+		case 'ExpectingKeyword':
+			return A2(_elm_lang$core$Basics_ops['++'], 'the keyword ', _p6._0);
+		case 'ExpectingVariable':
+			return 'a variable';
+		default:
+			return _elm_lang$core$Basics$toString(problem);
+	}
+};
+var _user$project$ParserDebugger$problemAsOneOfNode = function (problem) {
+	var _p7 = problem;
+	if (_p7.ctor === 'Fail') {
+		return _elm_lang$html$Html$text('');
+	} else {
+		return A2(
+			_elm_lang$html$Html$li,
+			{ctor: '[]'},
+			{
+				ctor: '::',
+				_0: _elm_lang$html$Html$text(
+					_user$project$ParserDebugger$failureDescription(problem)),
+				_1: {ctor: '[]'}
+			});
+	}
+};
+var _user$project$ParserDebugger$_p8 = _user$project$ParserDebuggerCss$parserDebuggerNamespace;
+var _user$project$ParserDebugger$id = _user$project$ParserDebugger$_p8.id;
+var _user$project$ParserDebugger$class = _user$project$ParserDebugger$_p8.$class;
+var _user$project$ParserDebugger$classList = _user$project$ParserDebugger$_p8.classList;
+var _user$project$ParserDebugger$tooltip = function (contents) {
+	return A2(
+		_elm_lang$html$Html$div,
+		{
+			ctor: '::',
+			_0: _user$project$ParserDebugger$class(
+				{
+					ctor: '::',
+					_0: _user$project$ParserDebuggerCss$ContextTooltip,
+					_1: {ctor: '[]'}
+				}),
+			_1: {ctor: '[]'}
+		},
+		contents);
+};
 var _user$project$ParserDebugger$spanFromContextGroup = F2(
 	function (context, color) {
 		var substringSpan = function () {
-			var _p5 = context.errorLocation;
-			if (_p5.ctor === 'Just') {
-				var _p6 = _p5._0;
+			var _p9 = context.errorLocation;
+			if (_p9.ctor === 'Just') {
+				var _p10 = _p9._0;
 				var arrow = A2(
 					_elm_lang$html$Html$div,
 					{
 						ctor: '::',
-						_0: _elm_lang$html$Html_Attributes$class('errorArrow'),
+						_0: _user$project$ParserDebugger$class(
+							{
+								ctor: '::',
+								_0: _user$project$ParserDebuggerCss$ErrorArrow,
+								_1: {ctor: '[]'}
+							}),
 						_1: {ctor: '[]'}
 					},
 					{
@@ -20405,9 +20627,9 @@ var _user$project$ParserDebugger$spanFromContextGroup = F2(
 						_0: _elm_lang$html$Html$text('↓'),
 						_1: {ctor: '[]'}
 					});
-				var post = A2(_elm_lang$core$String$dropLeft, _p6 + 1, context.substring);
-				var errorChar = A3(_elm_lang$core$String$slice, _p6, _p6 + 1, context.substring);
-				var pre = A2(_elm_lang$core$String$left, _p6, context.substring);
+				var post = A2(_elm_lang$core$String$dropLeft, _p10 + 1, context.substring);
+				var errorChar = A3(_elm_lang$core$String$slice, _p10, _p10 + 1, context.substring);
+				var pre = A2(_elm_lang$core$String$left, _p10, context.substring);
 				return A2(
 					_elm_lang$html$Html$span,
 					{ctor: '[]'},
@@ -20420,7 +20642,12 @@ var _user$project$ParserDebugger$spanFromContextGroup = F2(
 								_elm_lang$html$Html$span,
 								{
 									ctor: '::',
-									_0: _elm_lang$html$Html_Attributes$class('errorChar'),
+									_0: _user$project$ParserDebugger$class(
+										{
+											ctor: '::',
+											_0: _user$project$ParserDebuggerCss$ErrorChar,
+											_1: {ctor: '[]'}
+										}),
 									_1: {ctor: '[]'}
 								},
 								{
@@ -20521,69 +20748,16 @@ var _user$project$ParserDebugger$contextStack = function (error) {
 		_elm_lang$html$Html$div,
 		{
 			ctor: '::',
-			_0: _elm_lang$html$Html_Attributes$class('contextStack'),
+			_0: _user$project$ParserDebugger$class(
+				{
+					ctor: '::',
+					_0: _user$project$ParserDebuggerCss$ContextStack,
+					_1: {ctor: '[]'}
+				}),
 			_1: {ctor: '[]'}
 		},
 		A3(_elm_lang$core$List$map2, _user$project$ParserDebugger$spanFromContextGroup, groupedContexts, colors));
 };
-var _user$project$ParserDebugger$getFailMessage = function (problems) {
-	return _elm_lang$core$List$head(
-		A2(
-			_elm_lang$core$List$filterMap,
-			function (problem) {
-				var _p7 = problem;
-				if (_p7.ctor === 'Fail') {
-					return _elm_lang$core$Maybe$Just(_p7._0);
-				} else {
-					return _elm_lang$core$Maybe$Nothing;
-				}
-			},
-			problems));
-};
-var _user$project$ParserDebugger$failureDescription = function (problem) {
-	var _p8 = problem;
-	switch (_p8.ctor) {
-		case 'BadOneOf':
-			return A2(
-				_elm_lang$core$Maybe$withDefault,
-				'a oneOf with no fail message...',
-				_user$project$ParserDebugger$getFailMessage(_p8._0));
-		case 'BadFloat':
-			return 'a float, like 6.0 or 3e10';
-		case 'BadInt':
-			return 'an integer, like 1 or 2';
-		case 'ExpectingEnd':
-			return 'the end of the input';
-		case 'ExpectingSymbol':
-			return A2(_elm_lang$core$Basics_ops['++'], 'the symbol ', _p8._0);
-		case 'ExpectingKeyword':
-			return A2(_elm_lang$core$Basics_ops['++'], 'the keyword ', _p8._0);
-		case 'ExpectingVariable':
-			return 'a variable';
-		default:
-			return _elm_lang$core$Basics$toString(problem);
-	}
-};
-var _user$project$ParserDebugger$problemAsOneOfNode = function (problem) {
-	var _p9 = problem;
-	if (_p9.ctor === 'Fail') {
-		return _elm_lang$html$Html$text('');
-	} else {
-		return A2(
-			_elm_lang$html$Html$li,
-			{ctor: '[]'},
-			{
-				ctor: '::',
-				_0: _elm_lang$html$Html$text(
-					_user$project$ParserDebugger$failureDescription(problem)),
-				_1: {ctor: '[]'}
-			});
-	}
-};
-var _user$project$ParserDebugger$_p10 = _user$project$ParserDebuggerCss$parserDebuggerNamespace;
-var _user$project$ParserDebugger$id = _user$project$ParserDebugger$_p10.id;
-var _user$project$ParserDebugger$class = _user$project$ParserDebugger$_p10.$class;
-var _user$project$ParserDebugger$classList = _user$project$ParserDebugger$_p10.classList;
 var _user$project$ParserDebugger$prettyPrintError = function (err) {
 	var errorMessagePrefix = function () {
 		var _p11 = _elm_lang$core$List$head(err.context);
@@ -20612,7 +20786,12 @@ var _user$project$ParserDebugger$prettyPrintError = function (err) {
 							_elm_lang$html$Html$div,
 							{
 								ctor: '::',
-								_0: _elm_lang$html$Html_Attributes$class('tree'),
+								_0: _user$project$ParserDebugger$class(
+									{
+										ctor: '::',
+										_0: _user$project$ParserDebuggerCss$OneOfList,
+										_1: {ctor: '[]'}
+									}),
 								_1: {ctor: '[]'}
 							},
 							A2(_elm_lang$core$List$map, _user$project$ParserDebugger$problemAsOneOfNode, _p12._0)),
@@ -20651,7 +20830,12 @@ var _user$project$ParserDebugger$prettyPrintError = function (err) {
 		_elm_lang$html$Html$div,
 		{
 			ctor: '::',
-			_0: _elm_lang$html$Html_Attributes$class('errorDebugger'),
+			_0: _user$project$ParserDebugger$class(
+				{
+					ctor: '::',
+					_0: _user$project$ParserDebuggerCss$ErrorDebugger,
+					_1: {ctor: '[]'}
+				}),
 			_1: {ctor: '[]'}
 		},
 		{

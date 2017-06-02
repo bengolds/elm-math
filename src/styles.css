@@ -21,14 +21,10 @@
     padding-left: 32px;
 }
 
-.tree ul {
-    -webkit-margin-after : 0px;
-    -webkit-margin-before : 0px;
-}
-.tree {
-    /*border: 1px solid black;*/
-    /*padding: 0px 16px;*/
-}
+/*.tree ul {*/
+    /*-webkit-margin-after : 0px;*/
+    /*-webkit-margin-before : 0px;*/
+/*}*/
 
 .tree li::before, .tree li::after {
     content: "";
@@ -54,41 +50,3 @@
     height: 8px;
 }
 
-.contextStack span {
-    position: relative;
-    white-space: nowrap
-}
-.contextStack span .tooltip {
-    display: none;
-    position: absolute;
-}
-
-.contextStack span:hover .tooltip,
-.contextStack span .tooltip.debug{
-    display: block;
-}
-
-.errorDebugger > * {
-    margin: 0px 0px;
-}
-
-.debuggerHeader {
-    color: darkred;
-}
-
-.contextStack {
-    padding: 1.2em 8px;
-}
-
-.errorArrow {
-    position: absolute;
-    top: 0%;
-    left: 50%;
-    transform: translate(-50%, -100%);
-    color: red;
-}
-
-.errorChar {
-    font-weight: bold;
-    text-decoration: underline;
-}

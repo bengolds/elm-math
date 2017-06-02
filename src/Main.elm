@@ -3,7 +3,6 @@ module Main exposing (..)
 import Html exposing (..)
 import Html.Attributes exposing (rel, href)
 import Mathquill exposing (mathField, onEdit)
-import Parser exposing (..)
 import LatexParser
 
 
