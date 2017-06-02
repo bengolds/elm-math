@@ -1,19 +1,25 @@
 module LatexParser exposing (..)
 
+import LatexParserCss exposing (..)
 import Parser exposing (..)
 import ParserUtils exposing (..)
 import ParserDebugger
-import Html exposing (span, div, text, Html, br)
-import Html.Attributes exposing (class)
+import Html exposing (span, div, text, Html, br, li, ul)
 
 
 --Output
 
 
+{ id, class, classList } =
+    latexParserNamespace
+
+
 output inputString =
     case run expr inputString of
         Ok expr ->
-            asDiv expr
+            div [ class [ Tree ] ]
+                [ ul [] [ asDiv expr ]
+                ]
 
         Err err ->
             ParserDebugger.prettyPrintError err
@@ -44,14 +50,13 @@ asDiv expr =
             nodeDiv ("Function " ++ name) args
 
         elsewise ->
-            div [ class "leaf" ] [ text (toString elsewise) ]
+            li [] [ text (toString elsewise) ]
 
 
 nodeDiv title children =
-    div [ class "node" ]
+    li []
         [ text title
-        , div [ class "children" ]
-            (List.map asDiv children)
+        , ul [] (List.map asDiv children)
         ]
 
 

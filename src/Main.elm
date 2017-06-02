@@ -61,7 +61,7 @@ subscriptions model =
 view : Model -> Html Msg
 view model =
     div []
-        [ css "src/styles.css"
+        [ css "index.css"
         , mathField [ onEdit QuillEdited ]
         , br [] []
         , text model.inputString

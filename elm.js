@@ -20147,6 +20147,188 @@ var _rtfeldman$elm_css_helpers$Html_CssHelpers$Namespace = F4(
 		return {$class: a, classList: b, id: c, name: d};
 	});
 
+var _user$project$LatexParserCss$apply = F2(
+	function (fns, value) {
+		return A2(
+			_elm_lang$core$List$map,
+			function (fn) {
+				return fn(value);
+			},
+			fns);
+	});
+var _user$project$LatexParserCss$thisNamespace = 'latexParser';
+var _user$project$LatexParserCss$latexParserNamespace = _rtfeldman$elm_css_helpers$Html_CssHelpers$withNamespace(_user$project$LatexParserCss$thisNamespace);
+var _user$project$LatexParserCss$Tree = {ctor: 'Tree'};
+var _user$project$LatexParserCss$css = function (_p0) {
+	return _rtfeldman$elm_css$Css$stylesheet(
+		A2(_rtfeldman$elm_css$Css_Namespace$namespace, _user$project$LatexParserCss$thisNamespace, _p0));
+}(
+	A2(
+		_elm_lang$core$Basics_ops['++'],
+		{ctor: '[]'},
+		{
+			ctor: '::',
+			_0: A2(
+				_rtfeldman$elm_css$Css$class,
+				_user$project$LatexParserCss$Tree,
+				{
+					ctor: '::',
+					_0: _rtfeldman$elm_css$Css$position(_rtfeldman$elm_css$Css$relative),
+					_1: {
+						ctor: '::',
+						_0: _rtfeldman$elm_css$Css$descendants(
+							A2(
+								_elm_lang$core$Basics_ops['++'],
+								{
+									ctor: '::',
+									_0: _rtfeldman$elm_css$Css_Elements$ul(
+										{
+											ctor: '::',
+											_0: _rtfeldman$elm_css$Css$listStyle(_rtfeldman$elm_css$Css$none),
+											_1: {
+												ctor: '::',
+												_0: _rtfeldman$elm_css$Css$paddingLeft(
+													_rtfeldman$elm_css$Css$px(32)),
+												_1: {
+													ctor: '::',
+													_0: _rtfeldman$elm_css$Css$children(
+														{
+															ctor: '::',
+															_0: _rtfeldman$elm_css$Css_Elements$li(
+																{
+																	ctor: '::',
+																	_0: _rtfeldman$elm_css$Css$lastChild(
+																		{
+																			ctor: '::',
+																			_0: _rtfeldman$elm_css$Css$after(
+																				{
+																					ctor: '::',
+																					_0: _rtfeldman$elm_css$Css$height(
+																						_rtfeldman$elm_css$Css$px(8)),
+																					_1: {ctor: '[]'}
+																				}),
+																			_1: {ctor: '[]'}
+																		}),
+																	_1: {ctor: '[]'}
+																}),
+															_1: {ctor: '[]'}
+														}),
+													_1: {ctor: '[]'}
+												}
+											}
+										}),
+									_1: {
+										ctor: '::',
+										_0: _rtfeldman$elm_css$Css_Elements$li(
+											A2(
+												_elm_lang$core$Basics_ops['++'],
+												{
+													ctor: '::',
+													_0: _rtfeldman$elm_css$Css$before(
+														{
+															ctor: '::',
+															_0: A3(
+																_rtfeldman$elm_css$Css$borderTop3,
+																_rtfeldman$elm_css$Css$px(1),
+																_rtfeldman$elm_css$Css$solid,
+																_rtfeldman$elm_css$Css_Colors$black),
+															_1: {
+																ctor: '::',
+																_0: _rtfeldman$elm_css$Css$top(
+																	_rtfeldman$elm_css$Css$px(9)),
+																_1: {
+																	ctor: '::',
+																	_0: _rtfeldman$elm_css$Css$width(
+																		_rtfeldman$elm_css$Css$px(8)),
+																	_1: {
+																		ctor: '::',
+																		_0: _rtfeldman$elm_css$Css$height(_rtfeldman$elm_css$Css$zero),
+																		_1: {ctor: '[]'}
+																	}
+																}
+															}
+														}),
+													_1: {
+														ctor: '::',
+														_0: _rtfeldman$elm_css$Css$after(
+															{
+																ctor: '::',
+																_0: A3(
+																	_rtfeldman$elm_css$Css$borderLeft3,
+																	_rtfeldman$elm_css$Css$px(1),
+																	_rtfeldman$elm_css$Css$solid,
+																	_rtfeldman$elm_css$Css_Colors$black),
+																_1: {
+																	ctor: '::',
+																	_0: _rtfeldman$elm_css$Css$height(
+																		_rtfeldman$elm_css$Css$pct(100)),
+																	_1: {
+																		ctor: '::',
+																		_0: _rtfeldman$elm_css$Css$width(
+																			_rtfeldman$elm_css$Css$px(0)),
+																		_1: {
+																			ctor: '::',
+																			_0: _rtfeldman$elm_css$Css$top(
+																				_rtfeldman$elm_css$Css$px(2)),
+																			_1: {ctor: '[]'}
+																		}
+																	}
+																}
+															}),
+														_1: {ctor: '[]'}
+													}
+												},
+												A2(
+													_user$project$LatexParserCss$apply,
+													{
+														ctor: '::',
+														_0: _rtfeldman$elm_css$Css$before,
+														_1: {
+															ctor: '::',
+															_0: _rtfeldman$elm_css$Css$after,
+															_1: {ctor: '[]'}
+														}
+													},
+													{
+														ctor: '::',
+														_0: A2(_rtfeldman$elm_css$Css$property, 'content', '\'\''),
+														_1: {
+															ctor: '::',
+															_0: _rtfeldman$elm_css$Css$position(_rtfeldman$elm_css$Css$absolute),
+															_1: {
+																ctor: '::',
+																_0: _rtfeldman$elm_css$Css$left(
+																	_rtfeldman$elm_css$Css$px(-12)),
+																_1: {ctor: '[]'}
+															}
+														}
+													}))),
+										_1: {ctor: '[]'}
+									}
+								},
+								A2(
+									_user$project$LatexParserCss$apply,
+									{
+										ctor: '::',
+										_0: _rtfeldman$elm_css$Css_Elements$ul,
+										_1: {
+											ctor: '::',
+											_0: _rtfeldman$elm_css$Css_Elements$li,
+											_1: {ctor: '[]'}
+										}
+									},
+									{
+										ctor: '::',
+										_0: _rtfeldman$elm_css$Css$position(_rtfeldman$elm_css$Css$relative),
+										_1: {ctor: '[]'}
+									}))),
+						_1: {ctor: '[]'}
+					}
+				}),
+			_1: {ctor: '[]'}
+		}));
+var _user$project$LatexParserCss$None = {ctor: 'None'};
+
 var _user$project$ParserUtils$list = F2(
 	function (object, separator) {
 		return A3(
@@ -20993,12 +21175,8 @@ var _user$project$LatexParser$asDiv = function (expr) {
 				_p0._1);
 		default:
 			return A2(
-				_elm_lang$html$Html$div,
-				{
-					ctor: '::',
-					_0: _elm_lang$html$Html_Attributes$class('leaf'),
-					_1: {ctor: '[]'}
-				},
+				_elm_lang$html$Html$li,
+				{ctor: '[]'},
 				{
 					ctor: '::',
 					_0: _elm_lang$html$Html$text(
@@ -21010,29 +21188,25 @@ var _user$project$LatexParser$asDiv = function (expr) {
 var _user$project$LatexParser$nodeDiv = F2(
 	function (title, children) {
 		return A2(
-			_elm_lang$html$Html$div,
-			{
-				ctor: '::',
-				_0: _elm_lang$html$Html_Attributes$class('node'),
-				_1: {ctor: '[]'}
-			},
+			_elm_lang$html$Html$li,
+			{ctor: '[]'},
 			{
 				ctor: '::',
 				_0: _elm_lang$html$Html$text(title),
 				_1: {
 					ctor: '::',
 					_0: A2(
-						_elm_lang$html$Html$div,
-						{
-							ctor: '::',
-							_0: _elm_lang$html$Html_Attributes$class('children'),
-							_1: {ctor: '[]'}
-						},
+						_elm_lang$html$Html$ul,
+						{ctor: '[]'},
 						A2(_elm_lang$core$List$map, _user$project$LatexParser$asDiv, children)),
 					_1: {ctor: '[]'}
 				}
 			});
 	});
+var _user$project$LatexParser$_p1 = _user$project$LatexParserCss$latexParserNamespace;
+var _user$project$LatexParser$id = _user$project$LatexParser$_p1.id;
+var _user$project$LatexParser$class = _user$project$LatexParser$_p1.$class;
+var _user$project$LatexParser$classList = _user$project$LatexParser$_p1.classList;
 var _user$project$LatexParser$Divide = F2(
 	function (a, b) {
 		return {ctor: 'Divide', _0: a, _1: b};
@@ -21054,7 +21228,7 @@ var _user$project$LatexParser$Negative = function (a) {
 };
 var _user$project$LatexParser$negative = function (parser) {
 	return _elm_tools$parser$Parser$lazy(
-		function (_p1) {
+		function (_p2) {
 			return A2(
 				_elm_tools$parser$Parser_ops['|='],
 				A2(
@@ -21100,7 +21274,7 @@ var _user$project$LatexParser$factor = A2(
 	_elm_tools$parser$Parser$inContext,
 	'factor',
 	_elm_tools$parser$Parser$lazy(
-		function (_p2) {
+		function (_p3) {
 			return _elm_tools$parser$Parser$oneOf(
 				{
 					ctor: '::',
@@ -21140,7 +21314,7 @@ var _user$project$LatexParser$expr = A2(
 	_elm_tools$parser$Parser$inContext,
 	'expr',
 	_elm_tools$parser$Parser$lazy(
-		function (_p3) {
+		function (_p4) {
 			return A2(
 				_user$project$ParserUtils$chainl,
 				_user$project$LatexParser$term,
@@ -21165,7 +21339,7 @@ var _user$project$LatexParser$term = A2(
 	_elm_tools$parser$Parser$inContext,
 	'term',
 	_elm_tools$parser$Parser$lazy(
-		function (_p4) {
+		function (_p5) {
 			return A2(
 				_user$project$ParserUtils$chainr,
 				_user$project$LatexParser$factor,
@@ -21190,7 +21364,7 @@ var _user$project$LatexParser$term = A2(
 					}));
 		}));
 var _user$project$LatexParser$functions = _elm_tools$parser$Parser$lazy(
-	function (_p5) {
+	function (_p6) {
 		return _elm_tools$parser$Parser$oneOf(
 			{
 				ctor: '::',
@@ -21257,11 +21431,34 @@ var _user$project$LatexParser$func2 = F2(
 					_user$project$LatexParser$arg(_user$project$LatexParser$expr))));
 	});
 var _user$project$LatexParser$output = function (inputString) {
-	var _p6 = A2(_elm_tools$parser$Parser$run, _user$project$LatexParser$expr, inputString);
-	if (_p6.ctor === 'Ok') {
-		return _user$project$LatexParser$asDiv(_p6._0);
+	var _p7 = A2(_elm_tools$parser$Parser$run, _user$project$LatexParser$expr, inputString);
+	if (_p7.ctor === 'Ok') {
+		return A2(
+			_elm_lang$html$Html$div,
+			{
+				ctor: '::',
+				_0: _user$project$LatexParser$class(
+					{
+						ctor: '::',
+						_0: _user$project$LatexParserCss$Tree,
+						_1: {ctor: '[]'}
+					}),
+				_1: {ctor: '[]'}
+			},
+			{
+				ctor: '::',
+				_0: A2(
+					_elm_lang$html$Html$ul,
+					{ctor: '[]'},
+					{
+						ctor: '::',
+						_0: _user$project$LatexParser$asDiv(_p7._0),
+						_1: {ctor: '[]'}
+					}),
+				_1: {ctor: '[]'}
+			});
 	} else {
-		return _user$project$ParserDebugger$prettyPrintError(_p6._0);
+		return _user$project$ParserDebugger$prettyPrintError(_p7._0);
 	}
 };
 
@@ -21435,7 +21632,7 @@ var _user$project$Main$view = function (model) {
 		{ctor: '[]'},
 		{
 			ctor: '::',
-			_0: _user$project$Main$css('src/styles.css'),
+			_0: _user$project$Main$css('index.css'),
 			_1: {
 				ctor: '::',
 				_0: _user$project$Mathquill$mathField(
