@@ -73,9 +73,6 @@ apply1 func1 arg =
                     Arctan ->
                         atan val
 
-                    Ln ->
-                        logBase e val
-
         otherwise ->
             otherwise
 
@@ -100,6 +97,9 @@ apply2 func2 arg1 arg2 =
 
                     Exponent ->
                         n1 ^ n2
+
+                    Log ->
+                        logBase n1 n2
 
         ( Function vars1, Function vars2 ) ->
             Function (Set.union vars1 vars2)

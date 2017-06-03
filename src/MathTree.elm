@@ -23,7 +23,6 @@ type Func1
     | Arcsin
     | Arccos
     | Arctan
-    | Ln
 
 
 type Func2
@@ -32,3 +31,4 @@ type Func2
     | Times
     | Divide
     | Exponent
+    | Log

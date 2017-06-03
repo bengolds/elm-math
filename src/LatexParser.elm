@@ -117,10 +117,10 @@ functions : Parser Expr
 functions =
     let
         func1names =
-            [ "sinh", "cosh", "tanh", "sin", "cos", "tan", "sec", "csc", "cot", "arcsin", "arccos", "arctan", "ln" ]
+            [ "sinh", "cosh", "tanh", "sin", "cos", "tan", "sec", "csc", "cot", "arcsin", "arccos", "arctan" ]
 
         func1exprs =
-            [ Sinh, Cosh, Tanh, Sin, Cos, Tan, Sec, Csc, Cot, Arcsin, Arccos, Arctan, Ln ]
+            [ Sinh, Cosh, Tanh, Sin, Cos, Tan, Sec, Csc, Cot, Arcsin, Arccos, Arctan ]
 
         func2names =
             [ "frac" ]
@@ -133,8 +133,34 @@ functions =
                 oneOf <|
                     List.map2 func1 func1exprs func1names
                         ++ List.map2 func2 func2exprs func2names
-                        ++ [ fail "a function, like \\sin, \\cos, or \\tan"
+                        ++ [ logarithms
+                           , fail "a function, like \\sin, \\cos, or \\tan"
                            ]
+
+
+singleArg =
+    oneOf
+        [ arg expr
+        , parenthesized expr
+        , delayedCommit spaces term
+        ]
+
+
+logarithms : Parser Expr
+logarithms =
+    let
+        ln =
+            Apply2 Log (Constant e)
+    in
+        oneOf
+            [ succeed ln |. command "ln" |= singleArg
+            , succeed ln |= delayedCommit (command "log") singleArg
+            , succeed (Apply2 Log)
+                |. command "log"
+                |. symbol "_"
+                |= closeArg expr
+                |= singleArg
+            ]
 
 
 summations : Parser Expr
@@ -168,11 +194,7 @@ func1 fn name =
     command name
         |% (inContext name <|
                 succeed (Apply1 fn)
-                    |= oneOf
-                        [ arg expr
-                        , parenthesized expr
-                        , delayedCommit spaces term
-                        ]
+                    |= singleArg
            )
 
 
@@ -248,7 +270,8 @@ closeArg parser =
     in
         succeed identity
             |= oneOf
-                [ succeed Variable |= keep (Exactly 1) isLetter
+                [ specialConstants
+                , succeed Variable |= keep (Exactly 1) isLetter
                 , singleDigit
                 , arg parser
                 ]
