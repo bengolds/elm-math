@@ -20147,6 +20147,149 @@ var _rtfeldman$elm_css_helpers$Html_CssHelpers$Namespace = F4(
 		return {$class: a, classList: b, id: c, name: d};
 	});
 
+var _user$project$MathTree$Apply2 = F3(
+	function (a, b, c) {
+		return {ctor: 'Apply2', _0: a, _1: b, _2: c};
+	});
+var _user$project$MathTree$Apply1 = F2(
+	function (a, b) {
+		return {ctor: 'Apply1', _0: a, _1: b};
+	});
+var _user$project$MathTree$Sum = F4(
+	function (a, b, c, d) {
+		return {ctor: 'Sum', _0: a, _1: b, _2: c, _3: d};
+	});
+var _user$project$MathTree$Variable = function (a) {
+	return {ctor: 'Variable', _0: a};
+};
+var _user$project$MathTree$Constant = function (a) {
+	return {ctor: 'Constant', _0: a};
+};
+var _user$project$MathTree$Ln = {ctor: 'Ln'};
+var _user$project$MathTree$Arctan = {ctor: 'Arctan'};
+var _user$project$MathTree$Arccos = {ctor: 'Arccos'};
+var _user$project$MathTree$Arcsin = {ctor: 'Arcsin'};
+var _user$project$MathTree$Tanh = {ctor: 'Tanh'};
+var _user$project$MathTree$Cosh = {ctor: 'Cosh'};
+var _user$project$MathTree$Sinh = {ctor: 'Sinh'};
+var _user$project$MathTree$Cot = {ctor: 'Cot'};
+var _user$project$MathTree$Csc = {ctor: 'Csc'};
+var _user$project$MathTree$Sec = {ctor: 'Sec'};
+var _user$project$MathTree$Tan = {ctor: 'Tan'};
+var _user$project$MathTree$Cos = {ctor: 'Cos'};
+var _user$project$MathTree$Sin = {ctor: 'Sin'};
+var _user$project$MathTree$Negative = {ctor: 'Negative'};
+var _user$project$MathTree$Exponent = {ctor: 'Exponent'};
+var _user$project$MathTree$Divide = {ctor: 'Divide'};
+var _user$project$MathTree$Times = {ctor: 'Times'};
+var _user$project$MathTree$Minus = {ctor: 'Minus'};
+var _user$project$MathTree$Plus = {ctor: 'Plus'};
+
+var _user$project$Calculator$Function = function (a) {
+	return {ctor: 'Function', _0: a};
+};
+var _user$project$Calculator$Number = function (a) {
+	return {ctor: 'Number', _0: a};
+};
+var _user$project$Calculator$apply2 = F3(
+	function (func2, arg1, arg2) {
+		var _p0 = {
+			ctor: '_Tuple2',
+			_0: _user$project$Calculator$calculate(arg1),
+			_1: _user$project$Calculator$calculate(arg2)
+		};
+		if (_p0._0.ctor === 'Number') {
+			if (_p0._1.ctor === 'Number') {
+				var _p3 = _p0._1._0;
+				var _p2 = _p0._0._0;
+				return _user$project$Calculator$Number(
+					function () {
+						var _p1 = func2;
+						switch (_p1.ctor) {
+							case 'Plus':
+								return _p2 + _p3;
+							case 'Minus':
+								return _p2 - _p3;
+							case 'Times':
+								return _p2 * _p3;
+							case 'Divide':
+								return _p2 / _p3;
+							default:
+								return Math.pow(_p2, _p3);
+						}
+					}());
+			} else {
+				return _user$project$Calculator$Function(_p0._1._0);
+			}
+		} else {
+			if (_p0._1.ctor === 'Function') {
+				return _user$project$Calculator$Function(
+					A2(_elm_lang$core$Set$union, _p0._0._0, _p0._1._0));
+			} else {
+				return _user$project$Calculator$Function(_p0._0._0);
+			}
+		}
+	});
+var _user$project$Calculator$calculate = function (expr) {
+	var _p4 = expr;
+	switch (_p4.ctor) {
+		case 'Constant':
+			return _user$project$Calculator$Number(_p4._0);
+		case 'Variable':
+			return _user$project$Calculator$Function(
+				_elm_lang$core$Set$singleton(_p4._0));
+		case 'Apply1':
+			return A2(_user$project$Calculator$apply1, _p4._0, _p4._1);
+		case 'Apply2':
+			return A3(_user$project$Calculator$apply2, _p4._0, _p4._1, _p4._2);
+		default:
+			return _user$project$Calculator$Number(-1);
+	}
+};
+var _user$project$Calculator$apply1 = F2(
+	function (func1, arg) {
+		var _p5 = _user$project$Calculator$calculate(arg);
+		if (_p5.ctor === 'Number') {
+			var _p7 = _p5._0;
+			return _user$project$Calculator$Number(
+				function () {
+					var _p6 = func1;
+					switch (_p6.ctor) {
+						case 'Negative':
+							return _elm_lang$core$Basics$negate(_p7);
+						case 'Sin':
+							return _elm_lang$core$Basics$sin(_p7);
+						case 'Cos':
+							return _elm_lang$core$Basics$cos(_p7);
+						case 'Tan':
+							return _elm_lang$core$Basics$tan(_p7);
+						case 'Sec':
+							return 1 / _elm_lang$core$Basics$cos(_p7);
+						case 'Csc':
+							return 1 / _elm_lang$core$Basics$sin(_p7);
+						case 'Cot':
+							return 1 / _elm_lang$core$Basics$tan(_p7);
+						case 'Sinh':
+							return (Math.pow(_elm_lang$core$Basics$e, _p7) - Math.pow(_elm_lang$core$Basics$e, 0 - _p7)) / 2;
+						case 'Cosh':
+							return (Math.pow(_elm_lang$core$Basics$e, _p7) + Math.pow(_elm_lang$core$Basics$e, 0 - _p7)) / 2;
+						case 'Tanh':
+							return (Math.pow(_elm_lang$core$Basics$e, _p7) - Math.pow(_elm_lang$core$Basics$e, 0 - _p7)) / (Math.pow(_elm_lang$core$Basics$e, _p7) + Math.pow(_elm_lang$core$Basics$e, 0 - _p7));
+						case 'Arcsin':
+							return _elm_lang$core$Basics$asin(_p7);
+						case 'Arccos':
+							return _elm_lang$core$Basics$acos(_p7);
+						case 'Arctan':
+							return _elm_lang$core$Basics$atan(_p7);
+						default:
+							return A2(_elm_lang$core$Basics$logBase, _elm_lang$core$Basics$e, _p7);
+					}
+				}());
+		} else {
+			return _p5;
+		}
+	});
+
 var _user$project$LatexParserCss$apply = F2(
 	function (fns, value) {
 		return A2(
@@ -21055,6 +21198,45 @@ var _user$project$LatexParser$arg = function (parser) {
 			parser),
 		_elm_tools$parser$Parser$symbol('}'));
 };
+var _user$project$LatexParser$closeArg = function (parser) {
+	var singleDigit = A2(
+		_elm_tools$parser$Parser$map,
+		function (_p0) {
+			return _user$project$MathTree$Constant(
+				_elm_lang$core$Basics$toFloat(
+					A2(
+						_elm_lang$core$Result$withDefault,
+						0,
+						_elm_lang$core$String$toInt(_p0))));
+		},
+		A2(
+			_elm_tools$parser$Parser$keep,
+			_elm_tools$parser$Parser$Exactly(1),
+			_elm_lang$core$Char$isDigit));
+	return A2(
+		_elm_tools$parser$Parser_ops['|='],
+		_elm_tools$parser$Parser$succeed(_elm_lang$core$Basics$identity),
+		_elm_tools$parser$Parser$oneOf(
+			{
+				ctor: '::',
+				_0: A2(
+					_elm_tools$parser$Parser_ops['|='],
+					_elm_tools$parser$Parser$succeed(_user$project$MathTree$Variable),
+					A2(
+						_elm_tools$parser$Parser$keep,
+						_elm_tools$parser$Parser$Exactly(1),
+						_user$project$ParserUtils$isLetter)),
+				_1: {
+					ctor: '::',
+					_0: singleDigit,
+					_1: {
+						ctor: '::',
+						_0: _user$project$LatexParser$arg(parser),
+						_1: {ctor: '[]'}
+					}
+				}
+			}));
+};
 var _user$project$LatexParser$command = function (name) {
 	return _elm_tools$parser$Parser$keyword(
 		A2(_elm_lang$core$Basics_ops['++'], '\\', name));
@@ -21098,134 +21280,47 @@ var _user$project$LatexParser$identifier = A2(
 	_elm_tools$parser$Parser$keep,
 	_elm_tools$parser$Parser$Exactly(1),
 	_user$project$ParserUtils$isLetter);
-var _user$project$LatexParser$asDiv = function (expr) {
-	var _p0 = expr;
-	switch (_p0.ctor) {
-		case 'Negative':
-			return A2(
-				_user$project$LatexParser$nodeDiv,
-				'Negative',
-				{
-					ctor: '::',
-					_0: _p0._0,
-					_1: {ctor: '[]'}
-				});
-		case 'Apply1':
-			return A2(
-				_user$project$LatexParser$nodeDiv,
-				_elm_lang$core$Basics$toString(_p0._0),
-				{
-					ctor: '::',
-					_0: _p0._1,
-					_1: {ctor: '[]'}
-				});
-		case 'Apply2':
-			return A2(
-				_user$project$LatexParser$nodeDiv,
-				_elm_lang$core$Basics$toString(_p0._0),
-				{
-					ctor: '::',
-					_0: _p0._1,
-					_1: {
-						ctor: '::',
-						_0: _p0._2,
-						_1: {ctor: '[]'}
-					}
-				});
-		case 'Sum':
-			return A2(
-				_user$project$LatexParser$nodeDiv,
-				A2(
-					_elm_lang$core$Basics_ops['++'],
-					'Sum over ',
-					A2(
-						_elm_lang$core$Basics_ops['++'],
-						_p0._0,
-						A2(
-							_elm_lang$core$Basics_ops['++'],
-							' from ',
-							A2(
-								_elm_lang$core$Basics_ops['++'],
-								_elm_lang$core$Basics$toString(_p0._1),
-								A2(
-									_elm_lang$core$Basics_ops['++'],
-									' to: ',
-									_elm_lang$core$Basics$toString(_p0._2)))))),
-				{
-					ctor: '::',
-					_0: _p0._3,
-					_1: {ctor: '[]'}
-				});
-		default:
-			return A2(
-				_elm_lang$html$Html$li,
-				{ctor: '[]'},
-				{
-					ctor: '::',
-					_0: _elm_lang$html$Html$text(
-						_elm_lang$core$Basics$toString(_p0)),
-					_1: {ctor: '[]'}
-				});
-	}
-};
-var _user$project$LatexParser$nodeDiv = F2(
-	function (title, children) {
-		return A2(
-			_elm_lang$html$Html$li,
-			{ctor: '[]'},
-			{
+var _user$project$LatexParser$specialConstants = _elm_tools$parser$Parser$oneOf(
+	{
+		ctor: '::',
+		_0: A2(
+			_elm_tools$parser$Parser_ops['|.'],
+			_elm_tools$parser$Parser$succeed(
+				_user$project$MathTree$Constant(_elm_lang$core$Basics$pi)),
+			_user$project$LatexParser$command('pi')),
+		_1: {
+			ctor: '::',
+			_0: A2(
+				_elm_tools$parser$Parser_ops['|.'],
+				_elm_tools$parser$Parser$succeed(
+					_user$project$MathTree$Constant(_elm_lang$core$Basics$e)),
+				_elm_tools$parser$Parser$symbol('e')),
+			_1: {
 				ctor: '::',
-				_0: _elm_lang$html$Html$text(title),
-				_1: {
-					ctor: '::',
-					_0: A2(
-						_elm_lang$html$Html$ul,
-						{ctor: '[]'},
-						A2(_elm_lang$core$List$map, _user$project$LatexParser$asDiv, children)),
-					_1: {ctor: '[]'}
-				}
-			});
+				_0: _elm_tools$parser$Parser$fail('a special constant, like e or pi'),
+				_1: {ctor: '[]'}
+			}
+		}
 	});
-var _user$project$LatexParser$_p1 = _user$project$LatexParserCss$latexParserNamespace;
-var _user$project$LatexParser$id = _user$project$LatexParser$_p1.id;
-var _user$project$LatexParser$class = _user$project$LatexParser$_p1.$class;
-var _user$project$LatexParser$classList = _user$project$LatexParser$_p1.classList;
-var _user$project$LatexParser$Apply2 = F3(
-	function (a, b, c) {
-		return {ctor: 'Apply2', _0: a, _1: b, _2: c};
-	});
-var _user$project$LatexParser$Apply1 = F2(
-	function (a, b) {
-		return {ctor: 'Apply1', _0: a, _1: b};
-	});
-var _user$project$LatexParser$Sum = F4(
-	function (a, b, c, d) {
-		return {ctor: 'Sum', _0: a, _1: b, _2: c, _3: d};
-	});
-var _user$project$LatexParser$Negative = function (a) {
-	return {ctor: 'Negative', _0: a};
-};
 var _user$project$LatexParser$negative = function (parser) {
 	return _elm_tools$parser$Parser$lazy(
-		function (_p2) {
+		function (_p1) {
 			return A2(
 				_elm_tools$parser$Parser_ops['|='],
 				A2(
 					_elm_tools$parser$Parser_ops['|.'],
-					_elm_tools$parser$Parser$succeed(_user$project$LatexParser$Negative),
+					_elm_tools$parser$Parser$succeed(
+						_user$project$MathTree$Apply1(_user$project$MathTree$Negative)),
 					_elm_tools$parser$Parser$symbol('-')),
 				parser);
 		});
-};
-var _user$project$LatexParser$Variable = function (a) {
-	return {ctor: 'Variable', _0: a};
 };
 var _user$project$LatexParser$variable = _elm_tools$parser$Parser$oneOf(
 	{
 		ctor: '::',
 		_0: A2(
 			_elm_tools$parser$Parser_ops['|='],
-			_elm_tools$parser$Parser$succeed(_user$project$LatexParser$Variable),
+			_elm_tools$parser$Parser$succeed(_user$project$MathTree$Variable),
 			_user$project$LatexParser$identifier),
 		_1: {
 			ctor: '::',
@@ -21233,70 +21328,54 @@ var _user$project$LatexParser$variable = _elm_tools$parser$Parser$oneOf(
 			_1: {ctor: '[]'}
 		}
 	});
-var _user$project$LatexParser$Constant = function (a) {
-	return {ctor: 'Constant', _0: a};
-};
-var _user$project$LatexParser$closeArg = function (parser) {
-	var singleDigit = A2(
-		_elm_tools$parser$Parser$map,
-		function (_p3) {
-			return _user$project$LatexParser$Constant(
-				_elm_lang$core$Basics$toFloat(
-					A2(
-						_elm_lang$core$Result$withDefault,
-						0,
-						_elm_lang$core$String$toInt(_p3))));
-		},
-		A2(
-			_elm_tools$parser$Parser$keep,
-			_elm_tools$parser$Parser$Exactly(1),
-			_elm_lang$core$Char$isDigit));
-	return A2(
-		_elm_tools$parser$Parser_ops['|='],
-		_elm_tools$parser$Parser$succeed(_elm_lang$core$Basics$identity),
-		_elm_tools$parser$Parser$oneOf(
-			{
-				ctor: '::',
-				_0: A2(
-					_elm_tools$parser$Parser_ops['|='],
-					_elm_tools$parser$Parser$succeed(_user$project$LatexParser$Variable),
-					A2(
-						_elm_tools$parser$Parser$keep,
-						_elm_tools$parser$Parser$Exactly(1),
-						_user$project$ParserUtils$isLetter)),
-				_1: {
+var _user$project$LatexParser$factor = A2(
+	_elm_tools$parser$Parser$inContext,
+	'factor',
+	_elm_tools$parser$Parser$lazy(
+		function (_p2) {
+			return _elm_tools$parser$Parser$oneOf(
+				{
 					ctor: '::',
-					_0: singleDigit,
+					_0: _user$project$LatexParser$specialConstants,
 					_1: {
 						ctor: '::',
-						_0: _user$project$LatexParser$arg(parser),
-						_1: {ctor: '[]'}
+						_0: A2(
+							_elm_tools$parser$Parser_ops['|='],
+							_elm_tools$parser$Parser$succeed(_user$project$MathTree$Constant),
+							_elm_tools$parser$Parser$float),
+						_1: {
+							ctor: '::',
+							_0: _user$project$LatexParser$negative(_user$project$LatexParser$factor),
+							_1: {
+								ctor: '::',
+								_0: _user$project$LatexParser$variable,
+								_1: {
+									ctor: '::',
+									_0: _user$project$LatexParser$parenthesized(_user$project$LatexParser$expr),
+									_1: {
+										ctor: '::',
+										_0: _user$project$LatexParser$functions,
+										_1: {
+											ctor: '::',
+											_0: _user$project$LatexParser$summations,
+											_1: {
+												ctor: '::',
+												_0: _elm_tools$parser$Parser$fail('a factor'),
+												_1: {ctor: '[]'}
+											}
+										}
+									}
+								}
+							}
+						}
 					}
-				}
-			}));
-};
-var _user$project$LatexParser$Arctan = {ctor: 'Arctan'};
-var _user$project$LatexParser$Arccos = {ctor: 'Arccos'};
-var _user$project$LatexParser$Arcsin = {ctor: 'Arcsin'};
-var _user$project$LatexParser$Tanh = {ctor: 'Tanh'};
-var _user$project$LatexParser$Cosh = {ctor: 'Cosh'};
-var _user$project$LatexParser$Sinh = {ctor: 'Sinh'};
-var _user$project$LatexParser$Cot = {ctor: 'Cot'};
-var _user$project$LatexParser$Csc = {ctor: 'Csc'};
-var _user$project$LatexParser$Sec = {ctor: 'Sec'};
-var _user$project$LatexParser$Tan = {ctor: 'Tan'};
-var _user$project$LatexParser$Cos = {ctor: 'Cos'};
-var _user$project$LatexParser$Sin = {ctor: 'Sin'};
-var _user$project$LatexParser$Exponent = {ctor: 'Exponent'};
-var _user$project$LatexParser$Divide = {ctor: 'Divide'};
-var _user$project$LatexParser$Times = {ctor: 'Times'};
-var _user$project$LatexParser$Minus = {ctor: 'Minus'};
-var _user$project$LatexParser$Plus = {ctor: 'Plus'};
+				});
+		}));
 var _user$project$LatexParser$expr = A2(
 	_elm_tools$parser$Parser$inContext,
 	'expr',
 	_elm_tools$parser$Parser$lazy(
-		function (_p4) {
+		function (_p3) {
 			return A2(
 				_user$project$ParserUtils$chainl,
 				_user$project$LatexParser$term,
@@ -21306,14 +21385,14 @@ var _user$project$LatexParser$expr = A2(
 						_0: A2(
 							_elm_tools$parser$Parser_ops['|.'],
 							_elm_tools$parser$Parser$succeed(
-								_user$project$LatexParser$Apply2(_user$project$LatexParser$Plus)),
+								_user$project$MathTree$Apply2(_user$project$MathTree$Plus)),
 							_elm_tools$parser$Parser$symbol('+')),
 						_1: {
 							ctor: '::',
 							_0: A2(
 								_elm_tools$parser$Parser_ops['|.'],
 								_elm_tools$parser$Parser$succeed(
-									_user$project$LatexParser$Apply2(_user$project$LatexParser$Minus)),
+									_user$project$MathTree$Apply2(_user$project$MathTree$Minus)),
 								_elm_tools$parser$Parser$symbol('-')),
 							_1: {ctor: '[]'}
 						}
@@ -21323,13 +21402,13 @@ var _user$project$LatexParser$term = A2(
 	_elm_tools$parser$Parser$inContext,
 	'term',
 	_elm_tools$parser$Parser$lazy(
-		function (_p5) {
+		function (_p4) {
 			return _elm_tools$parser$Parser$oneOf(
 				{
 					ctor: '::',
 					_0: A3(
 						_elm_tools$parser$Parser$delayedCommitMap,
-						_user$project$LatexParser$Apply2(_user$project$LatexParser$Times),
+						_user$project$MathTree$Apply2(_user$project$MathTree$Times),
 						_user$project$LatexParser$expo,
 						A2(
 							_elm_tools$parser$Parser_ops['|='],
@@ -21345,7 +21424,7 @@ var _user$project$LatexParser$term = A2(
 						ctor: '::',
 						_0: A3(
 							_elm_tools$parser$Parser$delayedCommitMap,
-							_user$project$LatexParser$Apply2(_user$project$LatexParser$Times),
+							_user$project$MathTree$Apply2(_user$project$MathTree$Times),
 							_user$project$LatexParser$expo,
 							_user$project$LatexParser$term),
 						_1: {
@@ -21364,13 +21443,13 @@ var _user$project$LatexParser$expo = A2(
 	_elm_tools$parser$Parser$inContext,
 	'expo',
 	_elm_tools$parser$Parser$lazy(
-		function (_p6) {
+		function (_p5) {
 			return _elm_tools$parser$Parser$oneOf(
 				{
 					ctor: '::',
 					_0: A3(
 						_elm_tools$parser$Parser$delayedCommitMap,
-						_user$project$LatexParser$Apply2(_user$project$LatexParser$Exponent),
+						_user$project$MathTree$Apply2(_user$project$MathTree$Exponent),
 						A2(
 							_elm_tools$parser$Parser_ops['|.'],
 							_user$project$LatexParser$factor,
@@ -21383,54 +21462,10 @@ var _user$project$LatexParser$expo = A2(
 					}
 				});
 		}));
-var _user$project$LatexParser$factor = A2(
-	_elm_tools$parser$Parser$inContext,
-	'factor',
-	_elm_tools$parser$Parser$lazy(
-		function (_p7) {
-			return _elm_tools$parser$Parser$oneOf(
-				{
-					ctor: '::',
-					_0: A2(
-						_elm_tools$parser$Parser_ops['|='],
-						_elm_tools$parser$Parser$succeed(_user$project$LatexParser$Constant),
-						_elm_tools$parser$Parser$float),
-					_1: {
-						ctor: '::',
-						_0: _user$project$LatexParser$negative(
-							A2(
-								_user$project$ParserUtils_ops['|%'],
-								_elm_tools$parser$Parser$keyword('dogs'),
-								_elm_tools$parser$Parser$succeed(
-									_user$project$LatexParser$Constant(3)))),
-						_1: {
-							ctor: '::',
-							_0: _user$project$LatexParser$variable,
-							_1: {
-								ctor: '::',
-								_0: _user$project$LatexParser$parenthesized(_user$project$LatexParser$expr),
-								_1: {
-									ctor: '::',
-									_0: _user$project$LatexParser$functions,
-									_1: {
-										ctor: '::',
-										_0: _user$project$LatexParser$summations,
-										_1: {
-											ctor: '::',
-											_0: _elm_tools$parser$Parser$fail('a factor'),
-											_1: {ctor: '[]'}
-										}
-									}
-								}
-							}
-						}
-					}
-				});
-		}));
 var _user$project$LatexParser$functions = function () {
 	var func2exprs = {
 		ctor: '::',
-		_0: _user$project$LatexParser$Divide,
+		_0: _user$project$MathTree$Divide,
 		_1: {ctor: '[]'}
 	};
 	var func2names = {
@@ -21440,41 +21475,45 @@ var _user$project$LatexParser$functions = function () {
 	};
 	var func1exprs = {
 		ctor: '::',
-		_0: _user$project$LatexParser$Sinh,
+		_0: _user$project$MathTree$Sinh,
 		_1: {
 			ctor: '::',
-			_0: _user$project$LatexParser$Cosh,
+			_0: _user$project$MathTree$Cosh,
 			_1: {
 				ctor: '::',
-				_0: _user$project$LatexParser$Tanh,
+				_0: _user$project$MathTree$Tanh,
 				_1: {
 					ctor: '::',
-					_0: _user$project$LatexParser$Sin,
+					_0: _user$project$MathTree$Sin,
 					_1: {
 						ctor: '::',
-						_0: _user$project$LatexParser$Cos,
+						_0: _user$project$MathTree$Cos,
 						_1: {
 							ctor: '::',
-							_0: _user$project$LatexParser$Tan,
+							_0: _user$project$MathTree$Tan,
 							_1: {
 								ctor: '::',
-								_0: _user$project$LatexParser$Sec,
+								_0: _user$project$MathTree$Sec,
 								_1: {
 									ctor: '::',
-									_0: _user$project$LatexParser$Csc,
+									_0: _user$project$MathTree$Csc,
 									_1: {
 										ctor: '::',
-										_0: _user$project$LatexParser$Cot,
+										_0: _user$project$MathTree$Cot,
 										_1: {
 											ctor: '::',
-											_0: _user$project$LatexParser$Arcsin,
+											_0: _user$project$MathTree$Arcsin,
 											_1: {
 												ctor: '::',
-												_0: _user$project$LatexParser$Arccos,
+												_0: _user$project$MathTree$Arccos,
 												_1: {
 													ctor: '::',
-													_0: _user$project$LatexParser$Arctan,
-													_1: {ctor: '[]'}
+													_0: _user$project$MathTree$Arctan,
+													_1: {
+														ctor: '::',
+														_0: _user$project$MathTree$Ln,
+														_1: {ctor: '[]'}
+													}
 												}
 											}
 										}
@@ -21523,7 +21562,11 @@ var _user$project$LatexParser$functions = function () {
 												_1: {
 													ctor: '::',
 													_0: 'arctan',
-													_1: {ctor: '[]'}
+													_1: {
+														ctor: '::',
+														_0: 'ln',
+														_1: {ctor: '[]'}
+													}
 												}
 											}
 										}
@@ -21537,7 +21580,7 @@ var _user$project$LatexParser$functions = function () {
 		}
 	};
 	return _elm_tools$parser$Parser$lazy(
-		function (_p8) {
+		function (_p6) {
 			return _elm_tools$parser$Parser$oneOf(
 				A2(
 					_elm_lang$core$Basics_ops['++'],
@@ -21563,7 +21606,7 @@ var _user$project$LatexParser$func1 = F2(
 				A2(
 					_elm_tools$parser$Parser_ops['|='],
 					_elm_tools$parser$Parser$succeed(
-						_user$project$LatexParser$Apply1(fn)),
+						_user$project$MathTree$Apply1(fn)),
 					_elm_tools$parser$Parser$oneOf(
 						{
 							ctor: '::',
@@ -21592,12 +21635,12 @@ var _user$project$LatexParser$func2 = F2(
 					A2(
 						_elm_tools$parser$Parser_ops['|='],
 						_elm_tools$parser$Parser$succeed(
-							_user$project$LatexParser$Apply2(fn)),
+							_user$project$MathTree$Apply2(fn)),
 						_user$project$LatexParser$arg(_user$project$LatexParser$expr)),
 					_user$project$LatexParser$arg(_user$project$LatexParser$expr))));
 	});
 var _user$project$LatexParser$summations = _elm_tools$parser$Parser$lazy(
-	function (_p9) {
+	function (_p7) {
 		return A2(
 			_elm_tools$parser$Parser$inContext,
 			'summation',
@@ -21621,7 +21664,7 @@ var _user$project$LatexParser$summations = _elm_tools$parser$Parser$lazy(
 												_elm_tools$parser$Parser_ops['|.'],
 												A2(
 													_elm_tools$parser$Parser_ops['|.'],
-													_elm_tools$parser$Parser$succeed(_user$project$LatexParser$Sum),
+													_elm_tools$parser$Parser$succeed(_user$project$MathTree$Sum),
 													_user$project$LatexParser$command('sum')),
 												_elm_tools$parser$Parser$symbol('_')),
 											_elm_tools$parser$Parser$symbol('{')),
@@ -21633,9 +21676,93 @@ var _user$project$LatexParser$summations = _elm_tools$parser$Parser$lazy(
 					_user$project$LatexParser$closeArg(_user$project$LatexParser$expr)),
 				_user$project$LatexParser$term));
 	});
+var _user$project$LatexParser$asDiv = function (parsedExpr) {
+	var _p8 = parsedExpr;
+	switch (_p8.ctor) {
+		case 'Apply1':
+			return A2(
+				_user$project$LatexParser$nodeDiv,
+				_elm_lang$core$Basics$toString(_p8._0),
+				{
+					ctor: '::',
+					_0: _p8._1,
+					_1: {ctor: '[]'}
+				});
+		case 'Apply2':
+			return A2(
+				_user$project$LatexParser$nodeDiv,
+				_elm_lang$core$Basics$toString(_p8._0),
+				{
+					ctor: '::',
+					_0: _p8._1,
+					_1: {
+						ctor: '::',
+						_0: _p8._2,
+						_1: {ctor: '[]'}
+					}
+				});
+		case 'Sum':
+			return A2(
+				_user$project$LatexParser$nodeDiv,
+				A2(
+					_elm_lang$core$Basics_ops['++'],
+					'Sum over ',
+					A2(
+						_elm_lang$core$Basics_ops['++'],
+						_p8._0,
+						A2(
+							_elm_lang$core$Basics_ops['++'],
+							' from ',
+							A2(
+								_elm_lang$core$Basics_ops['++'],
+								_elm_lang$core$Basics$toString(_p8._1),
+								A2(
+									_elm_lang$core$Basics_ops['++'],
+									' to: ',
+									_elm_lang$core$Basics$toString(_p8._2)))))),
+				{
+					ctor: '::',
+					_0: _p8._3,
+					_1: {ctor: '[]'}
+				});
+		default:
+			return A2(
+				_elm_lang$html$Html$li,
+				{ctor: '[]'},
+				{
+					ctor: '::',
+					_0: _elm_lang$html$Html$text(
+						_elm_lang$core$Basics$toString(_p8)),
+					_1: {ctor: '[]'}
+				});
+	}
+};
+var _user$project$LatexParser$nodeDiv = F2(
+	function (title, children) {
+		return A2(
+			_elm_lang$html$Html$li,
+			{ctor: '[]'},
+			{
+				ctor: '::',
+				_0: _elm_lang$html$Html$text(title),
+				_1: {
+					ctor: '::',
+					_0: A2(
+						_elm_lang$html$Html$ul,
+						{ctor: '[]'},
+						A2(_elm_lang$core$List$map, _user$project$LatexParser$asDiv, children)),
+					_1: {ctor: '[]'}
+				}
+			});
+	});
+var _user$project$LatexParser$_p9 = _user$project$LatexParserCss$latexParserNamespace;
+var _user$project$LatexParser$id = _user$project$LatexParser$_p9.id;
+var _user$project$LatexParser$class = _user$project$LatexParser$_p9.$class;
+var _user$project$LatexParser$classList = _user$project$LatexParser$_p9.classList;
 var _user$project$LatexParser$output = function (inputString) {
 	var _p10 = A2(_elm_tools$parser$Parser$run, _user$project$LatexParser$expr, inputString);
 	if (_p10.ctor === 'Ok') {
+		var _p11 = _p10._0;
 		return A2(
 			_elm_lang$html$Html$div,
 			{
@@ -21655,10 +21782,16 @@ var _user$project$LatexParser$output = function (inputString) {
 					{ctor: '[]'},
 					{
 						ctor: '::',
-						_0: _user$project$LatexParser$asDiv(_p10._0),
+						_0: _user$project$LatexParser$asDiv(_p11),
 						_1: {ctor: '[]'}
 					}),
-				_1: {ctor: '[]'}
+				_1: {
+					ctor: '::',
+					_0: _elm_lang$html$Html$text(
+						_elm_lang$core$Basics$toString(
+							_user$project$Calculator$calculate(_p11))),
+					_1: {ctor: '[]'}
+				}
 			});
 	} else {
 		return _user$project$ParserDebugger$prettyPrintError(_p10._0);
@@ -21842,7 +21975,15 @@ var _user$project$Main$view = function (model) {
 					{
 						ctor: '::',
 						_0: _user$project$Mathquill$onEdit(_user$project$Main$QuillEdited),
-						_1: {ctor: '[]'}
+						_1: {
+							ctor: '::',
+							_0: _user$project$Mathquill$autoCommands('sum pi'),
+							_1: {
+								ctor: '::',
+								_0: _user$project$Mathquill$spaceBehavesLikeTab(true),
+								_1: {ctor: '[]'}
+							}
+						}
 					}),
 				_1: {
 					ctor: '::',

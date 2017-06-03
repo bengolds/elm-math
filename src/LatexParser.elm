@@ -6,6 +6,8 @@ import ParserUtils exposing (..)
 import ParserDebugger
 import Char exposing (isDigit)
 import Html exposing (span, div, text, Html, br, li, ul)
+import Calculator exposing (calculate)
+import MathTree exposing (..)
 
 
 --Output
@@ -17,9 +19,10 @@ import Html exposing (span, div, text, Html, br, li, ul)
 
 output inputString =
     case run expr inputString of
-        Ok expr ->
+        Ok parsed ->
             div [ class [ Tree ] ]
-                [ ul [] [ asDiv expr ]
+                [ ul [] [ asDiv parsed ]
+                , text <| toString <| calculate parsed
                 ]
 
         Err err ->
@@ -27,11 +30,8 @@ output inputString =
 
 
 asDiv : Expr -> Html msg
-asDiv expr =
-    case expr of
-        Negative a1 ->
-            nodeDiv "Negative" [ a1 ]
-
+asDiv parsedExpr =
+    case parsedExpr of
         Apply1 func a1 ->
             nodeDiv (toString func) [ a1 ]
 
@@ -58,46 +58,15 @@ nodeDiv title children =
 --Grammar
 
 
-type Expr
-    = Constant Float
-    | Variable String
-    | Negative Expr
-    | Sum String Int Expr Expr
-    | Apply1 Func1 Expr
-    | Apply2 Func2 Expr Expr
-
-
-type Func1
-    = Sin
-    | Cos
-    | Tan
-    | Sec
-    | Csc
-    | Cot
-    | Sinh
-    | Cosh
-    | Tanh
-    | Arcsin
-    | Arccos
-    | Arctan
-
-
-type Func2
-    = Plus
-    | Minus
-    | Times
-    | Divide
-    | Exponent
-
-
 factor : Parser Expr
 factor =
     inContext "factor" <|
         lazy <|
             \_ ->
                 oneOf <|
-                    [ succeed Constant |= float
-                    , negative (keyword "dogs" |% succeed (Constant 3))
+                    [ specialConstants
+                    , succeed Constant |= float
+                    , negative factor
                     , variable
                     , parenthesized expr
                     , functions
@@ -148,10 +117,10 @@ functions : Parser Expr
 functions =
     let
         func1names =
-            [ "sinh", "cosh", "tanh", "sin", "cos", "tan", "sec", "csc", "cot", "arcsin", "arccos", "arctan" ]
+            [ "sinh", "cosh", "tanh", "sin", "cos", "tan", "sec", "csc", "cot", "arcsin", "arccos", "arctan", "ln" ]
 
         func1exprs =
-            [ Sinh, Cosh, Tanh, Sin, Cos, Tan, Sec, Csc, Cot, Arcsin, Arccos, Arctan ]
+            [ Sinh, Cosh, Tanh, Sin, Cos, Tan, Sec, Csc, Cot, Arcsin, Arccos, Arctan, Ln ]
 
         func2names =
             [ "frac" ]
@@ -221,9 +190,18 @@ negative : Parser Expr -> Parser Expr
 negative parser =
     lazy <|
         \_ ->
-            succeed Negative
+            succeed (Apply1 Negative)
                 |. symbol "-"
                 |= parser
+
+
+specialConstants : Parser Expr
+specialConstants =
+    oneOf
+        [ succeed (Constant pi) |. command "pi"
+        , succeed (Constant e) |. symbol "e"
+        , fail "a special constant, like e or pi"
+        ]
 
 
 identifier : Parser String

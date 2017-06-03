@@ -62,7 +62,13 @@ view : Model -> Html Msg
 view model =
     div []
         [ css "index.css"
-        , mathField [ onEdit QuillEdited ]
+        , mathField
+            [ onEdit QuillEdited
+            , Mathquill.autoCommands "sum pi"
+            , Mathquill.spaceBehavesLikeTab True
+
+            --autoCommands "sin cos tan sec csc cot sinh cosh tanh arcsin arccos arctan"
+            ]
         , br [] []
         , text model.inputString
         , br [] []

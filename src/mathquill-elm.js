@@ -5,10 +5,10 @@ let MQ = MathQuill.getInterface(2)
 function getConfigFromAttributes (node) {
   const configMapping = {
     stringOptions: {
-      //leftRightIntoCmdGoes: 'left-right-into-cmd-goes',
-      //charsThatBreakOutOfSupSub: 'chars-that-break-out-of-sup-sub',
-      //autoCommands: 'auto-commands',
-      //autoOperatorNames: 'auto-operator-names'
+      leftRightIntoCmdGoes: 'left-right-into-cmd-goes',
+      charsThatBreakOutOfSupSub: 'chars-that-break-out-of-sup-sub',
+      autoCommands: 'auto-commands',
+      autoOperatorNames: 'auto-operator-names'
     },
     boolOptions: {
       spaceBehavesLikeTab: 'space-behaves-like-tab',
@@ -24,14 +24,14 @@ function getConfigFromAttributes (node) {
     if (node.hasAttribute(attrName)) {
       config[propName] = node.getAttribute(attrName)
     } else {
-      config[propName] = undefined
+      //config[propName] = undefined
     }
   }
   for (let propName in configMapping.boolOptions) {
     let attrName = configMapping.boolOptions[propName]
     config[propName] = node.hasAttribute(attrName)
   }
-  //console.log(config)
+  console.log(config)
   return config
 }
 
