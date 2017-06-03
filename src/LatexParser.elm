@@ -4,6 +4,7 @@ import LatexParserCss exposing (..)
 import Parser exposing (..)
 import ParserUtils exposing (..)
 import ParserDebugger
+import Char exposing (isDigit)
 import Html exposing (span, div, text, Html, br, li, ul)
 
 
@@ -31,23 +32,16 @@ asDiv expr =
         Negative a1 ->
             nodeDiv "Negative" [ a1 ]
 
-        Times a1 a2 ->
-            nodeDiv "Times" [ a1, a2 ]
+        Apply1 func a1 ->
+            nodeDiv (toString func) [ a1 ]
 
-        Divide a1 a2 ->
-            nodeDiv "Divide" [ a1, a2 ]
+        Apply2 func a1 a2 ->
+            nodeDiv (toString func) [ a1, a2 ]
 
-        Plus a1 a2 ->
-            nodeDiv "Plus" [ a1, a2 ]
-
-        Minus a1 a2 ->
-            nodeDiv "Minus" [ a1, a2 ]
-
-        Sin a1 ->
-            nodeDiv "Sin" [ a1 ]
-
-        Function name args ->
-            nodeDiv ("Function " ++ name) args
+        Sum indexVar fromVal toExpr a1 ->
+            nodeDiv
+                ("Sum over " ++ indexVar ++ " from " ++ (toString fromVal) ++ " to: " ++ (toString toExpr))
+                [ a1 ]
 
         elsewise ->
             li [] [ text (toString elsewise) ]
@@ -67,15 +61,33 @@ nodeDiv title children =
 type Expr
     = Constant Float
     | Variable String
-    | Function String (List Expr)
-    | Sin Expr
-    | Cos Expr
-    | Tan Expr
     | Negative Expr
-    | Plus Expr Expr
-    | Minus Expr Expr
-    | Times Expr Expr
-    | Divide Expr Expr
+    | Sum String Int Expr Expr
+    | Apply1 Func1 Expr
+    | Apply2 Func2 Expr Expr
+
+
+type Func1
+    = Sin
+    | Cos
+    | Tan
+    | Sec
+    | Csc
+    | Cot
+    | Sinh
+    | Cosh
+    | Tanh
+    | Arcsin
+    | Arccos
+    | Arctan
+
+
+type Func2
+    = Plus
+    | Minus
+    | Times
+    | Divide
+    | Exponent
 
 
 factor : Parser Expr
@@ -89,7 +101,19 @@ factor =
                     , variable
                     , parenthesized expr
                     , functions
+                    , summations
                     , fail "a factor"
+                    ]
+
+
+expo : Parser Expr
+expo =
+    inContext "expo" <|
+        lazy <|
+            \_ ->
+                oneOf
+                    [ delayedCommitMap (Apply2 Exponent) (factor |. symbol "^") (closeArg expr)
+                    , factor
                     ]
 
 
@@ -98,11 +122,14 @@ term =
     inContext "term" <|
         lazy <|
             \_ ->
-                chainr factor <|
-                    oneOf
-                        [ succeed Times |. command "cdot" |. spaces
-                        , succeed Divide |. symbol "/"
-                        ]
+                oneOf
+                    [ delayedCommitMap (Apply2 Times)
+                        expo
+                        (succeed identity |. command "cdot" |. spaces |= term)
+                    , delayedCommitMap (Apply2 Times) expo term
+                    , expo
+                    , fail "a multiplicative term"
+                    ]
 
 
 expr : Parser Expr
@@ -112,22 +139,51 @@ expr =
             \_ ->
                 chainl term <|
                     oneOf
-                        [ succeed Plus |. symbol "+"
-                        , succeed Minus |. symbol "-"
+                        [ succeed (Apply2 Plus) |. symbol "+"
+                        , succeed (Apply2 Minus) |. symbol "-"
                         ]
 
 
 functions : Parser Expr
 functions =
+    let
+        func1names =
+            [ "sinh", "cosh", "tanh", "sin", "cos", "tan", "sec", "csc", "cot", "arcsin", "arccos", "arctan" ]
+
+        func1exprs =
+            [ Sinh, Cosh, Tanh, Sin, Cos, Tan, Sec, Csc, Cot, Arcsin, Arccos, Arctan ]
+
+        func2names =
+            [ "frac" ]
+
+        func2exprs =
+            [ Divide ]
+    in
+        lazy <|
+            \_ ->
+                oneOf <|
+                    List.map2 func1 func1exprs func1names
+                        ++ List.map2 func2 func2exprs func2names
+                        ++ [ fail "a function, like \\sin, \\cos, or \\tan"
+                           ]
+
+
+summations : Parser Expr
+summations =
     lazy <|
         \_ ->
-            oneOf
-                [ func1 Sin "sin"
-                , func1 Cos "cos"
-                , func1 Tan "tan"
-                , func2 Divide "frac"
-                , fail "a function, like \\sin, \\cos, or \\tan"
-                ]
+            inContext "summation" <|
+                succeed Sum
+                    |. command "sum"
+                    |. symbol "_"
+                    |. symbol "{"
+                    |= identifier
+                    |. symbol "="
+                    |= int
+                    |. symbol "}"
+                    |. symbol "^"
+                    |= closeArg expr
+                    |= term
 
 
 variable : Parser Expr
@@ -138,11 +194,11 @@ variable =
         ]
 
 
-func1 : (Expr -> b) -> String -> Parser b
+func1 : Func1 -> String -> Parser Expr
 func1 fn name =
     command name
         |% (inContext name <|
-                succeed fn
+                succeed (Apply1 fn)
                     |= oneOf
                         [ arg expr
                         , parenthesized expr
@@ -151,11 +207,11 @@ func1 fn name =
            )
 
 
-func2 : (Expr -> Expr -> c) -> String -> Parser c
+func2 : Func2 -> String -> Parser Expr
 func2 fn name =
     command name
         |% (inContext name <|
-                succeed fn
+                succeed (Apply2 fn)
                     |= arg expr
                     |= arg expr
            )
@@ -172,7 +228,7 @@ negative parser =
 
 identifier : Parser String
 identifier =
-    keep oneOrMore isLetter
+    keep (Exactly 1) isLetter
 
 
 parenthesized : Parser a -> Parser a
@@ -204,6 +260,20 @@ arg parser =
         |. symbol "{"
         |= parser
         |. symbol "}"
+
+
+closeArg parser =
+    let
+        singleDigit =
+            keep (Exactly 1) isDigit
+                |> Parser.map (String.toInt >> Result.withDefault 0 >> toFloat >> Constant)
+    in
+        succeed identity
+            |= oneOf
+                [ succeed Variable |= keep (Exactly 1) isLetter
+                , singleDigit
+                , arg parser
+                ]
 
 
 spaces : Parser ()
