@@ -3,10 +3,17 @@ module MathTree exposing (..)
 
 type Expr
     = Constant Float
+    | Integer Int
     | Variable String
-    | Sum String Int Expr Expr
+    | Sum String Int Int Expr
     | Apply1 Func1 Expr
     | Apply2 Func2 Expr Expr
+
+
+
+--type SummationIndex
+--= Infinity
+--|
 
 
 type Func1

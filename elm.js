@@ -20162,6 +20162,9 @@ var _user$project$MathTree$Sum = F4(
 var _user$project$MathTree$Variable = function (a) {
 	return {ctor: 'Variable', _0: a};
 };
+var _user$project$MathTree$Integer = function (a) {
+	return {ctor: 'Integer', _0: a};
+};
 var _user$project$MathTree$Constant = function (a) {
 	return {ctor: 'Constant', _0: a};
 };
@@ -20188,8 +20191,11 @@ var _user$project$MathTree$Plus = {ctor: 'Plus'};
 var _user$project$Calculator$Function = function (a) {
 	return {ctor: 'Function', _0: a};
 };
-var _user$project$Calculator$Number = function (a) {
-	return {ctor: 'Number', _0: a};
+var _user$project$Calculator$Integer = function (a) {
+	return {ctor: 'Integer', _0: a};
+};
+var _user$project$Calculator$Real = function (a) {
+	return {ctor: 'Real', _0: a};
 };
 var _user$project$Calculator$apply2 = F3(
 	function (func2, arg1, arg2) {
@@ -20198,45 +20204,65 @@ var _user$project$Calculator$apply2 = F3(
 			_0: _user$project$Calculator$calculate(arg1),
 			_1: _user$project$Calculator$calculate(arg2)
 		};
-		if (_p0._0.ctor === 'Number') {
-			if (_p0._1.ctor === 'Number') {
-				var _p3 = _p0._1._0;
-				var _p2 = _p0._0._0;
-				return _user$project$Calculator$Number(
-					function () {
-						var _p1 = func2;
-						switch (_p1.ctor) {
-							case 'Plus':
-								return _p2 + _p3;
-							case 'Minus':
-								return _p2 - _p3;
-							case 'Times':
-								return _p2 * _p3;
-							case 'Divide':
-								return _p2 / _p3;
-							case 'Exponent':
-								return Math.pow(_p2, _p3);
+		_v0_4:
+		do {
+			_v0_3:
+			do {
+				switch (_p0._0.ctor) {
+					case 'Real':
+						switch (_p0._1.ctor) {
+							case 'Real':
+								var _p3 = _p0._1._0;
+								var _p2 = _p0._0._0;
+								return _user$project$Calculator$Real(
+									function () {
+										var _p1 = func2;
+										switch (_p1.ctor) {
+											case 'Plus':
+												return _p2 + _p3;
+											case 'Minus':
+												return _p2 - _p3;
+											case 'Times':
+												return _p2 * _p3;
+											case 'Divide':
+												return _p2 / _p3;
+											case 'Exponent':
+												return Math.pow(_p2, _p3);
+											default:
+												return A2(_elm_lang$core$Basics$logBase, _p2, _p3);
+										}
+									}());
+							case 'Function':
+								break _v0_3;
 							default:
-								return A2(_elm_lang$core$Basics$logBase, _p2, _p3);
+								break _v0_4;
 						}
-					}());
-			} else {
-				return _user$project$Calculator$Function(_p0._1._0);
-			}
-		} else {
-			if (_p0._1.ctor === 'Function') {
-				return _user$project$Calculator$Function(
-					A2(_elm_lang$core$Set$union, _p0._0._0, _p0._1._0));
-			} else {
-				return _user$project$Calculator$Function(_p0._0._0);
-			}
-		}
+					case 'Function':
+						if (_p0._1.ctor === 'Function') {
+							return _user$project$Calculator$Function(
+								A2(_elm_lang$core$Set$union, _p0._0._0, _p0._1._0));
+						} else {
+							return _user$project$Calculator$Function(_p0._0._0);
+						}
+					default:
+						if (_p0._1.ctor === 'Function') {
+							break _v0_3;
+						} else {
+							break _v0_4;
+						}
+				}
+			} while(false);
+			return _user$project$Calculator$Function(_p0._1._0);
+		} while(false);
+		return _user$project$Calculator$Real(0);
 	});
 var _user$project$Calculator$calculate = function (expr) {
 	var _p4 = expr;
 	switch (_p4.ctor) {
 		case 'Constant':
-			return _user$project$Calculator$Number(_p4._0);
+			return _user$project$Calculator$Real(_p4._0);
+		case 'Integer':
+			return _user$project$Calculator$Integer(_p4._0);
 		case 'Variable':
 			return _user$project$Calculator$Function(
 				_elm_lang$core$Set$singleton(_p4._0));
@@ -20245,15 +20271,15 @@ var _user$project$Calculator$calculate = function (expr) {
 		case 'Apply2':
 			return A3(_user$project$Calculator$apply2, _p4._0, _p4._1, _p4._2);
 		default:
-			return _user$project$Calculator$Number(-1);
+			return _user$project$Calculator$Real(-1);
 	}
 };
 var _user$project$Calculator$apply1 = F2(
 	function (func1, arg) {
 		var _p5 = _user$project$Calculator$calculate(arg);
-		if (_p5.ctor === 'Number') {
+		if (_p5.ctor === 'Real') {
 			var _p7 = _p5._0;
-			return _user$project$Calculator$Number(
+			return _user$project$Calculator$Real(
 				function () {
 					var _p6 = func1;
 					switch (_p6.ctor) {
@@ -21178,6 +21204,353 @@ var _user$project$ParserDebugger$prettyPrintError = function (err) {
 		});
 };
 
+var _user$project$TypeAnalyzer$setSymbol = function (set) {
+	var _p0 = set;
+	switch (_p0.ctor) {
+		case 'Integers':
+			return 'ℤ';
+		case 'Reals':
+			return 'ℝ';
+		default:
+			return 'ℂ';
+	}
+};
+var _user$project$TypeAnalyzer$prettyPrint = function (sig) {
+	var range = _user$project$TypeAnalyzer$setSymbol(sig.range);
+	var domain = function () {
+		var _p1 = sig.domain;
+		if (_p1.ctor === '[]') {
+			return 'Anything';
+		} else {
+			return A2(
+				_elm_lang$core$String$join,
+				', ',
+				A2(_elm_lang$core$List$map, _user$project$TypeAnalyzer$setSymbol, sig.domain));
+		}
+	}();
+	return A2(
+		_elm_lang$core$Basics_ops['++'],
+		domain,
+		A2(_elm_lang$core$Basics_ops['++'], ' ⇒ ', range));
+};
+var _user$project$TypeAnalyzer$productFilterMap3 = F4(
+	function (fn, list1, list2, list3) {
+		return A2(
+			_elm_lang$core$List$concatMap,
+			function (el1) {
+				return A2(
+					_elm_lang$core$List$concatMap,
+					function (el2) {
+						return A2(
+							_elm_lang$core$List$filterMap,
+							function (el3) {
+								return A3(fn, el1, el2, el3);
+							},
+							list3);
+					},
+					list2);
+			},
+			list1);
+	});
+var _user$project$TypeAnalyzer$productMap3 = F4(
+	function (fn, list1, list2, list3) {
+		return A2(
+			_elm_lang$core$List$concatMap,
+			function (el1) {
+				return A2(
+					_elm_lang$core$List$concatMap,
+					function (el2) {
+						return A2(
+							_elm_lang$core$List$map,
+							function (el3) {
+								return A3(fn, el1, el2, el3);
+							},
+							list3);
+					},
+					list2);
+			},
+			list1);
+	});
+var _user$project$TypeAnalyzer$tryMerge = function (allConstraints) {
+	var mergeConstraints = F2(
+		function (constraint1, constraint2) {
+			return A2(
+				_elm_lang$core$Maybe$andThen,
+				function (c2) {
+					return A6(
+						_elm_lang$core$Dict$merge,
+						F3(
+							function (key, set1, acc) {
+								return A2(
+									_elm_lang$core$Maybe$map,
+									A2(_elm_lang$core$Dict$insert, key, set1),
+									acc);
+							}),
+						F4(
+							function (key, set1, set2, acc) {
+								return _elm_lang$core$Native_Utils.eq(set1, set2) ? A2(
+									_elm_lang$core$Maybe$map,
+									A2(_elm_lang$core$Dict$insert, key, set1),
+									acc) : _elm_lang$core$Maybe$Nothing;
+							}),
+						F3(
+							function (key, set2, acc) {
+								return A2(
+									_elm_lang$core$Maybe$map,
+									A2(_elm_lang$core$Dict$insert, key, set2),
+									acc);
+							}),
+						constraint1,
+						c2,
+						_elm_lang$core$Maybe$Just(_elm_lang$core$Dict$empty));
+				},
+				constraint2);
+		});
+	return A3(
+		_elm_lang$core$List$foldl,
+		mergeConstraints,
+		_elm_lang$core$Maybe$Just(_elm_lang$core$Dict$empty),
+		allConstraints);
+};
+var _user$project$TypeAnalyzer$Function = F2(
+	function (a, b) {
+		return {signatures: a, expressionTree: b};
+	});
+var _user$project$TypeAnalyzer$Signature = F2(
+	function (a, b) {
+		return {domain: a, range: b};
+	});
+var _user$project$TypeAnalyzer$unmapSignature = function (sig) {
+	var domain = A2(
+		_elm_lang$core$List$map,
+		_elm_lang$core$Tuple$second,
+		A2(
+			_elm_lang$core$List$sortBy,
+			_elm_lang$core$Tuple$first,
+			_elm_lang$core$Dict$toList(sig.constraints)));
+	return A2(_user$project$TypeAnalyzer$Signature, domain, sig.out);
+};
+var _user$project$TypeAnalyzer$Func1Signature = F2(
+	function (a, b) {
+		return {arg: a, out: b};
+	});
+var _user$project$TypeAnalyzer$Func2Signature = F3(
+	function (a, b, c) {
+		return {arg1: a, arg2: b, out: c};
+	});
+var _user$project$TypeAnalyzer$MappedSignature = F2(
+	function (a, b) {
+		return {constraints: a, out: b};
+	});
+var _user$project$TypeAnalyzer$constantSignatures = function (sets) {
+	return A2(
+		_elm_lang$core$List$map,
+		_user$project$TypeAnalyzer$MappedSignature(_elm_lang$core$Dict$empty),
+		sets);
+};
+var _user$project$TypeAnalyzer$Complexes = {ctor: 'Complexes'};
+var _user$project$TypeAnalyzer$Reals = {ctor: 'Reals'};
+var _user$project$TypeAnalyzer$Integers = {ctor: 'Integers'};
+var _user$project$TypeAnalyzer$variableSignature = function (name) {
+	var identitySet = function (set) {
+		return A2(
+			_user$project$TypeAnalyzer$MappedSignature,
+			A2(_elm_lang$core$Dict$singleton, name, set),
+			set);
+	};
+	var allSets = {
+		ctor: '::',
+		_0: _user$project$TypeAnalyzer$Integers,
+		_1: {
+			ctor: '::',
+			_0: _user$project$TypeAnalyzer$Reals,
+			_1: {
+				ctor: '::',
+				_0: _user$project$TypeAnalyzer$Complexes,
+				_1: {ctor: '[]'}
+			}
+		}
+	};
+	return A2(_elm_lang$core$List$map, identitySet, allSets);
+};
+var _user$project$TypeAnalyzer$func1Signatures = function (func1) {
+	var identity = {
+		ctor: '::',
+		_0: A2(_user$project$TypeAnalyzer$Func1Signature, _user$project$TypeAnalyzer$Integers, _user$project$TypeAnalyzer$Integers),
+		_1: {
+			ctor: '::',
+			_0: A2(_user$project$TypeAnalyzer$Func1Signature, _user$project$TypeAnalyzer$Reals, _user$project$TypeAnalyzer$Reals),
+			_1: {
+				ctor: '::',
+				_0: A2(_user$project$TypeAnalyzer$Func1Signature, _user$project$TypeAnalyzer$Complexes, _user$project$TypeAnalyzer$Complexes),
+				_1: {ctor: '[]'}
+			}
+		}
+	};
+	var trig = {
+		ctor: '::',
+		_0: A2(_user$project$TypeAnalyzer$Func1Signature, _user$project$TypeAnalyzer$Integers, _user$project$TypeAnalyzer$Reals),
+		_1: {
+			ctor: '::',
+			_0: A2(_user$project$TypeAnalyzer$Func1Signature, _user$project$TypeAnalyzer$Reals, _user$project$TypeAnalyzer$Reals),
+			_1: {
+				ctor: '::',
+				_0: A2(_user$project$TypeAnalyzer$Func1Signature, _user$project$TypeAnalyzer$Complexes, _user$project$TypeAnalyzer$Complexes),
+				_1: {ctor: '[]'}
+			}
+		}
+	};
+	var _p2 = func1;
+	if (_p2.ctor === 'Negative') {
+		return identity;
+	} else {
+		return trig;
+	}
+};
+var _user$project$TypeAnalyzer$func2Signatures = function (func2) {
+	var plusMinus = {
+		ctor: '::',
+		_0: A3(_user$project$TypeAnalyzer$Func2Signature, _user$project$TypeAnalyzer$Integers, _user$project$TypeAnalyzer$Integers, _user$project$TypeAnalyzer$Integers),
+		_1: {
+			ctor: '::',
+			_0: A3(_user$project$TypeAnalyzer$Func2Signature, _user$project$TypeAnalyzer$Integers, _user$project$TypeAnalyzer$Reals, _user$project$TypeAnalyzer$Reals),
+			_1: {
+				ctor: '::',
+				_0: A3(_user$project$TypeAnalyzer$Func2Signature, _user$project$TypeAnalyzer$Integers, _user$project$TypeAnalyzer$Complexes, _user$project$TypeAnalyzer$Complexes),
+				_1: {
+					ctor: '::',
+					_0: A3(_user$project$TypeAnalyzer$Func2Signature, _user$project$TypeAnalyzer$Reals, _user$project$TypeAnalyzer$Integers, _user$project$TypeAnalyzer$Reals),
+					_1: {
+						ctor: '::',
+						_0: A3(_user$project$TypeAnalyzer$Func2Signature, _user$project$TypeAnalyzer$Reals, _user$project$TypeAnalyzer$Reals, _user$project$TypeAnalyzer$Reals),
+						_1: {
+							ctor: '::',
+							_0: A3(_user$project$TypeAnalyzer$Func2Signature, _user$project$TypeAnalyzer$Reals, _user$project$TypeAnalyzer$Complexes, _user$project$TypeAnalyzer$Complexes),
+							_1: {
+								ctor: '::',
+								_0: A3(_user$project$TypeAnalyzer$Func2Signature, _user$project$TypeAnalyzer$Complexes, _user$project$TypeAnalyzer$Integers, _user$project$TypeAnalyzer$Complexes),
+								_1: {
+									ctor: '::',
+									_0: A3(_user$project$TypeAnalyzer$Func2Signature, _user$project$TypeAnalyzer$Complexes, _user$project$TypeAnalyzer$Reals, _user$project$TypeAnalyzer$Complexes),
+									_1: {
+										ctor: '::',
+										_0: A3(_user$project$TypeAnalyzer$Func2Signature, _user$project$TypeAnalyzer$Complexes, _user$project$TypeAnalyzer$Complexes, _user$project$TypeAnalyzer$Complexes),
+										_1: {ctor: '[]'}
+									}
+								}
+							}
+						}
+					}
+				}
+			}
+		}
+	};
+	var _p3 = func2;
+	switch (_p3.ctor) {
+		case 'Plus':
+			return plusMinus;
+		case 'Minus':
+			return plusMinus;
+		case 'Times':
+			return plusMinus;
+		case 'Divide':
+			return plusMinus;
+		case 'Exponent':
+			return plusMinus;
+		default:
+			return {
+				ctor: '::',
+				_0: A3(_user$project$TypeAnalyzer$Func2Signature, _user$project$TypeAnalyzer$Integers, _user$project$TypeAnalyzer$Integers, _user$project$TypeAnalyzer$Reals),
+				_1: {
+					ctor: '::',
+					_0: A3(_user$project$TypeAnalyzer$Func2Signature, _user$project$TypeAnalyzer$Integers, _user$project$TypeAnalyzer$Reals, _user$project$TypeAnalyzer$Reals),
+					_1: {
+						ctor: '::',
+						_0: A3(_user$project$TypeAnalyzer$Func2Signature, _user$project$TypeAnalyzer$Reals, _user$project$TypeAnalyzer$Integers, _user$project$TypeAnalyzer$Reals),
+						_1: {
+							ctor: '::',
+							_0: A3(_user$project$TypeAnalyzer$Func2Signature, _user$project$TypeAnalyzer$Reals, _user$project$TypeAnalyzer$Reals, _user$project$TypeAnalyzer$Reals),
+							_1: {ctor: '[]'}
+						}
+					}
+				}
+			};
+	}
+};
+var _user$project$TypeAnalyzer$signatureHelper = function (expr) {
+	var _p4 = expr;
+	switch (_p4.ctor) {
+		case 'Constant':
+			return _user$project$TypeAnalyzer$constantSignatures(
+				{
+					ctor: '::',
+					_0: _user$project$TypeAnalyzer$Reals,
+					_1: {ctor: '[]'}
+				});
+		case 'Integer':
+			return _user$project$TypeAnalyzer$constantSignatures(
+				{
+					ctor: '::',
+					_0: _user$project$TypeAnalyzer$Integers,
+					_1: {ctor: '[]'}
+				});
+		case 'Variable':
+			return _user$project$TypeAnalyzer$variableSignature(_p4._0);
+		case 'Apply1':
+			var argSignatures = _user$project$TypeAnalyzer$signatureHelper(_p4._1);
+			var fnSignatures = _user$project$TypeAnalyzer$func1Signatures(_p4._0);
+			return A2(
+				_elm_lang$core$List$concatMap,
+				function (fnSignature) {
+					return A2(
+						_elm_lang$core$List$filterMap,
+						function (argSignature) {
+							return _elm_lang$core$Native_Utils.eq(argSignature.out, fnSignature.arg) ? _elm_lang$core$Maybe$Just(
+								_elm_lang$core$Native_Utils.update(
+									argSignature,
+									{out: fnSignature.out})) : _elm_lang$core$Maybe$Nothing;
+						},
+						argSignatures);
+				},
+				fnSignatures);
+		case 'Apply2':
+			var arg2Signatures = _user$project$TypeAnalyzer$signatureHelper(_p4._2);
+			var arg1Signatures = _user$project$TypeAnalyzer$signatureHelper(_p4._1);
+			var fnSignatures = _user$project$TypeAnalyzer$func2Signatures(_p4._0);
+			return A4(
+				_user$project$TypeAnalyzer$productFilterMap3,
+				F3(
+					function (fn, sig1, sig2) {
+						return (_elm_lang$core$Native_Utils.eq(sig1.out, fn.arg1) && _elm_lang$core$Native_Utils.eq(sig2.out, fn.arg2)) ? A2(
+							_elm_lang$core$Maybe$map,
+							function (mergedConstraints) {
+								return A2(_user$project$TypeAnalyzer$MappedSignature, mergedConstraints, fn.out);
+							},
+							_user$project$TypeAnalyzer$tryMerge(
+								{
+									ctor: '::',
+									_0: sig1.constraints,
+									_1: {
+										ctor: '::',
+										_0: sig2.constraints,
+										_1: {ctor: '[]'}
+									}
+								})) : _elm_lang$core$Maybe$Nothing;
+					}),
+				fnSignatures,
+				arg1Signatures,
+				arg2Signatures);
+		default:
+			return {ctor: '[]'};
+	}
+};
+var _user$project$TypeAnalyzer$getSignatures = function (expr) {
+	return A2(
+		_elm_lang$core$List$map,
+		_user$project$TypeAnalyzer$unmapSignature,
+		_user$project$TypeAnalyzer$signatureHelper(expr));
+};
+
 var _user$project$LatexParser$spaces = A2(
 	_elm_tools$parser$Parser$ignore,
 	_elm_tools$parser$Parser$zeroOrMore,
@@ -21185,6 +21558,37 @@ var _user$project$LatexParser$spaces = A2(
 		return _elm_lang$core$Native_Utils.eq(
 			$char,
 			_elm_lang$core$Native_Utils.chr(' '));
+	});
+var _user$project$LatexParser$parseSubstring = F2(
+	function (count, parser) {
+		var first = _elm_lang$core$Basics$always;
+		var instaCommitParser = A2(
+			_elm_tools$parser$Parser$andThen,
+			function (input) {
+				var _p0 = A2(_elm_tools$parser$Parser$run, parser, input);
+				if (_p0.ctor === 'Ok') {
+					return _elm_tools$parser$Parser$succeed(_p0._0);
+				} else {
+					return _elm_tools$parser$Parser$fail(
+						A2(
+							_elm_lang$core$Basics_ops['++'],
+							'substring of ',
+							A2(
+								_elm_lang$core$Basics_ops['++'],
+								_elm_lang$core$Basics$toString(count),
+								' characters')));
+				}
+			},
+			A2(
+				_elm_tools$parser$Parser$keep,
+				count,
+				_elm_lang$core$Basics$always(true)));
+		return A3(
+			_elm_tools$parser$Parser$delayedCommitMap,
+			first,
+			instaCommitParser,
+			_elm_tools$parser$Parser$succeed(
+				{ctor: '_Tuple0'}));
 	});
 var _user$project$LatexParser$arg = function (parser) {
 	return A2(
@@ -21197,6 +21601,21 @@ var _user$project$LatexParser$arg = function (parser) {
 				_elm_tools$parser$Parser$symbol('{')),
 			parser),
 		_elm_tools$parser$Parser$symbol('}'));
+};
+var _user$project$LatexParser$closeArg = function (parser) {
+	return _elm_tools$parser$Parser$oneOf(
+		{
+			ctor: '::',
+			_0: A2(
+				_user$project$LatexParser$parseSubstring,
+				_elm_tools$parser$Parser$Exactly(1),
+				parser),
+			_1: {
+				ctor: '::',
+				_0: _user$project$LatexParser$arg(parser),
+				_1: {ctor: '[]'}
+			}
+		});
 };
 var _user$project$LatexParser$command = function (name) {
 	return _elm_tools$parser$Parser$keyword(
@@ -21263,49 +21682,6 @@ var _user$project$LatexParser$specialConstants = _elm_tools$parser$Parser$oneOf(
 			}
 		}
 	});
-var _user$project$LatexParser$closeArg = function (parser) {
-	var singleDigit = A2(
-		_elm_tools$parser$Parser$map,
-		function (_p0) {
-			return _user$project$MathTree$Constant(
-				_elm_lang$core$Basics$toFloat(
-					A2(
-						_elm_lang$core$Result$withDefault,
-						0,
-						_elm_lang$core$String$toInt(_p0))));
-		},
-		A2(
-			_elm_tools$parser$Parser$keep,
-			_elm_tools$parser$Parser$Exactly(1),
-			_elm_lang$core$Char$isDigit));
-	return A2(
-		_elm_tools$parser$Parser_ops['|='],
-		_elm_tools$parser$Parser$succeed(_elm_lang$core$Basics$identity),
-		_elm_tools$parser$Parser$oneOf(
-			{
-				ctor: '::',
-				_0: _user$project$LatexParser$specialConstants,
-				_1: {
-					ctor: '::',
-					_0: A2(
-						_elm_tools$parser$Parser_ops['|='],
-						_elm_tools$parser$Parser$succeed(_user$project$MathTree$Variable),
-						A2(
-							_elm_tools$parser$Parser$keep,
-							_elm_tools$parser$Parser$Exactly(1),
-							_user$project$ParserUtils$isLetter)),
-					_1: {
-						ctor: '::',
-						_0: singleDigit,
-						_1: {
-							ctor: '::',
-							_0: _user$project$LatexParser$arg(parser),
-							_1: {ctor: '[]'}
-						}
-					}
-				}
-			}));
-};
 var _user$project$LatexParser$negative = function (parser) {
 	return _elm_tools$parser$Parser$lazy(
 		function (_p1) {
@@ -21719,7 +22095,7 @@ var _user$project$LatexParser$summations = _elm_tools$parser$Parser$lazy(
 								_elm_tools$parser$Parser$int),
 							_elm_tools$parser$Parser$symbol('}')),
 						_elm_tools$parser$Parser$symbol('^')),
-					_user$project$LatexParser$closeArg(_user$project$LatexParser$expr)),
+					_user$project$LatexParser$closeArg(_elm_tools$parser$Parser$int)),
 				_user$project$LatexParser$term));
 	});
 var _user$project$LatexParser$asDiv = function (parsedExpr) {
@@ -21833,10 +22209,39 @@ var _user$project$LatexParser$output = function (inputString) {
 					}),
 				_1: {
 					ctor: '::',
-					_0: _elm_lang$html$Html$text(
-						_elm_lang$core$Basics$toString(
-							_user$project$Calculator$calculate(_p11))),
-					_1: {ctor: '[]'}
+					_0: A2(
+						_elm_lang$html$Html$div,
+						{ctor: '[]'},
+						{
+							ctor: '::',
+							_0: _elm_lang$html$Html$text(
+								_elm_lang$core$Basics$toString(
+									_user$project$Calculator$calculate(_p11))),
+							_1: {ctor: '[]'}
+						}),
+					_1: {
+						ctor: '::',
+						_0: A2(
+							_elm_lang$html$Html$div,
+							{ctor: '[]'},
+							A2(
+								_elm_lang$core$List$map,
+								function (sig) {
+									return A2(
+										_elm_lang$html$Html$div,
+										{ctor: '[]'},
+										{
+											ctor: '::',
+											_0: _elm_lang$html$Html$text(sig),
+											_1: {ctor: '[]'}
+										});
+								},
+								A2(
+									_elm_lang$core$List$map,
+									_user$project$TypeAnalyzer$prettyPrint,
+									_user$project$TypeAnalyzer$getSignatures(_p11)))),
+						_1: {ctor: '[]'}
+					}
 				}
 			});
 	} else {

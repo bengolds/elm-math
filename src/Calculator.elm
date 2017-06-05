@@ -1,38 +1,46 @@
 module Calculator exposing (calculate)
 
-import MathTree exposing (..)
+import MathTree as Tree exposing (Expr, Func1(..), Func2(..))
 import Set exposing (Set)
 
 
 type CalculateResult
-    = Number Float
+    = Real Float
+    | Integer Int
     | Function (Set String)
 
 
 calculate : Expr -> CalculateResult
 calculate expr =
     case expr of
-        Constant val ->
-            Number val
+        Tree.Constant val ->
+            Real val
 
-        Variable name ->
+        Tree.Integer val ->
+            Integer val
+
+        Tree.Variable name ->
             Function (Set.singleton name)
 
-        Apply1 fn arg ->
+        Tree.Apply1 fn arg ->
             apply1 fn arg
 
-        Apply2 fn arg1 arg2 ->
+        Tree.Apply2 fn arg1 arg2 ->
             apply2 fn arg1 arg2
 
+        --Sum indexVar from to summand ->
+        --case calculate to of
+        --Number val ->
+        --List.sum <|
         _ ->
-            Number -1
+            Real -1
 
 
 apply1 : Func1 -> Expr -> CalculateResult
 apply1 func1 arg =
     case calculate arg of
-        Number val ->
-            Number <|
+        Real val ->
+            Real <|
                 case func1 of
                     Negative ->
                         negate val
@@ -80,8 +88,8 @@ apply1 func1 arg =
 apply2 : Func2 -> Expr -> Expr -> CalculateResult
 apply2 func2 arg1 arg2 =
     case ( calculate arg1, calculate arg2 ) of
-        ( Number n1, Number n2 ) ->
-            Number <|
+        ( Real n1, Real n2 ) ->
+            Real <|
                 case func2 of
                     Plus ->
                         n1 + n2
@@ -109,3 +117,6 @@ apply2 func2 arg1 arg2 =
 
         ( _, Function vars2 ) ->
             Function vars2
+
+        ( _, _ ) ->
+            Real 0

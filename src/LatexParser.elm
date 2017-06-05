@@ -8,6 +8,7 @@ import Char exposing (isDigit)
 import Html exposing (span, div, text, Html, br, li, ul)
 import Calculator exposing (calculate)
 import MathTree exposing (..)
+import TypeAnalyzer exposing (getSignatures)
 
 
 --Output
@@ -22,7 +23,12 @@ output inputString =
         Ok parsed ->
             div [ class [ Tree ] ]
                 [ ul [] [ asDiv parsed ]
-                , text <| toString <| calculate parsed
+                , div [] [ text <| toString <| calculate parsed ]
+                , div []
+                    (getSignatures parsed
+                        |> List.map TypeAnalyzer.prettyPrint
+                        |> List.map (\sig -> div [] [ text sig ])
+                    )
                 ]
 
         Err err ->
@@ -177,7 +183,7 @@ summations =
                     |= int
                     |. symbol "}"
                     |. symbol "^"
-                    |= closeArg expr
+                    |= closeArg int
                     |= term
 
 
@@ -262,19 +268,32 @@ arg parser =
         |. symbol "}"
 
 
-closeArg parser =
+parseSubstring : Count -> Parser a -> Parser a
+parseSubstring count parser =
     let
-        singleDigit =
-            keep (Exactly 1) isDigit
-                |> Parser.map (String.toInt >> Result.withDefault 0 >> toFloat >> Constant)
+        instaCommitParser =
+            keep count (always True)
+                |> andThen
+                    (\input ->
+                        case run parser input of
+                            Ok parsed ->
+                                succeed parsed
+
+                            Err err ->
+                                fail <| "substring of " ++ (toString count) ++ " characters"
+                    )
+
+        first =
+            always
     in
-        succeed identity
-            |= oneOf
-                [ specialConstants
-                , succeed Variable |= keep (Exactly 1) isLetter
-                , singleDigit
-                , arg parser
-                ]
+        delayedCommitMap first instaCommitParser (succeed ())
+
+
+closeArg parser =
+    oneOf
+        [ parseSubstring (Exactly 1) parser
+        , arg parser
+        ]
 
 
 spaces : Parser ()
