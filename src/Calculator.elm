@@ -81,6 +81,13 @@ apply1 func1 arg =
                     Arctan ->
                         atan val
 
+                    Abs ->
+                        abs val
+
+                    Factorial ->
+                        --TODO: Fill this in once typing is done
+                        val
+
         otherwise ->
             otherwise
 

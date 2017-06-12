@@ -30,6 +30,8 @@ type Func1
     | Arcsin
     | Arccos
     | Arctan
+    | Abs
+    | Factorial
 
 
 type Func2

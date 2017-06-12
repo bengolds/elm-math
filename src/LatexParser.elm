@@ -76,6 +76,7 @@ factor =
                     , variable
                     , parenthesized expr
                     , functions
+                    , absolute
                     , summations
                     , fail "a factor"
                     ]
@@ -86,10 +87,32 @@ expo =
     inContext "expo" <|
         lazy <|
             \_ ->
-                oneOf
-                    [ delayedCommitMap (Apply2 Exponent) (factor |. symbol "^") (closeArg expr)
-                    , factor
-                    ]
+                let
+                    suffix : Parser (Expr -> Expr)
+                    suffix =
+                        oneOf
+                            [ succeed (Apply1 Factorial) |. symbol "!"
+                            , succeed (flip <| Apply2 Exponent) |. symbol "^" |= closeArg expr
+                            ]
+                in
+                    succeed (flip applyl)
+                        |= factor
+                        |= repeat zeroOrMore suffix
+
+
+applyl : List (a -> a) -> a -> a
+applyl fns start =
+    case fns of
+        [] ->
+            start
+
+        x :: xs ->
+            applyl xs (x start)
+
+
+applyr : List (a -> a) -> a -> a
+applyr fns start =
+    applyl (List.reverse fns) start
 
 
 term : Parser Expr
@@ -212,6 +235,16 @@ func2 fn name =
                     |= arg expr
                     |= arg expr
            )
+
+
+absolute : Parser Expr
+absolute =
+    lazy <|
+        \_ ->
+            succeed (Apply1 Abs)
+                |. command "left|"
+                |= expr
+                |. command "right|"
 
 
 negative : Parser Expr -> Parser Expr
