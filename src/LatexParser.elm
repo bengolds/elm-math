@@ -1,6 +1,5 @@
 module LatexParser exposing (..)
 
-import LatexParserCss exposing (..)
 import Parser exposing (..)
 import ParserUtils exposing (..)
 import ParserDebugger
@@ -9,20 +8,17 @@ import Html exposing (span, div, text, Html, br, li, ul)
 import Calculator exposing (calculate)
 import MathTree exposing (..)
 import TypeAnalyzer exposing (getSignatures)
+import TreeView.TreeView exposing (treeView, TreeViewNode(..))
 
 
 --Output
 
 
-{ id, class, classList } =
-    latexParserNamespace
-
-
 output inputString =
     case run expr inputString of
         Ok parsed ->
-            div [ class [ Tree ] ]
-                [ ul [] [ asDiv parsed ]
+            div []
+                [ treeView asTreeNode parsed
                 , div [] [ text <| toString <| calculate parsed ]
                 , div []
                     (getSignatures parsed
@@ -35,29 +31,22 @@ output inputString =
             ParserDebugger.prettyPrintError err
 
 
-asDiv : Expr -> Html msg
-asDiv parsedExpr =
+asTreeNode : Expr -> TreeViewNode msg
+asTreeNode parsedExpr =
     case parsedExpr of
         Apply1 func a1 ->
-            nodeDiv (toString func) [ a1 ]
+            TreeNode (text <| toString func) [ asTreeNode a1 ]
 
         Apply2 func a1 a2 ->
-            nodeDiv (toString func) [ a1, a2 ]
+            TreeNode (text <| toString func) [ asTreeNode a1, asTreeNode a2 ]
 
-        Sum indexVar fromVal toExpr a1 ->
-            nodeDiv
-                ("Sum over " ++ indexVar ++ " from " ++ (toString fromVal) ++ " to: " ++ (toString toExpr))
-                [ a1 ]
-
+        --Sum indexVar fromVal toExpr a1 ->
+        --TreeNode (text <| toString func) [ asTreeNode a1, asTreeNode a2 ]
+        --nodeDiv
+        --("Sum over " ++ indexVar ++ " from " ++ (toString fromVal) ++ " to: " ++ (toString toExpr))
+        --[ a1 ]
         elsewise ->
-            li [] [ text (toString elsewise) ]
-
-
-nodeDiv title children =
-    li []
-        [ text title
-        , ul [] (List.map asDiv children)
-        ]
+            TreeNode (text <| toString elsewise) []
 
 
 

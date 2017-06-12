@@ -2,7 +2,7 @@ port module Stylesheets exposing (..)
 
 import Css.File exposing (CssFileStructure, CssCompilerProgram)
 import ParserDebuggerCss
-import LatexParserCss
+import TreeView.TreeViewCss
 
 
 port files : CssFileStructure -> Cmd msg
@@ -11,7 +11,7 @@ port files : CssFileStructure -> Cmd msg
 fileStructure : CssFileStructure
 fileStructure =
     Css.File.toFileStructure
-        [ ( "index.css", Css.File.compile [ ParserDebuggerCss.css, LatexParserCss.css ] ) ]
+        [ ( "index.css", Css.File.compile [ ParserDebuggerCss.css, TreeViewCss.css ] ) ]
 
 
 main : CssCompilerProgram

@@ -1,4 +1,4 @@
-module LatexParserCss exposing (css, CssClasses(..), CssIds(..), latexParserNamespace)
+module Main exposing (..)
 
 import Css exposing (..)
 import Css.Elements exposing (li, ul, span)
@@ -11,12 +11,8 @@ type CssClasses
     = Tree
 
 
-type CssIds
-    = None
-
-
 thisNamespace =
-    "latexParser"
+    "treeView"
 
 
 latexParserNamespace =
@@ -62,41 +58,3 @@ css =
                             ++ apply [ ul, li ] [ position relative ]
                     ]
                ]
-
-
-
---[ position relative
---, listStyle none
---, paddingLeft (px 32)
---, descendants
---[ ul
---[ position relative
---, listStyle none
---, paddingLeft (px 32)
---, children
---[ li [ lastChild [ after [ height (px 8) ] ] ]
---]
---]
---, li <|
---[ position relative
---, before
---[ borderTop3 (px 1) solid black
---, top (px 9)
---, width (px 8)
---, height zero
---]
---, after
---[ borderLeft3 (px 1) solid black
---, height (pct 100)
---, width zero
---, top (px 2)
---]
---]
---++ apply [ before, after ]
---[ property "content" "''"
---, position absolute
---, left (px -12)
---]
---]
---]
---]

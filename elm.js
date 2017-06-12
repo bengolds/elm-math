@@ -16166,188 +16166,6 @@ var _user$project$Calculator$apply1 = F2(
 		}
 	});
 
-var _user$project$LatexParserCss$apply = F2(
-	function (fns, value) {
-		return A2(
-			_elm_lang$core$List$map,
-			function (fn) {
-				return fn(value);
-			},
-			fns);
-	});
-var _user$project$LatexParserCss$thisNamespace = 'latexParser';
-var _user$project$LatexParserCss$latexParserNamespace = _rtfeldman$elm_css_helpers$Html_CssHelpers$withNamespace(_user$project$LatexParserCss$thisNamespace);
-var _user$project$LatexParserCss$Tree = {ctor: 'Tree'};
-var _user$project$LatexParserCss$css = function (_p0) {
-	return _rtfeldman$elm_css$Css$stylesheet(
-		A2(_rtfeldman$elm_css$Css_Namespace$namespace, _user$project$LatexParserCss$thisNamespace, _p0));
-}(
-	A2(
-		_elm_lang$core$Basics_ops['++'],
-		{ctor: '[]'},
-		{
-			ctor: '::',
-			_0: A2(
-				_rtfeldman$elm_css$Css$class,
-				_user$project$LatexParserCss$Tree,
-				{
-					ctor: '::',
-					_0: _rtfeldman$elm_css$Css$position(_rtfeldman$elm_css$Css$relative),
-					_1: {
-						ctor: '::',
-						_0: _rtfeldman$elm_css$Css$descendants(
-							A2(
-								_elm_lang$core$Basics_ops['++'],
-								{
-									ctor: '::',
-									_0: _rtfeldman$elm_css$Css_Elements$ul(
-										{
-											ctor: '::',
-											_0: _rtfeldman$elm_css$Css$listStyle(_rtfeldman$elm_css$Css$none),
-											_1: {
-												ctor: '::',
-												_0: _rtfeldman$elm_css$Css$paddingLeft(
-													_rtfeldman$elm_css$Css$px(32)),
-												_1: {
-													ctor: '::',
-													_0: _rtfeldman$elm_css$Css$children(
-														{
-															ctor: '::',
-															_0: _rtfeldman$elm_css$Css_Elements$li(
-																{
-																	ctor: '::',
-																	_0: _rtfeldman$elm_css$Css$lastChild(
-																		{
-																			ctor: '::',
-																			_0: _rtfeldman$elm_css$Css$after(
-																				{
-																					ctor: '::',
-																					_0: _rtfeldman$elm_css$Css$height(
-																						_rtfeldman$elm_css$Css$px(8)),
-																					_1: {ctor: '[]'}
-																				}),
-																			_1: {ctor: '[]'}
-																		}),
-																	_1: {ctor: '[]'}
-																}),
-															_1: {ctor: '[]'}
-														}),
-													_1: {ctor: '[]'}
-												}
-											}
-										}),
-									_1: {
-										ctor: '::',
-										_0: _rtfeldman$elm_css$Css_Elements$li(
-											A2(
-												_elm_lang$core$Basics_ops['++'],
-												{
-													ctor: '::',
-													_0: _rtfeldman$elm_css$Css$before(
-														{
-															ctor: '::',
-															_0: A3(
-																_rtfeldman$elm_css$Css$borderTop3,
-																_rtfeldman$elm_css$Css$px(1),
-																_rtfeldman$elm_css$Css$solid,
-																_rtfeldman$elm_css$Css_Colors$black),
-															_1: {
-																ctor: '::',
-																_0: _rtfeldman$elm_css$Css$top(
-																	_rtfeldman$elm_css$Css$px(9)),
-																_1: {
-																	ctor: '::',
-																	_0: _rtfeldman$elm_css$Css$width(
-																		_rtfeldman$elm_css$Css$px(8)),
-																	_1: {
-																		ctor: '::',
-																		_0: _rtfeldman$elm_css$Css$height(_rtfeldman$elm_css$Css$zero),
-																		_1: {ctor: '[]'}
-																	}
-																}
-															}
-														}),
-													_1: {
-														ctor: '::',
-														_0: _rtfeldman$elm_css$Css$after(
-															{
-																ctor: '::',
-																_0: A3(
-																	_rtfeldman$elm_css$Css$borderLeft3,
-																	_rtfeldman$elm_css$Css$px(1),
-																	_rtfeldman$elm_css$Css$solid,
-																	_rtfeldman$elm_css$Css_Colors$black),
-																_1: {
-																	ctor: '::',
-																	_0: _rtfeldman$elm_css$Css$height(
-																		_rtfeldman$elm_css$Css$pct(100)),
-																	_1: {
-																		ctor: '::',
-																		_0: _rtfeldman$elm_css$Css$width(
-																			_rtfeldman$elm_css$Css$px(0)),
-																		_1: {
-																			ctor: '::',
-																			_0: _rtfeldman$elm_css$Css$top(
-																				_rtfeldman$elm_css$Css$px(2)),
-																			_1: {ctor: '[]'}
-																		}
-																	}
-																}
-															}),
-														_1: {ctor: '[]'}
-													}
-												},
-												A2(
-													_user$project$LatexParserCss$apply,
-													{
-														ctor: '::',
-														_0: _rtfeldman$elm_css$Css$before,
-														_1: {
-															ctor: '::',
-															_0: _rtfeldman$elm_css$Css$after,
-															_1: {ctor: '[]'}
-														}
-													},
-													{
-														ctor: '::',
-														_0: A2(_rtfeldman$elm_css$Css$property, 'content', '\'\''),
-														_1: {
-															ctor: '::',
-															_0: _rtfeldman$elm_css$Css$position(_rtfeldman$elm_css$Css$absolute),
-															_1: {
-																ctor: '::',
-																_0: _rtfeldman$elm_css$Css$left(
-																	_rtfeldman$elm_css$Css$px(-12)),
-																_1: {ctor: '[]'}
-															}
-														}
-													}))),
-										_1: {ctor: '[]'}
-									}
-								},
-								A2(
-									_user$project$LatexParserCss$apply,
-									{
-										ctor: '::',
-										_0: _rtfeldman$elm_css$Css_Elements$ul,
-										_1: {
-											ctor: '::',
-											_0: _rtfeldman$elm_css$Css_Elements$li,
-											_1: {ctor: '[]'}
-										}
-									},
-									{
-										ctor: '::',
-										_0: _rtfeldman$elm_css$Css$position(_rtfeldman$elm_css$Css$relative),
-										_1: {ctor: '[]'}
-									}))),
-						_1: {ctor: '[]'}
-					}
-				}),
-			_1: {ctor: '[]'}
-		}));
-var _user$project$LatexParserCss$None = {ctor: 'None'};
-
 var _user$project$ParserUtils$list = F2(
 	function (object, separator) {
 		return A3(
@@ -17401,6 +17219,239 @@ var _user$project$TypeAnalyzer$getSignatures = function (expr) {
 		_user$project$TypeAnalyzer$signatureHelper(expr));
 };
 
+var _user$project$TreeView_TreeViewCss$apply = F2(
+	function (fns, value) {
+		return A2(
+			_elm_lang$core$List$map,
+			function (fn) {
+				return fn(value);
+			},
+			fns);
+	});
+var _user$project$TreeView_TreeViewCss$thisNamespace = 'treeView';
+var _user$project$TreeView_TreeViewCss$treeViewNamespace = _rtfeldman$elm_css_helpers$Html_CssHelpers$withNamespace(_user$project$TreeView_TreeViewCss$thisNamespace);
+var _user$project$TreeView_TreeViewCss$TreeRoot = {ctor: 'TreeRoot'};
+var _user$project$TreeView_TreeViewCss$css = function (_p0) {
+	return _rtfeldman$elm_css$Css$stylesheet(
+		A2(_rtfeldman$elm_css$Css_Namespace$namespace, _user$project$TreeView_TreeViewCss$thisNamespace, _p0));
+}(
+	{
+		ctor: '::',
+		_0: A2(
+			_rtfeldman$elm_css$Css$class,
+			_user$project$TreeView_TreeViewCss$TreeRoot,
+			{
+				ctor: '::',
+				_0: _rtfeldman$elm_css$Css$position(_rtfeldman$elm_css$Css$relative),
+				_1: {
+					ctor: '::',
+					_0: _rtfeldman$elm_css$Css$descendants(
+						A2(
+							_elm_lang$core$Basics_ops['++'],
+							{
+								ctor: '::',
+								_0: _rtfeldman$elm_css$Css_Elements$ul(
+									{
+										ctor: '::',
+										_0: _rtfeldman$elm_css$Css$listStyle(_rtfeldman$elm_css$Css$none),
+										_1: {
+											ctor: '::',
+											_0: _rtfeldman$elm_css$Css$paddingLeft(
+												_rtfeldman$elm_css$Css$px(32)),
+											_1: {
+												ctor: '::',
+												_0: _rtfeldman$elm_css$Css$children(
+													{
+														ctor: '::',
+														_0: _rtfeldman$elm_css$Css_Elements$li(
+															{
+																ctor: '::',
+																_0: _rtfeldman$elm_css$Css$lastChild(
+																	{
+																		ctor: '::',
+																		_0: _rtfeldman$elm_css$Css$after(
+																			{
+																				ctor: '::',
+																				_0: _rtfeldman$elm_css$Css$height(
+																					_rtfeldman$elm_css$Css$px(8)),
+																				_1: {ctor: '[]'}
+																			}),
+																		_1: {ctor: '[]'}
+																	}),
+																_1: {ctor: '[]'}
+															}),
+														_1: {ctor: '[]'}
+													}),
+												_1: {ctor: '[]'}
+											}
+										}
+									}),
+								_1: {
+									ctor: '::',
+									_0: _rtfeldman$elm_css$Css_Elements$li(
+										A2(
+											_elm_lang$core$Basics_ops['++'],
+											{
+												ctor: '::',
+												_0: _rtfeldman$elm_css$Css$before(
+													{
+														ctor: '::',
+														_0: A3(
+															_rtfeldman$elm_css$Css$borderTop3,
+															_rtfeldman$elm_css$Css$px(1),
+															_rtfeldman$elm_css$Css$solid,
+															_rtfeldman$elm_css$Css_Colors$black),
+														_1: {
+															ctor: '::',
+															_0: _rtfeldman$elm_css$Css$top(
+																_rtfeldman$elm_css$Css$px(9)),
+															_1: {
+																ctor: '::',
+																_0: _rtfeldman$elm_css$Css$width(
+																	_rtfeldman$elm_css$Css$px(8)),
+																_1: {
+																	ctor: '::',
+																	_0: _rtfeldman$elm_css$Css$height(_rtfeldman$elm_css$Css$zero),
+																	_1: {ctor: '[]'}
+																}
+															}
+														}
+													}),
+												_1: {
+													ctor: '::',
+													_0: _rtfeldman$elm_css$Css$after(
+														{
+															ctor: '::',
+															_0: A3(
+																_rtfeldman$elm_css$Css$borderLeft3,
+																_rtfeldman$elm_css$Css$px(1),
+																_rtfeldman$elm_css$Css$solid,
+																_rtfeldman$elm_css$Css_Colors$black),
+															_1: {
+																ctor: '::',
+																_0: _rtfeldman$elm_css$Css$height(
+																	_rtfeldman$elm_css$Css$pct(100)),
+																_1: {
+																	ctor: '::',
+																	_0: _rtfeldman$elm_css$Css$width(
+																		_rtfeldman$elm_css$Css$px(0)),
+																	_1: {
+																		ctor: '::',
+																		_0: _rtfeldman$elm_css$Css$top(
+																			_rtfeldman$elm_css$Css$px(2)),
+																		_1: {ctor: '[]'}
+																	}
+																}
+															}
+														}),
+													_1: {ctor: '[]'}
+												}
+											},
+											A2(
+												_user$project$TreeView_TreeViewCss$apply,
+												{
+													ctor: '::',
+													_0: _rtfeldman$elm_css$Css$before,
+													_1: {
+														ctor: '::',
+														_0: _rtfeldman$elm_css$Css$after,
+														_1: {ctor: '[]'}
+													}
+												},
+												{
+													ctor: '::',
+													_0: A2(_rtfeldman$elm_css$Css$property, 'content', '\'\''),
+													_1: {
+														ctor: '::',
+														_0: _rtfeldman$elm_css$Css$position(_rtfeldman$elm_css$Css$absolute),
+														_1: {
+															ctor: '::',
+															_0: _rtfeldman$elm_css$Css$left(
+																_rtfeldman$elm_css$Css$px(-12)),
+															_1: {ctor: '[]'}
+														}
+													}
+												}))),
+									_1: {ctor: '[]'}
+								}
+							},
+							A2(
+								_user$project$TreeView_TreeViewCss$apply,
+								{
+									ctor: '::',
+									_0: _rtfeldman$elm_css$Css_Elements$ul,
+									_1: {
+										ctor: '::',
+										_0: _rtfeldman$elm_css$Css_Elements$li,
+										_1: {ctor: '[]'}
+									}
+								},
+								{
+									ctor: '::',
+									_0: _rtfeldman$elm_css$Css$position(_rtfeldman$elm_css$Css$relative),
+									_1: {ctor: '[]'}
+								}))),
+					_1: {ctor: '[]'}
+				}
+			}),
+		_1: {ctor: '[]'}
+	});
+
+var _user$project$TreeView_TreeView$nodeDiv = function (node) {
+	var _p0 = node;
+	return A2(
+		_elm_lang$html$Html$li,
+		{ctor: '[]'},
+		{
+			ctor: '::',
+			_0: _p0._0,
+			_1: {
+				ctor: '::',
+				_0: A2(
+					_elm_lang$html$Html$ul,
+					{ctor: '[]'},
+					A2(_elm_lang$core$List$map, _user$project$TreeView_TreeView$nodeDiv, _p0._1)),
+				_1: {ctor: '[]'}
+			}
+		});
+};
+var _user$project$TreeView_TreeView$_p1 = _user$project$TreeView_TreeViewCss$treeViewNamespace;
+var _user$project$TreeView_TreeView$id = _user$project$TreeView_TreeView$_p1.id;
+var _user$project$TreeView_TreeView$class = _user$project$TreeView_TreeView$_p1.$class;
+var _user$project$TreeView_TreeView$classList = _user$project$TreeView_TreeView$_p1.classList;
+var _user$project$TreeView_TreeView$treeView = F2(
+	function (toNode, root) {
+		return A2(
+			_elm_lang$html$Html$div,
+			{
+				ctor: '::',
+				_0: _user$project$TreeView_TreeView$class(
+					{
+						ctor: '::',
+						_0: _user$project$TreeView_TreeViewCss$TreeRoot,
+						_1: {ctor: '[]'}
+					}),
+				_1: {ctor: '[]'}
+			},
+			{
+				ctor: '::',
+				_0: A2(
+					_elm_lang$html$Html$ul,
+					{ctor: '[]'},
+					{
+						ctor: '::',
+						_0: _user$project$TreeView_TreeView$nodeDiv(
+							toNode(root)),
+						_1: {ctor: '[]'}
+					}),
+				_1: {ctor: '[]'}
+			});
+	});
+var _user$project$TreeView_TreeView$TreeNode = F2(
+	function (a, b) {
+		return {ctor: 'TreeNode', _0: a, _1: b};
+	});
+
 var _user$project$LatexParser$spaces = A2(
 	_elm_tools$parser$Parser$ignore,
 	_elm_tools$parser$Parser$zeroOrMore,
@@ -17710,48 +17761,42 @@ var _user$project$LatexParser$term = A2(
 					}
 				});
 		}));
-var _user$project$LatexParser$expo = function () {
-	var suffix = _elm_tools$parser$Parser$oneOf(
-		{
-			ctor: '::',
-			_0: A2(
-				_elm_tools$parser$Parser_ops['|.'],
-				_elm_tools$parser$Parser$succeed(
-					_user$project$MathTree$Apply1(_user$project$MathTree$Factorial)),
-				_elm_tools$parser$Parser$symbol('!')),
-			_1: {
-				ctor: '::',
-				_0: A2(
-					_elm_tools$parser$Parser_ops['|='],
-					A2(
+var _user$project$LatexParser$expo = A2(
+	_elm_tools$parser$Parser$inContext,
+	'expo',
+	_elm_tools$parser$Parser$lazy(
+		function (_p7) {
+			var suffix = _elm_tools$parser$Parser$oneOf(
+				{
+					ctor: '::',
+					_0: A2(
 						_elm_tools$parser$Parser_ops['|.'],
 						_elm_tools$parser$Parser$succeed(
-							_elm_lang$core$Basics$flip(
-								_user$project$MathTree$Apply2(_user$project$MathTree$Exponent))),
-						_elm_tools$parser$Parser$symbol('^')),
-					_user$project$LatexParser$closeArg(_user$project$LatexParser$expr)),
-				_1: {ctor: '[]'}
-			}
-		});
-	return A2(
-		_elm_tools$parser$Parser$inContext,
-		'expo',
-		_elm_tools$parser$Parser$lazy(
-			function (_p7) {
-				return A2(
-					_elm_tools$parser$Parser$andThen,
-					function (parsedFactor) {
-						var ops = A2(_elm_tools$parser$Parser$repeat, _elm_tools$parser$Parser$zeroOrMore, suffix);
-						return A2(
-							_elm_tools$parser$Parser$map,
-							function (fns) {
-								return A2(_user$project$LatexParser$applyl, fns, parsedFactor);
-							},
-							ops);
-					},
-					_user$project$LatexParser$factor);
-			}));
-}();
+							_user$project$MathTree$Apply1(_user$project$MathTree$Factorial)),
+						_elm_tools$parser$Parser$symbol('!')),
+					_1: {
+						ctor: '::',
+						_0: A2(
+							_elm_tools$parser$Parser_ops['|='],
+							A2(
+								_elm_tools$parser$Parser_ops['|.'],
+								_elm_tools$parser$Parser$succeed(
+									_elm_lang$core$Basics$flip(
+										_user$project$MathTree$Apply2(_user$project$MathTree$Exponent))),
+								_elm_tools$parser$Parser$symbol('^')),
+							_user$project$LatexParser$closeArg(_user$project$LatexParser$expr)),
+						_1: {ctor: '[]'}
+					}
+				});
+			return A2(
+				_elm_tools$parser$Parser_ops['|='],
+				A2(
+					_elm_tools$parser$Parser_ops['|='],
+					_elm_tools$parser$Parser$succeed(
+						_elm_lang$core$Basics$flip(_user$project$LatexParser$applyl)),
+					_user$project$LatexParser$factor),
+				A2(_elm_tools$parser$Parser$repeat, _elm_tools$parser$Parser$zeroOrMore, suffix));
+		}));
 var _user$project$LatexParser$functions = function () {
 	var func2exprs = {
 		ctor: '::',
@@ -18008,115 +18053,51 @@ var _user$project$LatexParser$summations = _elm_tools$parser$Parser$lazy(
 					_user$project$LatexParser$closeArg(_elm_tools$parser$Parser$int)),
 				_user$project$LatexParser$term));
 	});
-var _user$project$LatexParser$asDiv = function (parsedExpr) {
+var _user$project$LatexParser$asTreeNode = function (parsedExpr) {
 	var _p10 = parsedExpr;
 	switch (_p10.ctor) {
 		case 'Apply1':
 			return A2(
-				_user$project$LatexParser$nodeDiv,
-				_elm_lang$core$Basics$toString(_p10._0),
+				_user$project$TreeView_TreeView$TreeNode,
+				_elm_lang$html$Html$text(
+					_elm_lang$core$Basics$toString(_p10._0)),
 				{
 					ctor: '::',
-					_0: _p10._1,
+					_0: _user$project$LatexParser$asTreeNode(_p10._1),
 					_1: {ctor: '[]'}
 				});
 		case 'Apply2':
 			return A2(
-				_user$project$LatexParser$nodeDiv,
-				_elm_lang$core$Basics$toString(_p10._0),
+				_user$project$TreeView_TreeView$TreeNode,
+				_elm_lang$html$Html$text(
+					_elm_lang$core$Basics$toString(_p10._0)),
 				{
 					ctor: '::',
-					_0: _p10._1,
+					_0: _user$project$LatexParser$asTreeNode(_p10._1),
 					_1: {
 						ctor: '::',
-						_0: _p10._2,
+						_0: _user$project$LatexParser$asTreeNode(_p10._2),
 						_1: {ctor: '[]'}
 					}
 				});
-		case 'Sum':
-			return A2(
-				_user$project$LatexParser$nodeDiv,
-				A2(
-					_elm_lang$core$Basics_ops['++'],
-					'Sum over ',
-					A2(
-						_elm_lang$core$Basics_ops['++'],
-						_p10._0,
-						A2(
-							_elm_lang$core$Basics_ops['++'],
-							' from ',
-							A2(
-								_elm_lang$core$Basics_ops['++'],
-								_elm_lang$core$Basics$toString(_p10._1),
-								A2(
-									_elm_lang$core$Basics_ops['++'],
-									' to: ',
-									_elm_lang$core$Basics$toString(_p10._2)))))),
-				{
-					ctor: '::',
-					_0: _p10._3,
-					_1: {ctor: '[]'}
-				});
 		default:
 			return A2(
-				_elm_lang$html$Html$li,
-				{ctor: '[]'},
-				{
-					ctor: '::',
-					_0: _elm_lang$html$Html$text(
-						_elm_lang$core$Basics$toString(_p10)),
-					_1: {ctor: '[]'}
-				});
+				_user$project$TreeView_TreeView$TreeNode,
+				_elm_lang$html$Html$text(
+					_elm_lang$core$Basics$toString(_p10)),
+				{ctor: '[]'});
 	}
 };
-var _user$project$LatexParser$nodeDiv = F2(
-	function (title, children) {
+var _user$project$LatexParser$output = function (inputString) {
+	var _p11 = A2(_elm_tools$parser$Parser$run, _user$project$LatexParser$expr, inputString);
+	if (_p11.ctor === 'Ok') {
+		var _p12 = _p11._0;
 		return A2(
-			_elm_lang$html$Html$li,
+			_elm_lang$html$Html$div,
 			{ctor: '[]'},
 			{
 				ctor: '::',
-				_0: _elm_lang$html$Html$text(title),
-				_1: {
-					ctor: '::',
-					_0: A2(
-						_elm_lang$html$Html$ul,
-						{ctor: '[]'},
-						A2(_elm_lang$core$List$map, _user$project$LatexParser$asDiv, children)),
-					_1: {ctor: '[]'}
-				}
-			});
-	});
-var _user$project$LatexParser$_p11 = _user$project$LatexParserCss$latexParserNamespace;
-var _user$project$LatexParser$id = _user$project$LatexParser$_p11.id;
-var _user$project$LatexParser$class = _user$project$LatexParser$_p11.$class;
-var _user$project$LatexParser$classList = _user$project$LatexParser$_p11.classList;
-var _user$project$LatexParser$output = function (inputString) {
-	var _p12 = A2(_elm_tools$parser$Parser$run, _user$project$LatexParser$expr, inputString);
-	if (_p12.ctor === 'Ok') {
-		var _p13 = _p12._0;
-		return A2(
-			_elm_lang$html$Html$div,
-			{
-				ctor: '::',
-				_0: _user$project$LatexParser$class(
-					{
-						ctor: '::',
-						_0: _user$project$LatexParserCss$Tree,
-						_1: {ctor: '[]'}
-					}),
-				_1: {ctor: '[]'}
-			},
-			{
-				ctor: '::',
-				_0: A2(
-					_elm_lang$html$Html$ul,
-					{ctor: '[]'},
-					{
-						ctor: '::',
-						_0: _user$project$LatexParser$asDiv(_p13),
-						_1: {ctor: '[]'}
-					}),
+				_0: A2(_user$project$TreeView_TreeView$treeView, _user$project$LatexParser$asTreeNode, _p12),
 				_1: {
 					ctor: '::',
 					_0: A2(
@@ -18126,7 +18107,7 @@ var _user$project$LatexParser$output = function (inputString) {
 							ctor: '::',
 							_0: _elm_lang$html$Html$text(
 								_elm_lang$core$Basics$toString(
-									_user$project$Calculator$calculate(_p13))),
+									_user$project$Calculator$calculate(_p12))),
 							_1: {ctor: '[]'}
 						}),
 					_1: {
@@ -18149,13 +18130,13 @@ var _user$project$LatexParser$output = function (inputString) {
 								A2(
 									_elm_lang$core$List$map,
 									_user$project$TypeAnalyzer$prettyPrint,
-									_user$project$TypeAnalyzer$getSignatures(_p13)))),
+									_user$project$TypeAnalyzer$getSignatures(_p12)))),
 						_1: {ctor: '[]'}
 					}
 				}
 			});
 	} else {
-		return _user$project$ParserDebugger$prettyPrintError(_p12._0);
+		return _user$project$ParserDebugger$prettyPrintError(_p11._0);
 	}
 };
 
