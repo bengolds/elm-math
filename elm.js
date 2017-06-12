@@ -15991,181 +15991,6 @@ var _rtfeldman$elm_css_helpers$Html_CssHelpers$Namespace = F4(
 		return {$class: a, classList: b, id: c, name: d};
 	});
 
-var _user$project$MathTree$Apply2 = F3(
-	function (a, b, c) {
-		return {ctor: 'Apply2', _0: a, _1: b, _2: c};
-	});
-var _user$project$MathTree$Apply1 = F2(
-	function (a, b) {
-		return {ctor: 'Apply1', _0: a, _1: b};
-	});
-var _user$project$MathTree$Sum = F4(
-	function (a, b, c, d) {
-		return {ctor: 'Sum', _0: a, _1: b, _2: c, _3: d};
-	});
-var _user$project$MathTree$Variable = function (a) {
-	return {ctor: 'Variable', _0: a};
-};
-var _user$project$MathTree$Integer = function (a) {
-	return {ctor: 'Integer', _0: a};
-};
-var _user$project$MathTree$Constant = function (a) {
-	return {ctor: 'Constant', _0: a};
-};
-var _user$project$MathTree$Factorial = {ctor: 'Factorial'};
-var _user$project$MathTree$Abs = {ctor: 'Abs'};
-var _user$project$MathTree$Arctan = {ctor: 'Arctan'};
-var _user$project$MathTree$Arccos = {ctor: 'Arccos'};
-var _user$project$MathTree$Arcsin = {ctor: 'Arcsin'};
-var _user$project$MathTree$Tanh = {ctor: 'Tanh'};
-var _user$project$MathTree$Cosh = {ctor: 'Cosh'};
-var _user$project$MathTree$Sinh = {ctor: 'Sinh'};
-var _user$project$MathTree$Cot = {ctor: 'Cot'};
-var _user$project$MathTree$Csc = {ctor: 'Csc'};
-var _user$project$MathTree$Sec = {ctor: 'Sec'};
-var _user$project$MathTree$Tan = {ctor: 'Tan'};
-var _user$project$MathTree$Cos = {ctor: 'Cos'};
-var _user$project$MathTree$Sin = {ctor: 'Sin'};
-var _user$project$MathTree$Negative = {ctor: 'Negative'};
-var _user$project$MathTree$Log = {ctor: 'Log'};
-var _user$project$MathTree$Exponent = {ctor: 'Exponent'};
-var _user$project$MathTree$Divide = {ctor: 'Divide'};
-var _user$project$MathTree$Times = {ctor: 'Times'};
-var _user$project$MathTree$Minus = {ctor: 'Minus'};
-var _user$project$MathTree$Plus = {ctor: 'Plus'};
-
-var _user$project$Calculator$Function = function (a) {
-	return {ctor: 'Function', _0: a};
-};
-var _user$project$Calculator$Integer = function (a) {
-	return {ctor: 'Integer', _0: a};
-};
-var _user$project$Calculator$Real = function (a) {
-	return {ctor: 'Real', _0: a};
-};
-var _user$project$Calculator$apply2 = F3(
-	function (func2, arg1, arg2) {
-		var _p0 = {
-			ctor: '_Tuple2',
-			_0: _user$project$Calculator$calculate(arg1),
-			_1: _user$project$Calculator$calculate(arg2)
-		};
-		_v0_4:
-		do {
-			_v0_3:
-			do {
-				switch (_p0._0.ctor) {
-					case 'Real':
-						switch (_p0._1.ctor) {
-							case 'Real':
-								var _p3 = _p0._1._0;
-								var _p2 = _p0._0._0;
-								return _user$project$Calculator$Real(
-									function () {
-										var _p1 = func2;
-										switch (_p1.ctor) {
-											case 'Plus':
-												return _p2 + _p3;
-											case 'Minus':
-												return _p2 - _p3;
-											case 'Times':
-												return _p2 * _p3;
-											case 'Divide':
-												return _p2 / _p3;
-											case 'Exponent':
-												return Math.pow(_p2, _p3);
-											default:
-												return A2(_elm_lang$core$Basics$logBase, _p2, _p3);
-										}
-									}());
-							case 'Function':
-								break _v0_3;
-							default:
-								break _v0_4;
-						}
-					case 'Function':
-						if (_p0._1.ctor === 'Function') {
-							return _user$project$Calculator$Function(
-								A2(_elm_lang$core$Set$union, _p0._0._0, _p0._1._0));
-						} else {
-							return _user$project$Calculator$Function(_p0._0._0);
-						}
-					default:
-						if (_p0._1.ctor === 'Function') {
-							break _v0_3;
-						} else {
-							break _v0_4;
-						}
-				}
-			} while(false);
-			return _user$project$Calculator$Function(_p0._1._0);
-		} while(false);
-		return _user$project$Calculator$Real(0);
-	});
-var _user$project$Calculator$calculate = function (expr) {
-	var _p4 = expr;
-	switch (_p4.ctor) {
-		case 'Constant':
-			return _user$project$Calculator$Real(_p4._0);
-		case 'Integer':
-			return _user$project$Calculator$Integer(_p4._0);
-		case 'Variable':
-			return _user$project$Calculator$Function(
-				_elm_lang$core$Set$singleton(_p4._0));
-		case 'Apply1':
-			return A2(_user$project$Calculator$apply1, _p4._0, _p4._1);
-		case 'Apply2':
-			return A3(_user$project$Calculator$apply2, _p4._0, _p4._1, _p4._2);
-		default:
-			return _user$project$Calculator$Real(-1);
-	}
-};
-var _user$project$Calculator$apply1 = F2(
-	function (func1, arg) {
-		var _p5 = _user$project$Calculator$calculate(arg);
-		if (_p5.ctor === 'Real') {
-			var _p7 = _p5._0;
-			return _user$project$Calculator$Real(
-				function () {
-					var _p6 = func1;
-					switch (_p6.ctor) {
-						case 'Negative':
-							return _elm_lang$core$Basics$negate(_p7);
-						case 'Sin':
-							return _elm_lang$core$Basics$sin(_p7);
-						case 'Cos':
-							return _elm_lang$core$Basics$cos(_p7);
-						case 'Tan':
-							return _elm_lang$core$Basics$tan(_p7);
-						case 'Sec':
-							return 1 / _elm_lang$core$Basics$cos(_p7);
-						case 'Csc':
-							return 1 / _elm_lang$core$Basics$sin(_p7);
-						case 'Cot':
-							return 1 / _elm_lang$core$Basics$tan(_p7);
-						case 'Sinh':
-							return (Math.pow(_elm_lang$core$Basics$e, _p7) - Math.pow(_elm_lang$core$Basics$e, 0 - _p7)) / 2;
-						case 'Cosh':
-							return (Math.pow(_elm_lang$core$Basics$e, _p7) + Math.pow(_elm_lang$core$Basics$e, 0 - _p7)) / 2;
-						case 'Tanh':
-							return (Math.pow(_elm_lang$core$Basics$e, _p7) - Math.pow(_elm_lang$core$Basics$e, 0 - _p7)) / (Math.pow(_elm_lang$core$Basics$e, _p7) + Math.pow(_elm_lang$core$Basics$e, 0 - _p7));
-						case 'Arcsin':
-							return _elm_lang$core$Basics$asin(_p7);
-						case 'Arccos':
-							return _elm_lang$core$Basics$acos(_p7);
-						case 'Arctan':
-							return _elm_lang$core$Basics$atan(_p7);
-						case 'Abs':
-							return _elm_lang$core$Basics$abs(_p7);
-						default:
-							return _p7;
-					}
-				}());
-		} else {
-			return _p5;
-		}
-	});
-
 var _user$project$ParserUtils$list = F2(
 	function (object, separator) {
 		return A3(
@@ -16872,352 +16697,65 @@ var _user$project$ParserDebugger$prettyPrintError = function (err) {
 		});
 };
 
-var _user$project$TypeAnalyzer$setSymbol = function (set) {
-	var _p0 = set;
+var _user$project$MathTree$prettyPrint = function (val) {
+	var _p0 = val;
 	switch (_p0.ctor) {
-		case 'Integers':
-			return 'ℤ';
-		case 'Reals':
-			return 'ℝ';
-		default:
-			return 'ℂ';
-	}
-};
-var _user$project$TypeAnalyzer$prettyPrint = function (sig) {
-	var range = _user$project$TypeAnalyzer$setSymbol(sig.range);
-	var domain = function () {
-		var _p1 = sig.domain;
-		if (_p1.ctor === '[]') {
-			return 'Anything';
-		} else {
-			return A2(
-				_elm_lang$core$String$join,
-				', ',
-				A2(_elm_lang$core$List$map, _user$project$TypeAnalyzer$setSymbol, sig.domain));
-		}
-	}();
-	return A2(
-		_elm_lang$core$Basics_ops['++'],
-		domain,
-		A2(_elm_lang$core$Basics_ops['++'], ' ⇒ ', range));
-};
-var _user$project$TypeAnalyzer$productFilterMap3 = F4(
-	function (fn, list1, list2, list3) {
-		return A2(
-			_elm_lang$core$List$concatMap,
-			function (el1) {
-				return A2(
-					_elm_lang$core$List$concatMap,
-					function (el2) {
-						return A2(
-							_elm_lang$core$List$filterMap,
-							function (el3) {
-								return A3(fn, el1, el2, el3);
-							},
-							list3);
-					},
-					list2);
-			},
-			list1);
-	});
-var _user$project$TypeAnalyzer$productMap3 = F4(
-	function (fn, list1, list2, list3) {
-		return A2(
-			_elm_lang$core$List$concatMap,
-			function (el1) {
-				return A2(
-					_elm_lang$core$List$concatMap,
-					function (el2) {
-						return A2(
-							_elm_lang$core$List$map,
-							function (el3) {
-								return A3(fn, el1, el2, el3);
-							},
-							list3);
-					},
-					list2);
-			},
-			list1);
-	});
-var _user$project$TypeAnalyzer$tryMerge = function (allConstraints) {
-	var mergeConstraints = F2(
-		function (constraint1, constraint2) {
-			return A2(
-				_elm_lang$core$Maybe$andThen,
-				function (c2) {
-					return A6(
-						_elm_lang$core$Dict$merge,
-						F3(
-							function (key, set1, acc) {
-								return A2(
-									_elm_lang$core$Maybe$map,
-									A2(_elm_lang$core$Dict$insert, key, set1),
-									acc);
-							}),
-						F4(
-							function (key, set1, set2, acc) {
-								return _elm_lang$core$Native_Utils.eq(set1, set2) ? A2(
-									_elm_lang$core$Maybe$map,
-									A2(_elm_lang$core$Dict$insert, key, set1),
-									acc) : _elm_lang$core$Maybe$Nothing;
-							}),
-						F3(
-							function (key, set2, acc) {
-								return A2(
-									_elm_lang$core$Maybe$map,
-									A2(_elm_lang$core$Dict$insert, key, set2),
-									acc);
-							}),
-						constraint1,
-						c2,
-						_elm_lang$core$Maybe$Just(_elm_lang$core$Dict$empty));
-				},
-				constraint2);
-		});
-	return A3(
-		_elm_lang$core$List$foldl,
-		mergeConstraints,
-		_elm_lang$core$Maybe$Just(_elm_lang$core$Dict$empty),
-		allConstraints);
-};
-var _user$project$TypeAnalyzer$Function = F2(
-	function (a, b) {
-		return {signatures: a, expressionTree: b};
-	});
-var _user$project$TypeAnalyzer$Signature = F2(
-	function (a, b) {
-		return {domain: a, range: b};
-	});
-var _user$project$TypeAnalyzer$unmapSignature = function (sig) {
-	var domain = A2(
-		_elm_lang$core$List$map,
-		_elm_lang$core$Tuple$second,
-		A2(
-			_elm_lang$core$List$sortBy,
-			_elm_lang$core$Tuple$first,
-			_elm_lang$core$Dict$toList(sig.constraints)));
-	return A2(_user$project$TypeAnalyzer$Signature, domain, sig.out);
-};
-var _user$project$TypeAnalyzer$Func1Signature = F2(
-	function (a, b) {
-		return {arg: a, out: b};
-	});
-var _user$project$TypeAnalyzer$Func2Signature = F3(
-	function (a, b, c) {
-		return {arg1: a, arg2: b, out: c};
-	});
-var _user$project$TypeAnalyzer$MappedSignature = F2(
-	function (a, b) {
-		return {constraints: a, out: b};
-	});
-var _user$project$TypeAnalyzer$constantSignatures = function (sets) {
-	return A2(
-		_elm_lang$core$List$map,
-		_user$project$TypeAnalyzer$MappedSignature(_elm_lang$core$Dict$empty),
-		sets);
-};
-var _user$project$TypeAnalyzer$Complexes = {ctor: 'Complexes'};
-var _user$project$TypeAnalyzer$Reals = {ctor: 'Reals'};
-var _user$project$TypeAnalyzer$Integers = {ctor: 'Integers'};
-var _user$project$TypeAnalyzer$variableSignature = function (name) {
-	var identitySet = function (set) {
-		return A2(
-			_user$project$TypeAnalyzer$MappedSignature,
-			A2(_elm_lang$core$Dict$singleton, name, set),
-			set);
-	};
-	var allSets = {
-		ctor: '::',
-		_0: _user$project$TypeAnalyzer$Integers,
-		_1: {
-			ctor: '::',
-			_0: _user$project$TypeAnalyzer$Reals,
-			_1: {
-				ctor: '::',
-				_0: _user$project$TypeAnalyzer$Complexes,
-				_1: {ctor: '[]'}
-			}
-		}
-	};
-	return A2(_elm_lang$core$List$map, identitySet, allSets);
-};
-var _user$project$TypeAnalyzer$func1Signatures = function (func1) {
-	var identity = {
-		ctor: '::',
-		_0: A2(_user$project$TypeAnalyzer$Func1Signature, _user$project$TypeAnalyzer$Integers, _user$project$TypeAnalyzer$Integers),
-		_1: {
-			ctor: '::',
-			_0: A2(_user$project$TypeAnalyzer$Func1Signature, _user$project$TypeAnalyzer$Reals, _user$project$TypeAnalyzer$Reals),
-			_1: {
-				ctor: '::',
-				_0: A2(_user$project$TypeAnalyzer$Func1Signature, _user$project$TypeAnalyzer$Complexes, _user$project$TypeAnalyzer$Complexes),
-				_1: {ctor: '[]'}
-			}
-		}
-	};
-	var trig = {
-		ctor: '::',
-		_0: A2(_user$project$TypeAnalyzer$Func1Signature, _user$project$TypeAnalyzer$Integers, _user$project$TypeAnalyzer$Reals),
-		_1: {
-			ctor: '::',
-			_0: A2(_user$project$TypeAnalyzer$Func1Signature, _user$project$TypeAnalyzer$Reals, _user$project$TypeAnalyzer$Reals),
-			_1: {
-				ctor: '::',
-				_0: A2(_user$project$TypeAnalyzer$Func1Signature, _user$project$TypeAnalyzer$Complexes, _user$project$TypeAnalyzer$Complexes),
-				_1: {ctor: '[]'}
-			}
-		}
-	};
-	var _p2 = func1;
-	if (_p2.ctor === 'Negative') {
-		return identity;
-	} else {
-		return trig;
-	}
-};
-var _user$project$TypeAnalyzer$func2Signatures = function (func2) {
-	var plusMinus = {
-		ctor: '::',
-		_0: A3(_user$project$TypeAnalyzer$Func2Signature, _user$project$TypeAnalyzer$Integers, _user$project$TypeAnalyzer$Integers, _user$project$TypeAnalyzer$Integers),
-		_1: {
-			ctor: '::',
-			_0: A3(_user$project$TypeAnalyzer$Func2Signature, _user$project$TypeAnalyzer$Integers, _user$project$TypeAnalyzer$Reals, _user$project$TypeAnalyzer$Reals),
-			_1: {
-				ctor: '::',
-				_0: A3(_user$project$TypeAnalyzer$Func2Signature, _user$project$TypeAnalyzer$Integers, _user$project$TypeAnalyzer$Complexes, _user$project$TypeAnalyzer$Complexes),
-				_1: {
-					ctor: '::',
-					_0: A3(_user$project$TypeAnalyzer$Func2Signature, _user$project$TypeAnalyzer$Reals, _user$project$TypeAnalyzer$Integers, _user$project$TypeAnalyzer$Reals),
-					_1: {
-						ctor: '::',
-						_0: A3(_user$project$TypeAnalyzer$Func2Signature, _user$project$TypeAnalyzer$Reals, _user$project$TypeAnalyzer$Reals, _user$project$TypeAnalyzer$Reals),
-						_1: {
-							ctor: '::',
-							_0: A3(_user$project$TypeAnalyzer$Func2Signature, _user$project$TypeAnalyzer$Reals, _user$project$TypeAnalyzer$Complexes, _user$project$TypeAnalyzer$Complexes),
-							_1: {
-								ctor: '::',
-								_0: A3(_user$project$TypeAnalyzer$Func2Signature, _user$project$TypeAnalyzer$Complexes, _user$project$TypeAnalyzer$Integers, _user$project$TypeAnalyzer$Complexes),
-								_1: {
-									ctor: '::',
-									_0: A3(_user$project$TypeAnalyzer$Func2Signature, _user$project$TypeAnalyzer$Complexes, _user$project$TypeAnalyzer$Reals, _user$project$TypeAnalyzer$Complexes),
-									_1: {
-										ctor: '::',
-										_0: A3(_user$project$TypeAnalyzer$Func2Signature, _user$project$TypeAnalyzer$Complexes, _user$project$TypeAnalyzer$Complexes, _user$project$TypeAnalyzer$Complexes),
-										_1: {ctor: '[]'}
-									}
-								}
-							}
-						}
-					}
-				}
-			}
-		}
-	};
-	var _p3 = func2;
-	switch (_p3.ctor) {
-		case 'Plus':
-			return plusMinus;
-		case 'Minus':
-			return plusMinus;
-		case 'Times':
-			return plusMinus;
-		case 'Divide':
-			return plusMinus;
-		case 'Exponent':
-			return plusMinus;
-		default:
-			return {
-				ctor: '::',
-				_0: A3(_user$project$TypeAnalyzer$Func2Signature, _user$project$TypeAnalyzer$Integers, _user$project$TypeAnalyzer$Integers, _user$project$TypeAnalyzer$Reals),
-				_1: {
-					ctor: '::',
-					_0: A3(_user$project$TypeAnalyzer$Func2Signature, _user$project$TypeAnalyzer$Integers, _user$project$TypeAnalyzer$Reals, _user$project$TypeAnalyzer$Reals),
-					_1: {
-						ctor: '::',
-						_0: A3(_user$project$TypeAnalyzer$Func2Signature, _user$project$TypeAnalyzer$Reals, _user$project$TypeAnalyzer$Integers, _user$project$TypeAnalyzer$Reals),
-						_1: {
-							ctor: '::',
-							_0: A3(_user$project$TypeAnalyzer$Func2Signature, _user$project$TypeAnalyzer$Reals, _user$project$TypeAnalyzer$Reals, _user$project$TypeAnalyzer$Reals),
-							_1: {ctor: '[]'}
-						}
-					}
-				}
-			};
-	}
-};
-var _user$project$TypeAnalyzer$signatureHelper = function (expr) {
-	var _p4 = expr;
-	switch (_p4.ctor) {
-		case 'Constant':
-			return _user$project$TypeAnalyzer$constantSignatures(
-				{
-					ctor: '::',
-					_0: _user$project$TypeAnalyzer$Reals,
-					_1: {ctor: '[]'}
-				});
-		case 'Integer':
-			return _user$project$TypeAnalyzer$constantSignatures(
-				{
-					ctor: '::',
-					_0: _user$project$TypeAnalyzer$Integers,
-					_1: {ctor: '[]'}
-				});
-		case 'Variable':
-			return _user$project$TypeAnalyzer$variableSignature(_p4._0);
 		case 'Apply1':
-			var argSignatures = _user$project$TypeAnalyzer$signatureHelper(_p4._1);
-			var fnSignatures = _user$project$TypeAnalyzer$func1Signatures(_p4._0);
-			return A2(
-				_elm_lang$core$List$concatMap,
-				function (fnSignature) {
-					return A2(
-						_elm_lang$core$List$filterMap,
-						function (argSignature) {
-							return _elm_lang$core$Native_Utils.eq(argSignature.out, fnSignature.arg) ? _elm_lang$core$Maybe$Just(
-								_elm_lang$core$Native_Utils.update(
-									argSignature,
-									{out: fnSignature.out})) : _elm_lang$core$Maybe$Nothing;
-						},
-						argSignatures);
-				},
-				fnSignatures);
+			return _elm_lang$core$Basics$toString(_p0._0);
 		case 'Apply2':
-			var arg2Signatures = _user$project$TypeAnalyzer$signatureHelper(_p4._2);
-			var arg1Signatures = _user$project$TypeAnalyzer$signatureHelper(_p4._1);
-			var fnSignatures = _user$project$TypeAnalyzer$func2Signatures(_p4._0);
-			return A4(
-				_user$project$TypeAnalyzer$productFilterMap3,
-				F3(
-					function (fn, sig1, sig2) {
-						return (_elm_lang$core$Native_Utils.eq(sig1.out, fn.arg1) && _elm_lang$core$Native_Utils.eq(sig2.out, fn.arg2)) ? A2(
-							_elm_lang$core$Maybe$map,
-							function (mergedConstraints) {
-								return A2(_user$project$TypeAnalyzer$MappedSignature, mergedConstraints, fn.out);
-							},
-							_user$project$TypeAnalyzer$tryMerge(
-								{
-									ctor: '::',
-									_0: sig1.constraints,
-									_1: {
-										ctor: '::',
-										_0: sig2.constraints,
-										_1: {ctor: '[]'}
-									}
-								})) : _elm_lang$core$Maybe$Nothing;
-					}),
-				fnSignatures,
-				arg1Signatures,
-				arg2Signatures);
+			return _elm_lang$core$Basics$toString(_p0._0);
 		default:
-			return {ctor: '[]'};
+			return _elm_lang$core$Basics$toString(_p0);
 	}
 };
-var _user$project$TypeAnalyzer$getSignatures = function (expr) {
-	return A2(
-		_elm_lang$core$List$map,
-		_user$project$TypeAnalyzer$unmapSignature,
-		_user$project$TypeAnalyzer$signatureHelper(expr));
+var _user$project$MathTree$Apply2 = F3(
+	function (a, b, c) {
+		return {ctor: 'Apply2', _0: a, _1: b, _2: c};
+	});
+var _user$project$MathTree$Apply1 = F2(
+	function (a, b) {
+		return {ctor: 'Apply1', _0: a, _1: b};
+	});
+var _user$project$MathTree$Sum = F4(
+	function (a, b, c, d) {
+		return {ctor: 'Sum', _0: a, _1: b, _2: c, _3: d};
+	});
+var _user$project$MathTree$ImaginaryUnit = {ctor: 'ImaginaryUnit'};
+var _user$project$MathTree$Variable = function (a) {
+	return {ctor: 'Variable', _0: a};
 };
+var _user$project$MathTree$Integer = function (a) {
+	return {ctor: 'Integer', _0: a};
+};
+var _user$project$MathTree$Rational = function (a) {
+	return {ctor: 'Rational', _0: a};
+};
+var _user$project$MathTree$Real = function (a) {
+	return {ctor: 'Real', _0: a};
+};
+var _user$project$MathTree$Factorial = {ctor: 'Factorial'};
+var _user$project$MathTree$Abs = {ctor: 'Abs'};
+var _user$project$MathTree$Arctan = {ctor: 'Arctan'};
+var _user$project$MathTree$Arccos = {ctor: 'Arccos'};
+var _user$project$MathTree$Arcsin = {ctor: 'Arcsin'};
+var _user$project$MathTree$Tanh = {ctor: 'Tanh'};
+var _user$project$MathTree$Cosh = {ctor: 'Cosh'};
+var _user$project$MathTree$Sinh = {ctor: 'Sinh'};
+var _user$project$MathTree$Cot = {ctor: 'Cot'};
+var _user$project$MathTree$Csc = {ctor: 'Csc'};
+var _user$project$MathTree$Sec = {ctor: 'Sec'};
+var _user$project$MathTree$Tan = {ctor: 'Tan'};
+var _user$project$MathTree$Cos = {ctor: 'Cos'};
+var _user$project$MathTree$Sin = {ctor: 'Sin'};
+var _user$project$MathTree$Negative = {ctor: 'Negative'};
+var _user$project$MathTree$NthRoot = {ctor: 'NthRoot'};
+var _user$project$MathTree$Log = {ctor: 'Log'};
+var _user$project$MathTree$Exponent = {ctor: 'Exponent'};
+var _user$project$MathTree$Divide = {ctor: 'Divide'};
+var _user$project$MathTree$Dot = {ctor: 'Dot'};
+var _user$project$MathTree$Times = {ctor: 'Times'};
+var _user$project$MathTree$Minus = {ctor: 'Minus'};
+var _user$project$MathTree$Plus = {ctor: 'Plus'};
 
 var _user$project$TreeView_TreeViewCss$apply = F2(
 	function (fns, value) {
@@ -17452,6 +16990,145 @@ var _user$project$TreeView_TreeView$TreeNode = F2(
 		return {ctor: 'TreeNode', _0: a, _1: b};
 	});
 
+var _user$project$TypeAnalyzer$isEqual = F2(
+	function (a, b) {
+		return _elm_lang$core$Native_Utils.eq(a.name, b.name);
+	});
+var _user$project$TypeAnalyzer$asTreeNode = function (node) {
+	var nodeContent = A2(
+		_elm_lang$html$Html$div,
+		{ctor: '[]'},
+		{
+			ctor: '::',
+			_0: _elm_lang$html$Html$text(
+				_user$project$MathTree$prettyPrint(node)),
+			_1: {ctor: '[]'}
+		});
+	return A2(
+		_user$project$TreeView_TreeView$TreeNode,
+		nodeContent,
+		function () {
+			var _p0 = node;
+			switch (_p0.ctor) {
+				case 'Apply1':
+					return {
+						ctor: '::',
+						_0: _user$project$TypeAnalyzer$asTreeNode(_p0._1),
+						_1: {ctor: '[]'}
+					};
+				case 'Apply2':
+					return {
+						ctor: '::',
+						_0: _user$project$TypeAnalyzer$asTreeNode(_p0._1),
+						_1: {
+							ctor: '::',
+							_0: _user$project$TypeAnalyzer$asTreeNode(_p0._2),
+							_1: {ctor: '[]'}
+						}
+					};
+				default:
+					return {ctor: '[]'};
+			}
+		}());
+};
+var _user$project$TypeAnalyzer$debugTree = function (root) {
+	return A2(_user$project$TreeView_TreeView$treeView, _user$project$TypeAnalyzer$asTreeNode, root);
+};
+var _user$project$TypeAnalyzer$Set = F3(
+	function (a, b, c) {
+		return {name: a, symbol: b, parentSpace: c};
+	});
+var _user$project$TypeAnalyzer$complex = A3(_user$project$TypeAnalyzer$Set, 'Complex', 'ℂ', _elm_lang$core$Maybe$Nothing);
+var _user$project$TypeAnalyzer$Vector = F2(
+	function (a, b) {
+		return {ctor: 'Vector', _0: a, _1: b};
+	});
+var _user$project$TypeAnalyzer$Scalar = function (a) {
+	return {ctor: 'Scalar', _0: a};
+};
+var _user$project$TypeAnalyzer$imaginary = A3(
+	_user$project$TypeAnalyzer$Set,
+	'Imaginary',
+	'ℑ',
+	_elm_lang$core$Maybe$Just(
+		_user$project$TypeAnalyzer$Scalar(_user$project$TypeAnalyzer$complex)));
+var _user$project$TypeAnalyzer$real = A3(
+	_user$project$TypeAnalyzer$Set,
+	'Real',
+	'ℝ',
+	_elm_lang$core$Maybe$Just(
+		_user$project$TypeAnalyzer$Scalar(_user$project$TypeAnalyzer$complex)));
+var _user$project$TypeAnalyzer$rational = A3(
+	_user$project$TypeAnalyzer$Set,
+	'Rational',
+	'ℚ',
+	_elm_lang$core$Maybe$Just(
+		_user$project$TypeAnalyzer$Scalar(_user$project$TypeAnalyzer$real)));
+var _user$project$TypeAnalyzer$integer = A3(
+	_user$project$TypeAnalyzer$Set,
+	'Integer',
+	'ℤ',
+	_elm_lang$core$Maybe$Just(
+		_user$project$TypeAnalyzer$Scalar(_user$project$TypeAnalyzer$rational)));
+var _user$project$TypeAnalyzer$natural = A3(
+	_user$project$TypeAnalyzer$Set,
+	'Natural',
+	'ℕ',
+	_elm_lang$core$Maybe$Just(
+		_user$project$TypeAnalyzer$Scalar(_user$project$TypeAnalyzer$integer)));
+var _user$project$TypeAnalyzer$isSuperset = F2(
+	function (a, b) {
+		isSuperset:
+		while (true) {
+			var isParentSet = F2(
+				function (a, b) {
+					var _p1 = a.parentSpace;
+					if ((_p1.ctor === 'Just') && (_p1._0.ctor === 'Scalar')) {
+						return _elm_lang$core$Native_Utils.eq(_p1._0._0, b);
+					} else {
+						return false;
+					}
+				});
+			var _p2 = {ctor: '_Tuple2', _0: a, _1: b};
+			_v2_2:
+			do {
+				if (_p2._0.ctor === 'Scalar') {
+					if (_p2._1.ctor === 'Scalar') {
+						var _p4 = _p2._1._0;
+						var _p3 = _p2._0._0;
+						return A2(isParentSet, _p3, _p4) ? true : A2(
+							_elm_lang$core$Maybe$withDefault,
+							false,
+							A2(
+								_elm_lang$core$Maybe$map,
+								A2(
+									_elm_lang$core$Basics$flip,
+									_user$project$TypeAnalyzer$isSuperset,
+									_user$project$TypeAnalyzer$Scalar(_p4)),
+								_p3.parentSpace));
+					} else {
+						break _v2_2;
+					}
+				} else {
+					if (_p2._1.ctor === 'Vector') {
+						if (!_elm_lang$core$Native_Utils.eq(_p2._0._0, _p2._1._0)) {
+							return false;
+						} else {
+							var _v3 = _user$project$TypeAnalyzer$Scalar(_p2._0._1),
+								_v4 = _user$project$TypeAnalyzer$Scalar(_p2._1._1);
+							a = _v3;
+							b = _v4;
+							continue isSuperset;
+						}
+					} else {
+						break _v2_2;
+					}
+				}
+			} while(false);
+			return false;
+		}
+	});
+
 var _user$project$LatexParser$spaces = A2(
 	_elm_tools$parser$Parser$ignore,
 	_elm_tools$parser$Parser$zeroOrMore,
@@ -17567,25 +17244,61 @@ var _user$project$LatexParser$specialConstants = _elm_tools$parser$Parser$oneOf(
 		_0: A2(
 			_elm_tools$parser$Parser_ops['|.'],
 			_elm_tools$parser$Parser$succeed(
-				_user$project$MathTree$Constant(_elm_lang$core$Basics$pi)),
+				_user$project$MathTree$Real(_elm_lang$core$Basics$pi)),
 			_user$project$LatexParser$command('pi')),
 		_1: {
 			ctor: '::',
 			_0: A2(
 				_elm_tools$parser$Parser_ops['|.'],
 				_elm_tools$parser$Parser$succeed(
-					_user$project$MathTree$Constant(_elm_lang$core$Basics$e)),
+					_user$project$MathTree$Real(_elm_lang$core$Basics$e)),
 				_elm_tools$parser$Parser$symbol('e')),
 			_1: {
 				ctor: '::',
-				_0: _elm_tools$parser$Parser$fail('a special constant, like e or pi'),
-				_1: {ctor: '[]'}
+				_0: A2(
+					_elm_tools$parser$Parser_ops['|.'],
+					_elm_tools$parser$Parser$succeed(_user$project$MathTree$ImaginaryUnit),
+					_elm_tools$parser$Parser$symbol('i')),
+				_1: {
+					ctor: '::',
+					_0: _elm_tools$parser$Parser$fail('a special constant, like i, e or pi'),
+					_1: {ctor: '[]'}
+				}
 			}
 		}
 	});
+var _user$project$LatexParser$constant = function () {
+	var toInt = function (val) {
+		return _elm_lang$core$Native_Utils.eq(
+			_elm_lang$core$Basics$toFloat(
+				_elm_lang$core$Basics$truncate(val)),
+			val) ? _elm_lang$core$Maybe$Just(
+			_elm_lang$core$Basics$truncate(val)) : _elm_lang$core$Maybe$Nothing;
+	};
+	return _elm_tools$parser$Parser$oneOf(
+		{
+			ctor: '::',
+			_0: _user$project$LatexParser$specialConstants,
+			_1: {
+				ctor: '::',
+				_0: A2(
+					_elm_tools$parser$Parser$map,
+					function (val) {
+						var _p1 = toInt(val);
+						if (_p1.ctor === 'Nothing') {
+							return _user$project$MathTree$Rational(val);
+						} else {
+							return _user$project$MathTree$Integer(_p1._0);
+						}
+					},
+					_elm_tools$parser$Parser$float),
+				_1: {ctor: '[]'}
+			}
+		});
+}();
 var _user$project$LatexParser$negative = function (parser) {
 	return _elm_tools$parser$Parser$lazy(
-		function (_p1) {
+		function (_p2) {
 			return A2(
 				_elm_tools$parser$Parser_ops['|='],
 				A2(
@@ -17613,14 +17326,14 @@ var _user$project$LatexParser$applyl = F2(
 	function (fns, start) {
 		applyl:
 		while (true) {
-			var _p2 = fns;
-			if (_p2.ctor === '[]') {
+			var _p3 = fns;
+			if (_p3.ctor === '[]') {
 				return start;
 			} else {
-				var _v2 = _p2._1,
-					_v3 = _p2._0(start);
-				fns = _v2;
-				start = _v3;
+				var _v3 = _p3._1,
+					_v4 = _p3._0(start);
+				fns = _v3;
+				start = _v4;
 				continue applyl;
 			}
 		}
@@ -17636,40 +17349,33 @@ var _user$project$LatexParser$factor = A2(
 	_elm_tools$parser$Parser$inContext,
 	'factor',
 	_elm_tools$parser$Parser$lazy(
-		function (_p3) {
+		function (_p4) {
 			return _elm_tools$parser$Parser$oneOf(
 				{
 					ctor: '::',
-					_0: _user$project$LatexParser$specialConstants,
+					_0: _user$project$LatexParser$constant,
 					_1: {
 						ctor: '::',
-						_0: A2(
-							_elm_tools$parser$Parser_ops['|='],
-							_elm_tools$parser$Parser$succeed(_user$project$MathTree$Constant),
-							_elm_tools$parser$Parser$float),
+						_0: _user$project$LatexParser$negative(_user$project$LatexParser$factor),
 						_1: {
 							ctor: '::',
-							_0: _user$project$LatexParser$negative(_user$project$LatexParser$factor),
+							_0: _user$project$LatexParser$variable,
 							_1: {
 								ctor: '::',
-								_0: _user$project$LatexParser$variable,
+								_0: _user$project$LatexParser$parenthesized(_user$project$LatexParser$expr),
 								_1: {
 									ctor: '::',
-									_0: _user$project$LatexParser$parenthesized(_user$project$LatexParser$expr),
+									_0: _user$project$LatexParser$functions,
 									_1: {
 										ctor: '::',
-										_0: _user$project$LatexParser$functions,
+										_0: _user$project$LatexParser$absolute,
 										_1: {
 											ctor: '::',
-											_0: _user$project$LatexParser$absolute,
+											_0: _user$project$LatexParser$summations,
 											_1: {
 												ctor: '::',
-												_0: _user$project$LatexParser$summations,
-												_1: {
-													ctor: '::',
-													_0: _elm_tools$parser$Parser$fail('a factor'),
-													_1: {ctor: '[]'}
-												}
+												_0: _elm_tools$parser$Parser$fail('a factor'),
+												_1: {ctor: '[]'}
 											}
 										}
 									}
@@ -17680,7 +17386,7 @@ var _user$project$LatexParser$factor = A2(
 				});
 		}));
 var _user$project$LatexParser$absolute = _elm_tools$parser$Parser$lazy(
-	function (_p4) {
+	function (_p5) {
 		return A2(
 			_elm_tools$parser$Parser_ops['|.'],
 			A2(
@@ -17697,7 +17403,7 @@ var _user$project$LatexParser$expr = A2(
 	_elm_tools$parser$Parser$inContext,
 	'expr',
 	_elm_tools$parser$Parser$lazy(
-		function (_p5) {
+		function (_p6) {
 			return A2(
 				_user$project$ParserUtils$chainl,
 				_user$project$LatexParser$term,
@@ -17724,13 +17430,13 @@ var _user$project$LatexParser$term = A2(
 	_elm_tools$parser$Parser$inContext,
 	'term',
 	_elm_tools$parser$Parser$lazy(
-		function (_p6) {
+		function (_p7) {
 			return _elm_tools$parser$Parser$oneOf(
 				{
 					ctor: '::',
 					_0: A3(
 						_elm_tools$parser$Parser$delayedCommitMap,
-						_user$project$MathTree$Apply2(_user$project$MathTree$Times),
+						_user$project$MathTree$Apply2(_user$project$MathTree$Dot),
 						_user$project$LatexParser$expo,
 						A2(
 							_elm_tools$parser$Parser_ops['|='],
@@ -17765,7 +17471,7 @@ var _user$project$LatexParser$expo = A2(
 	_elm_tools$parser$Parser$inContext,
 	'expo',
 	_elm_tools$parser$Parser$lazy(
-		function (_p7) {
+		function (_p8) {
 			var suffix = _elm_tools$parser$Parser$oneOf(
 				{
 					ctor: '::',
@@ -17907,7 +17613,7 @@ var _user$project$LatexParser$functions = function () {
 		}
 	};
 	return _elm_tools$parser$Parser$lazy(
-		function (_p8) {
+		function (_p9) {
 			return _elm_tools$parser$Parser$oneOf(
 				A2(
 					_elm_lang$core$Basics_ops['++'],
@@ -17975,7 +17681,7 @@ var _user$project$LatexParser$logarithms = function () {
 	var ln = A2(
 		_user$project$MathTree$Apply2,
 		_user$project$MathTree$Log,
-		_user$project$MathTree$Constant(_elm_lang$core$Basics$e));
+		_user$project$MathTree$Real(_elm_lang$core$Basics$e));
 	return _elm_tools$parser$Parser$oneOf(
 		{
 			ctor: '::',
@@ -18017,7 +17723,7 @@ var _user$project$LatexParser$logarithms = function () {
 		});
 }();
 var _user$project$LatexParser$summations = _elm_tools$parser$Parser$lazy(
-	function (_p9) {
+	function (_p10) {
 		return A2(
 			_elm_tools$parser$Parser$inContext,
 			'summation',
@@ -18053,87 +17759,16 @@ var _user$project$LatexParser$summations = _elm_tools$parser$Parser$lazy(
 					_user$project$LatexParser$closeArg(_elm_tools$parser$Parser$int)),
 				_user$project$LatexParser$term));
 	});
-var _user$project$LatexParser$asTreeNode = function (parsedExpr) {
-	var _p10 = parsedExpr;
-	switch (_p10.ctor) {
-		case 'Apply1':
-			return A2(
-				_user$project$TreeView_TreeView$TreeNode,
-				_elm_lang$html$Html$text(
-					_elm_lang$core$Basics$toString(_p10._0)),
-				{
-					ctor: '::',
-					_0: _user$project$LatexParser$asTreeNode(_p10._1),
-					_1: {ctor: '[]'}
-				});
-		case 'Apply2':
-			return A2(
-				_user$project$TreeView_TreeView$TreeNode,
-				_elm_lang$html$Html$text(
-					_elm_lang$core$Basics$toString(_p10._0)),
-				{
-					ctor: '::',
-					_0: _user$project$LatexParser$asTreeNode(_p10._1),
-					_1: {
-						ctor: '::',
-						_0: _user$project$LatexParser$asTreeNode(_p10._2),
-						_1: {ctor: '[]'}
-					}
-				});
-		default:
-			return A2(
-				_user$project$TreeView_TreeView$TreeNode,
-				_elm_lang$html$Html$text(
-					_elm_lang$core$Basics$toString(_p10)),
-				{ctor: '[]'});
-	}
-};
 var _user$project$LatexParser$output = function (inputString) {
 	var _p11 = A2(_elm_tools$parser$Parser$run, _user$project$LatexParser$expr, inputString);
 	if (_p11.ctor === 'Ok') {
-		var _p12 = _p11._0;
 		return A2(
 			_elm_lang$html$Html$div,
 			{ctor: '[]'},
 			{
 				ctor: '::',
-				_0: A2(_user$project$TreeView_TreeView$treeView, _user$project$LatexParser$asTreeNode, _p12),
-				_1: {
-					ctor: '::',
-					_0: A2(
-						_elm_lang$html$Html$div,
-						{ctor: '[]'},
-						{
-							ctor: '::',
-							_0: _elm_lang$html$Html$text(
-								_elm_lang$core$Basics$toString(
-									_user$project$Calculator$calculate(_p12))),
-							_1: {ctor: '[]'}
-						}),
-					_1: {
-						ctor: '::',
-						_0: A2(
-							_elm_lang$html$Html$div,
-							{ctor: '[]'},
-							A2(
-								_elm_lang$core$List$map,
-								function (sig) {
-									return A2(
-										_elm_lang$html$Html$div,
-										{ctor: '[]'},
-										{
-											ctor: '::',
-											_0: _elm_lang$html$Html$text(sig),
-											_1: {ctor: '[]'}
-										});
-								},
-								A2(
-									_elm_lang$core$List$map,
-									_user$project$TypeAnalyzer$prettyPrint,
-									_user$project$TypeAnalyzer$getSignatures(_p12)))),
-						_1: {ctor: '[]'}
-					}
-				}
+				_0: _user$project$TypeAnalyzer$debugTree(_p11._0),
+				_1: {ctor: '[]'}
 			});
 	} else {
 		return _user$project$ParserDebugger$prettyPrintError(_p11._0);

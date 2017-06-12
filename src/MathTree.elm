@@ -2,12 +2,27 @@ module MathTree exposing (..)
 
 
 type Expr
-    = Constant Float
+    = Real Float
+    | Rational Float
     | Integer Int
     | Variable String
+    | ImaginaryUnit
     | Sum String Int Int Expr
     | Apply1 Func1 Expr
     | Apply2 Func2 Expr Expr
+
+
+prettyPrint : Expr -> String
+prettyPrint val =
+    case val of
+        Apply1 func _ ->
+            toString func
+
+        Apply2 func _ _ ->
+            toString func
+
+        elsewise ->
+            toString elsewise
 
 
 
@@ -38,6 +53,8 @@ type Func2
     = Plus
     | Minus
     | Times
+    | Dot
     | Divide
     | Exponent
     | Log
+    | NthRoot

@@ -1,24 +1,143 @@
 module TypeAnalyzer exposing (..)
 
 import MathTree as Tree exposing (Expr, Func1(..), Func2(..))
+import TreeView.TreeView exposing (treeView, TreeViewNode(..))
 import Dict exposing (Dict)
 import List
-import List.Extra
 import String
+import Html
 
 
--- do I need to store an internal variable name mapping?
+-- Debug View
 
 
-type alias Function =
-    { signatures : List Signature
-    , expressionTree : Expr
+debugTree : Expr -> Html.Html msg
+debugTree root =
+    treeView asTreeNode root
+
+
+asTreeNode : Expr -> TreeViewNode msg
+asTreeNode node =
+    let
+        nodeContent =
+            Html.div []
+                [ Html.text <| Tree.prettyPrint node
+
+                --, Html.text <| toString (signatureHelper node)
+                -- Insert the signature info here!
+                ]
+    in
+        TreeNode nodeContent
+            (case node of
+                Tree.Apply1 _ a1 ->
+                    [ asTreeNode a1 ]
+
+                Tree.Apply2 _ a1 a2 ->
+                    [ asTreeNode a1, asTreeNode a2 ]
+
+                _ ->
+                    []
+            )
+
+
+type Space
+    = Scalar Set
+    | Vector Int Set
+
+
+type alias Set =
+    { name : String
+    , symbol : String
+    , parentSpace : Maybe Space
+    }
+
+
+complex =
+    Set "Complex" "ℂ" Nothing
+
+
+imaginary =
+    Set "Imaginary" "ℑ" (Just <| Scalar complex)
+
+
+real =
+    Set "Real" "ℝ" (Just <| Scalar complex)
+
+
+rational =
+    Set "Rational" "ℚ" (Just <| Scalar real)
+
+
+integer =
+    Set "Integer" "ℤ" (Just <| Scalar rational)
+
+
+natural =
+    Set "Natural" "ℕ" (Just <| Scalar integer)
+
+
+isEqual : Set -> Set -> Bool
+isEqual a b =
+    a.name == b.name
+
+
+isSuperset : Space -> Space -> Bool
+isSuperset a b =
+    let
+        isParentSet : Set -> Set -> Bool
+        isParentSet a b =
+            case a.parentSpace of
+                Just (Scalar set) ->
+                    set == b
+
+                _ ->
+                    False
+    in
+        case ( a, b ) of
+            ( Scalar aSet, Scalar bSet ) ->
+                if isParentSet aSet bSet then
+                    True
+                else
+                    aSet.parentSpace
+                        |> Maybe.map (flip isSuperset <| Scalar bSet)
+                        |> Maybe.withDefault False
+
+            ( Vector aDim aSet, Vector bDim bSet ) ->
+                if aDim /= bDim then
+                    False
+                else
+                    isSuperset (Scalar aSet) (Scalar bSet)
+
+            ( _, _ ) ->
+                False
+
+
+
+{--
+--getSignature : Expr -> MappedSignature
+--getSignature node =
+
+
+type alias VariableConstraints =
+    Dict String Space
+
+
+type alias MappedSignature =
+    { constraints : VariableConstraints
+    , out : Set
     }
 
 
 type alias Signature =
     { domain : List Set
     , range : Set
+    }
+
+
+
+type alias Function =
+    { signatures : List Signature
+    , expressionTree : Expr
     }
 
 
@@ -33,28 +152,6 @@ type alias Func2Signature =
     , arg2 : Set
     , out : Set
     }
-
-
-type alias VariableConstraints =
-    Dict String Set
-
-
-type alias MappedSignature =
-    { constraints : VariableConstraints
-    , out : Set
-    }
-
-
-type Set
-    = Integers
-    | Reals
-    | Complexes
-
-
-
---| Vector2s Set
---| Vector3s Set
---| Any
 
 
 getSignatures : Expr -> List Signature
@@ -206,19 +303,6 @@ prettyPrint sig =
         domain ++ " ⇒ " ++ range
 
 
-setSymbol : Set -> String
-setSymbol set =
-    case set of
-        Integers ->
-            "ℤ"
-
-        Reals ->
-            "ℝ"
-
-        Complexes ->
-            "ℂ"
-
-
 constantSignatures : List Set -> List MappedSignature
 constantSignatures sets =
     List.map (MappedSignature Dict.empty) sets
@@ -270,33 +354,6 @@ func1Signatures func1 =
                 trig
 
 
-
---Sin ->
---trig
---Cos ->
---trig
---Tan ->
---trig
---Sec ->
---trig
---Csc ->
---trig
---Cot ->
---trig
---Sinh ->
---trig
---Cosh ->
---trig
---Tanh ->
---trig
---Arcsin ->
---trig
---Arccos ->
---trig
---Arctan ->
---trig
-
-
 func2Signatures : Tree.Func2 -> List Func2Signature
 func2Signatures func2 =
     let
@@ -335,13 +392,4 @@ func2Signatures func2 =
                 , Func2Signature Reals Integers Reals
                 , Func2Signature Reals Reals Reals
                 ]
-
-
-
---type Compiled =
---None
---Func1 Arg
---Func2 Arg Arg
---Func3 Arg Arg Arg
---Func4 Arg Arg Arg Arg
---compile : Expr -> Signature -> Compiled
+--}

@@ -107,6 +107,9 @@ apply2 func2 arg1 arg2 =
                     Times ->
                         n1 * n2
 
+                    Dot ->
+                        n1 * n2
+
                     Divide ->
                         n1 / n2
 

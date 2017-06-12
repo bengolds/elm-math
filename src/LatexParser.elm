@@ -5,9 +5,12 @@ import ParserUtils exposing (..)
 import ParserDebugger
 import Char exposing (isDigit)
 import Html exposing (span, div, text, Html, br, li, ul)
-import Calculator exposing (calculate)
+
+
+--import Calculator exposing (calculate)
+
 import MathTree exposing (..)
-import TypeAnalyzer exposing (getSignatures)
+import TypeAnalyzer exposing (..)
 import TreeView.TreeView exposing (treeView, TreeViewNode(..))
 
 
@@ -18,35 +21,18 @@ output inputString =
     case run expr inputString of
         Ok parsed ->
             div []
-                [ treeView asTreeNode parsed
-                , div [] [ text <| toString <| calculate parsed ]
-                , div []
-                    (getSignatures parsed
-                        |> List.map TypeAnalyzer.prettyPrint
-                        |> List.map (\sig -> div [] [ text sig ])
-                    )
+                [ TypeAnalyzer.debugTree parsed
+
+                --, div [] [ text <| toString <| calculate parsed ]
+                --, div []
+                --(getSignatures parsed
+                --|> List.map TypeAnalyzer.prettyPrint
+                --|> List.map (\sig -> div [] [ text sig ])
+                --)
                 ]
 
         Err err ->
             ParserDebugger.prettyPrintError err
-
-
-asTreeNode : Expr -> TreeViewNode msg
-asTreeNode parsedExpr =
-    case parsedExpr of
-        Apply1 func a1 ->
-            TreeNode (text <| toString func) [ asTreeNode a1 ]
-
-        Apply2 func a1 a2 ->
-            TreeNode (text <| toString func) [ asTreeNode a1, asTreeNode a2 ]
-
-        --Sum indexVar fromVal toExpr a1 ->
-        --TreeNode (text <| toString func) [ asTreeNode a1, asTreeNode a2 ]
-        --nodeDiv
-        --("Sum over " ++ indexVar ++ " from " ++ (toString fromVal) ++ " to: " ++ (toString toExpr))
-        --[ a1 ]
-        elsewise ->
-            TreeNode (text <| toString elsewise) []
 
 
 
@@ -59,8 +45,7 @@ factor =
         lazy <|
             \_ ->
                 oneOf <|
-                    [ specialConstants
-                    , succeed Constant |= float
+                    [ constant
                     , negative factor
                     , variable
                     , parenthesized expr
@@ -110,7 +95,7 @@ term =
         lazy <|
             \_ ->
                 oneOf
-                    [ delayedCommitMap (Apply2 Times)
+                    [ delayedCommitMap (Apply2 Dot)
                         expo
                         (succeed identity |. command "cdot" |. spaces |= term)
                     , delayedCommitMap (Apply2 Times) expo term
@@ -168,7 +153,7 @@ logarithms : Parser Expr
 logarithms =
     let
         ln =
-            Apply2 Log (Constant e)
+            Apply2 Log (Real e)
     in
         oneOf
             [ succeed ln |. command "ln" |= singleArg
@@ -245,12 +230,38 @@ negative parser =
                 |= parser
 
 
+constant : Parser Expr
+constant =
+    let
+        toInt : Float -> Maybe Int
+        toInt val =
+            if (val |> truncate |> toFloat) == val then
+                Just (truncate val)
+            else
+                Nothing
+    in
+        oneOf
+            [ specialConstants
+            , float
+                |> map
+                    (\val ->
+                        case toInt val of
+                            Nothing ->
+                                Rational val
+
+                            Just int ->
+                                Integer int
+                    )
+            ]
+
+
 specialConstants : Parser Expr
 specialConstants =
     oneOf
-        [ succeed (Constant pi) |. command "pi"
-        , succeed (Constant e) |. symbol "e"
-        , fail "a special constant, like e or pi"
+        [ succeed (Real pi) |. command "pi"
+        , succeed (Real e) |. symbol "e"
+        , succeed (ImaginaryUnit) |. symbol "i"
+        , fail "a special constant, like i, e or pi"
         ]
 
 
