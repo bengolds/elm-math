@@ -99,25 +99,3 @@ union x y disjointSet =
 
             _ ->
                 disjointSet
-
-
-
-{--
- function Union(x, y)
-   xRoot := Find(x)
-   yRoot := Find(y)
-
-   // x and y are already in the same set
-   if xRoot == yRoot
-       return
-
-   // x and y are not in same set, so we merge them
-   if xRoot.rank < yRoot.rank
-     xRoot.parent := yRoot
-   else if xRoot.rank > yRoot.rank
-     yRoot.parent := xRoot
-   else
-     //Arbitrarily make one root the new parent
-     yRoot.parent := xRoot
-     xRoot.rank   := xRoot.rank + 1
---}

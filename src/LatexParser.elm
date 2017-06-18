@@ -9,6 +9,7 @@ import Html exposing (span, div, text, Html, br, li, ul)
 
 --import Calculator exposing (calculate)
 
+import GreekLetters exposing (..)
 import MathTree exposing (..)
 import TypeAnalyzer exposing (..)
 import TreeView.TreeView exposing (treeView, TreeViewNode(..))
@@ -47,7 +48,7 @@ factor =
                 oneOf <|
                     [ constant
                     , negative factor
-                    , variable
+                    , succeed Variable |= variable
                     , parenthesized expr
                     , functions
                     , absolute
@@ -65,8 +66,8 @@ expo =
                     suffix : Parser (Expr -> Expr)
                     suffix =
                         oneOf
-                            [ succeed (Apply1 Factorial) |. symbol "!"
-                            , succeed (flip <| Apply2 Exponent) |. symbol "^" |= closeArg expr
+                            [ succeed (Func1 "factorial") |. symbol "!"
+                            , succeed (flip <| Func2 "exponent") |. symbol "^" |= closeArg expr
                             ]
                 in
                     succeed (flip applyl)
@@ -95,10 +96,10 @@ term =
         lazy <|
             \_ ->
                 oneOf
-                    [ delayedCommitMap (Apply2 Dot)
+                    [ delayedCommitMap (Func2 "dot")
                         expo
                         (succeed identity |. command "cdot" |. spaces |= term)
-                    , delayedCommitMap (Apply2 Times) expo term
+                    , delayedCommitMap (Func2 "times") expo term
                     , expo
                     , fail "a multiplicative term"
                     ]
@@ -111,8 +112,8 @@ expr =
             \_ ->
                 chainl term <|
                     oneOf
-                        [ succeed (Apply2 Plus) |. symbol "+"
-                        , succeed (Apply2 Minus) |. symbol "-"
+                        [ succeed (Func2 "plus") |. symbol "+"
+                        , succeed (Func2 "minus") |. symbol "-"
                         ]
 
 
@@ -122,20 +123,14 @@ functions =
         func1names =
             [ "sinh", "cosh", "tanh", "sin", "cos", "tan", "sec", "csc", "cot", "arcsin", "arccos", "arctan" ]
 
-        func1exprs =
-            [ Sinh, Cosh, Tanh, Sin, Cos, Tan, Sec, Csc, Cot, Arcsin, Arccos, Arctan ]
-
         func2names =
             [ "frac" ]
-
-        func2exprs =
-            [ Divide ]
     in
         lazy <|
             \_ ->
                 oneOf <|
-                    List.map2 func1 func1exprs func1names
-                        ++ List.map2 func2 func2exprs func2names
+                    List.map func1 func1names
+                        ++ List.map func2 func2names
                         ++ [ logarithms
                            , fail "a function, like \\sin, \\cos, or \\tan"
                            ]
@@ -153,12 +148,12 @@ logarithms : Parser Expr
 logarithms =
     let
         ln =
-            Apply2 Log (Real e)
+            Func2 "log" (Real e)
     in
         oneOf
             [ succeed ln |. command "ln" |= singleArg
             , succeed ln |= delayedCommit (command "log") singleArg
-            , succeed (Apply2 Log)
+            , succeed (Func2 "log")
                 |. command "log"
                 |. symbol "_"
                 |= closeArg expr
@@ -171,41 +166,55 @@ summations =
     lazy <|
         \_ ->
             inContext "summation" <|
-                succeed Sum
-                    |. command "sum"
+                oneOf
+                    [ succeed Sum |. command "sum"
+                    , succeed Product |. command "prod"
+                    ]
                     |. symbol "_"
                     |. symbol "{"
-                    |= identifier
+                    |= variable
                     |. symbol "="
-                    |= int
+                    |= expr
                     |. symbol "}"
                     |. symbol "^"
-                    |= closeArg int
+                    |= closeArg expr
                     |= term
 
 
-variable : Parser Expr
+variable : Parser String
 variable =
-    oneOf
-        [ succeed Variable |= identifier
-        , fail "a variable, like x or voltage"
-        ]
+    let
+        greekVariable : Parser String
+        greekVariable =
+            oneOf <|
+                List.map
+                    (\{ name, symbol } ->
+                        succeed (toString symbol)
+                            |. command name
+                    )
+                    (greek |> List.filter isNonRoman)
+    in
+        oneOf
+            [ identifier
+            , greekVariable
+            , fail "a variable, like x or voltage"
+            ]
 
 
-func1 : Func1 -> String -> Parser Expr
-func1 fn name =
+func1 : String -> Parser Expr
+func1 name =
     command name
         |% (inContext name <|
-                succeed (Apply1 fn)
+                succeed (Func1 name)
                     |= singleArg
            )
 
 
-func2 : Func2 -> String -> Parser Expr
-func2 fn name =
+func2 : String -> Parser Expr
+func2 name =
     command name
         |% (inContext name <|
-                succeed (Apply2 fn)
+                succeed (Func2 name)
                     |= arg expr
                     |= arg expr
            )
@@ -215,7 +224,7 @@ absolute : Parser Expr
 absolute =
     lazy <|
         \_ ->
-            succeed (Apply1 Abs)
+            succeed (Func1 "abs")
                 |. command "left|"
                 |= expr
                 |. command "right|"
@@ -225,7 +234,7 @@ negative : Parser Expr -> Parser Expr
 negative parser =
     lazy <|
         \_ ->
-            succeed (Apply1 Negative)
+            succeed (Func1 "negative")
                 |. symbol "-"
                 |= parser
 

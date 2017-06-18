@@ -4,6 +4,8 @@ import Html exposing (..)
 import Html.Attributes exposing (rel, href)
 import Mathquill exposing (mathField, onEdit)
 import LatexParser
+import GreekLetters exposing (..)
+import String
 
 
 main : Program Never Model Msg
@@ -60,20 +62,22 @@ subscriptions model =
 
 view : Model -> Html Msg
 view model =
-    div []
-        [ css "index.css"
-        , mathField
-            [ onEdit QuillEdited
-            , Mathquill.autoCommands "sum pi"
-            , Mathquill.spaceBehavesLikeTab True
-
-            --autoCommands "sin cos tan sec csc cot sinh cosh tanh arcsin arccos arctan"
+    let
+        autoCommands =
+            [ "sum", "prod" ] ++ (greek |> List.filter isNonRoman |> names)
+    in
+        div []
+            [ css "index.css"
+            , mathField
+                [ onEdit QuillEdited
+                , Mathquill.autoCommands <| String.join " " autoCommands
+                , Mathquill.spaceBehavesLikeTab True
+                ]
+            , br [] []
+            , text model.inputString
+            , br [] []
+            , LatexParser.output model.inputString
             ]
-        , br [] []
-        , text model.inputString
-        , br [] []
-        , LatexParser.output model.inputString
-        ]
 
 
 css : String -> Html Msg

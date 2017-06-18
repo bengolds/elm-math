@@ -1,6 +1,6 @@
 module TypeAnalyzer exposing (..)
 
-import MathTree as Tree exposing (Expr, Func1(..), Func2(..))
+import MathTree as Tree exposing (Expr)
 import TreeView.TreeView exposing (treeView, TreeViewNode(..))
 import Dict exposing (Dict)
 import List
@@ -20,20 +20,36 @@ asTreeNode : Expr -> TreeViewNode msg
 asTreeNode node =
     let
         nodeContent =
-            Html.div []
-                [ Html.text <| Tree.prettyPrint node
+            Html.text <| Tree.prettyPrint node
 
-                --, Html.text <| toString (signatureHelper node)
-                -- Insert the signature info here!
-                ]
+        --, Html.text <| toString (signatureHelper node)
+        -- Insert the signature info here!
+        prependText : String -> TreeViewNode msg -> TreeViewNode msg
+        prependText text node =
+            case node of
+                TreeNode content children ->
+                    TreeNode (Html.span [] [ Html.text text, content ]) children
+
+        summationChildren indexName from to summand =
+            [ TreeNode (Html.text <| " over " ++ indexName) []
+            , asTreeNode from |> prependText "from "
+            , asTreeNode to |> prependText "to "
+            , asTreeNode summand |> prependText "of "
+            ]
     in
         TreeNode nodeContent
             (case node of
-                Tree.Apply1 _ a1 ->
+                Tree.Func1 _ a1 ->
                     [ asTreeNode a1 ]
 
-                Tree.Apply2 _ a1 a2 ->
+                Tree.Func2 _ a1 a2 ->
                     [ asTreeNode a1, asTreeNode a2 ]
+
+                Tree.Sum indexName from to summand ->
+                    summationChildren indexName from to summand
+
+                Tree.Product indexName from to summand ->
+                    summationChildren indexName from to summand
 
                 _ ->
                     []
