@@ -56,6 +56,21 @@ chainr object combiner =
             )
 
 
+applyl : List (a -> a) -> a -> a
+applyl fns start =
+    case fns of
+        [] ->
+            start
+
+        x :: xs ->
+            applyl xs (x start)
+
+
+applyr : List (a -> a) -> a -> a
+applyr fns start =
+    applyl (List.reverse fns) start
+
+
 list : Parser a -> Parser b -> Parser (List a)
 list object separator =
     map2 (::) object (repeat zeroOrMore (succeed identity |. separator |= object))

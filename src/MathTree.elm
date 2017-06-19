@@ -8,9 +8,11 @@ type Expr
     | Rational Float
     | Integer Int
     | Variable String
+    | Differential Expr String
     | ImaginaryUnit
     | Sum String Expr Expr Expr
     | Product String Expr Expr Expr
+    | Integral String Expr Expr Expr
     | Func1 String Expr
     | Func2 String Expr Expr
 

@@ -3,7 +3,6 @@ module LatexParser exposing (..)
 import Parser exposing (..)
 import ParserUtils exposing (..)
 import ParserDebugger
-import Char exposing (isDigit)
 import Html exposing (span, div, text, Html, br, li, ul)
 
 
@@ -12,14 +11,13 @@ import Html exposing (span, div, text, Html, br, li, ul)
 import GreekLetters exposing (..)
 import MathTree exposing (..)
 import TypeAnalyzer exposing (..)
-import TreeView.TreeView exposing (treeView, TreeViewNode(..))
 
 
 --Output
 
 
 output inputString =
-    case run expr inputString of
+    case run (expr default) inputString of
         Ok parsed ->
             div []
                 [ TypeAnalyzer.debugTree parsed
@@ -37,28 +35,48 @@ output inputString =
 
 
 
+--ConfigurableParser
+
+
+type alias Options =
+    { insideIntegral : Bool
+    }
+
+
+default : Options
+default =
+    { insideIntegral = False }
+
+
+type alias ConfigurableParser a =
+    Options -> Parser a
+
+
+
 --Grammar
 
 
-factor : Parser Expr
-factor =
+factor : ConfigurableParser Expr
+factor options =
     inContext "factor" <|
         lazy <|
             \_ ->
                 oneOf <|
-                    [ constant
-                    , negative factor
-                    , succeed Variable |= variable
-                    , parenthesized expr
-                    , functions
-                    , absolute
-                    , summations
+                    [ constant options
+                    , negative factor options
+                    , differential options
+                    , succeed Variable |= variable options
+                    , parenthesized expr options
+                    , functions options
+                    , absolute options
+                    , summations options
+                    , integral options
                     , fail "a factor"
                     ]
 
 
-expo : Parser Expr
-expo =
+expo : ConfigurableParser Expr
+expo options =
     inContext "expo" <|
         lazy <|
             \_ ->
@@ -67,58 +85,49 @@ expo =
                     suffix =
                         oneOf
                             [ succeed (Func1 "factorial") |. symbol "!"
-                            , succeed (flip <| Func2 "exponent") |. symbol "^" |= closeArg expr
+                            , succeed (flip <| Func2 "exponent")
+                                |. symbol "^"
+                                |= closeArg expr options
                             ]
                 in
                     succeed (flip applyl)
-                        |= factor
+                        |= factor options
                         |= repeat zeroOrMore suffix
 
 
-applyl : List (a -> a) -> a -> a
-applyl fns start =
-    case fns of
-        [] ->
-            start
-
-        x :: xs ->
-            applyl xs (x start)
-
-
-applyr : List (a -> a) -> a -> a
-applyr fns start =
-    applyl (List.reverse fns) start
-
-
-term : Parser Expr
-term =
+term : ConfigurableParser Expr
+term options =
     inContext "term" <|
         lazy <|
             \_ ->
                 oneOf
                     [ delayedCommitMap (Func2 "dot")
-                        expo
-                        (succeed identity |. command "cdot" |. spaces |= term)
-                    , delayedCommitMap (Func2 "times") expo term
-                    , expo
+                        (expo options)
+                        (succeed identity
+                            |. command "cdot"
+                            |. spaces
+                            |= (term options)
+                        )
+                    , delayedCommitMap (Func2 "times") (expo options) (term options)
+                    , (expo options)
                     , fail "a multiplicative term"
                     ]
 
 
-expr : Parser Expr
-expr =
+expr : ConfigurableParser Expr
+expr options =
     inContext "expr" <|
         lazy <|
             \_ ->
-                chainl term <|
+                chainl (term options) <|
                     oneOf
                         [ succeed (Func2 "plus") |. symbol "+"
                         , succeed (Func2 "minus") |. symbol "-"
                         ]
 
 
-functions : Parser Expr
-functions =
+functions : ConfigurableParser Expr
+functions options =
     let
         func1names =
             [ "sinh", "cosh", "tanh", "sin", "cos", "tan", "sec", "csc", "cot", "arcsin", "arccos", "arctan" ]
@@ -129,40 +138,63 @@ functions =
         lazy <|
             \_ ->
                 oneOf <|
-                    List.map func1 func1names
-                        ++ List.map func2 func2names
-                        ++ [ logarithms
+                    List.map (\name -> func1 name options) func1names
+                        ++ List.map (\name -> func2 name options) func2names
+                        ++ [ logarithms options
                            , fail "a function, like \\sin, \\cos, or \\tan"
                            ]
 
 
-singleArg =
+singleArg : ConfigurableParser Expr
+singleArg options =
     oneOf
-        [ arg expr
-        , parenthesized expr
-        , delayedCommit spaces term
+        [ arg expr options
+        , parenthesized expr options
+        , delayedCommit spaces (term options)
         ]
 
 
-logarithms : Parser Expr
-logarithms =
+logarithms : ConfigurableParser Expr
+logarithms options =
     let
         ln =
             Func2 "log" (Real e)
     in
         oneOf
-            [ succeed ln |. command "ln" |= singleArg
-            , succeed ln |= delayedCommit (command "log") singleArg
+            [ succeed ln |. command "ln" |= singleArg options
+            , succeed ln |= delayedCommit (command "log") (singleArg options)
             , succeed (Func2 "log")
                 |. command "log"
                 |. symbol "_"
-                |= closeArg expr
-                |= singleArg
+                |= closeArg expr options
+                |= singleArg options
             ]
 
 
-summations : Parser Expr
-summations =
+integral : ConfigurableParser Expr
+integral options =
+    lazy <|
+        \_ ->
+            inContext "integral" <|
+                succeed
+                    (\from to integrand dummy ->
+                        Integral dummy from to integrand
+                    )
+                    |. command "int"
+                    |. symbol "_"
+                    |= closeArg expr options
+                    |. symbol "^"
+                    |= closeArg expr options
+                    |= oneOf
+                        [ expr { options | insideIntegral = True }
+                        , succeed (Real 1)
+                        ]
+                    |. keyword "d"
+                    |= variable options
+
+
+summations : ConfigurableParser Expr
+summations options =
     lazy <|
         \_ ->
             inContext "summation" <|
@@ -172,17 +204,31 @@ summations =
                     ]
                     |. symbol "_"
                     |. symbol "{"
-                    |= variable
+                    |= variable options
                     |. symbol "="
-                    |= expr
+                    |= expr options
                     |. symbol "}"
                     |. symbol "^"
-                    |= closeArg expr
-                    |= term
+                    |= closeArg expr options
+                    |= term options
 
 
-variable : Parser String
-variable =
+differential : ConfigurableParser Expr
+differential options =
+    if options.insideIntegral then
+        fail "No differentials inside integrals"
+    else
+        delayedCommit (keyword "d") <|
+            succeed Differential
+                |= oneOf
+                    [ succeed identity |. symbol "^" |= closeArg expr options
+                    , succeed (Real 1)
+                    ]
+                |= variable options
+
+
+variable : ConfigurableParser String
+variable options =
     let
         greekVariable : Parser String
         greekVariable =
@@ -195,52 +241,52 @@ variable =
                     (greek |> List.filter isNonRoman)
     in
         oneOf
-            [ identifier
+            [ identifier options
             , greekVariable
             , fail "a variable, like x or voltage"
             ]
 
 
-func1 : String -> Parser Expr
-func1 name =
+func1 : String -> ConfigurableParser Expr
+func1 name options =
     command name
         |% (inContext name <|
                 succeed (Func1 name)
-                    |= singleArg
+                    |= singleArg options
            )
 
 
-func2 : String -> Parser Expr
-func2 name =
+func2 : String -> ConfigurableParser Expr
+func2 name options =
     command name
         |% (inContext name <|
                 succeed (Func2 name)
-                    |= arg expr
-                    |= arg expr
+                    |= arg expr options
+                    |= arg expr options
            )
 
 
-absolute : Parser Expr
-absolute =
+absolute : ConfigurableParser Expr
+absolute options =
     lazy <|
         \_ ->
             succeed (Func1 "abs")
                 |. command "left|"
-                |= expr
+                |= expr options
                 |. command "right|"
 
 
-negative : Parser Expr -> Parser Expr
-negative parser =
+negative : ConfigurableParser Expr -> Options -> Parser Expr
+negative parser options =
     lazy <|
         \_ ->
             succeed (Func1 "negative")
                 |. symbol "-"
-                |= parser
+                |= parser options
 
 
-constant : Parser Expr
-constant =
+constant : ConfigurableParser Expr
+constant options =
     let
         toInt : Float -> Maybe Int
         toInt val =
@@ -250,7 +296,7 @@ constant =
                 Nothing
     in
         oneOf
-            [ specialConstants
+            [ specialConstants options
             , float
                 |> map
                     (\val ->
@@ -264,8 +310,8 @@ constant =
             ]
 
 
-specialConstants : Parser Expr
-specialConstants =
+specialConstants : ConfigurableParser Expr
+specialConstants options =
     oneOf
         [ succeed (Real pi) |. command "pi"
         , succeed (Real e) |. symbol "e"
@@ -274,19 +320,25 @@ specialConstants =
         ]
 
 
-identifier : Parser String
-identifier =
-    keep (Exactly 1) isLetter
+identifier : ConfigurableParser String
+identifier options =
+    if options.insideIntegral then
+        keep (Exactly 1) (\char -> isLetter char && char /= 'd')
+    else
+        keep (Exactly 1) isLetter
 
 
-parenthesized : Parser a -> Parser a
-parenthesized parser =
+parenthesized : ConfigurableParser a -> Options -> Parser a
+parenthesized parser options =
     let
+        modifiedOptions =
+            { options | insideIntegral = False }
+
         leftRight : String -> String -> Parser a
         leftRight leftChar rightChar =
             succeed identity
                 |. command ("left" ++ leftChar)
-                |= parser
+                |= parser modifiedOptions
                 |. command ("right" ++ rightChar)
     in
         oneOf
@@ -302,11 +354,11 @@ command name =
     keyword ("\\" ++ name)
 
 
-arg : Parser a -> Parser a
-arg parser =
+arg : ConfigurableParser a -> Options -> Parser a
+arg parser options =
     succeed identity
         |. symbol "{"
-        |= parser
+        |= parser options
         |. symbol "}"
 
 
@@ -331,10 +383,11 @@ parseSubstring count parser =
         delayedCommitMap first instaCommitParser (succeed ())
 
 
-closeArg parser =
+closeArg : ConfigurableParser a -> Options -> Parser a
+closeArg parser options =
     oneOf
-        [ parseSubstring (Exactly 1) parser
-        , arg parser
+        [ parseSubstring (Exactly 1) (parser options)
+        , arg parser options
         ]
 
 
