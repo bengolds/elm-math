@@ -13,6 +13,7 @@ type Expr
     | Sum String Expr Expr Expr
     | Product String Expr Expr Expr
     | Integral String Expr Expr Expr
+    | Equals Expr Expr
     | Func1 String Expr
     | Func2 String Expr Expr
 
@@ -25,6 +26,9 @@ prettyPrint val =
 
         Func2 func _ _ ->
             toSentenceCase func
+
+        Equals _ _ ->
+            "Equals"
 
         Sum _ _ _ _ ->
             "Sum"

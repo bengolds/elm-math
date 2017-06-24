@@ -17,7 +17,7 @@ import TypeAnalyzer exposing (..)
 
 
 output inputString =
-    case run (expr default) inputString of
+    case run (equation default) inputString of
         Ok parsed ->
             div []
                 [ TypeAnalyzer.debugTree parsed
@@ -124,6 +124,16 @@ expr options =
                         [ succeed (Func2 "plus") |. symbol "+"
                         , succeed (Func2 "minus") |. symbol "-"
                         ]
+
+
+equation : ConfigurableParser Expr
+equation options =
+    inContext "equation" <|
+        lazy <|
+            \_ ->
+                chainl (expr options) <|
+                    succeed Equals
+                        |. symbol "="
 
 
 functions : ConfigurableParser Expr

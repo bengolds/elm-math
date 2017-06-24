@@ -45,6 +45,9 @@ asTreeNode node =
                 Tree.Func2 _ a1 a2 ->
                     [ asTreeNode a1, asTreeNode a2 ]
 
+                Tree.Equals a1 a2 ->
+                    [ asTreeNode a1, asTreeNode a2 ]
+
                 Tree.Sum indexName from to summand ->
                     summationChildren indexName from to summand
 
