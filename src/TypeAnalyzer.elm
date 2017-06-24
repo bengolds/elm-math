@@ -51,6 +51,9 @@ asTreeNode node =
                 Tree.Product indexName from to summand ->
                     summationChildren indexName from to summand
 
+                Tree.Integral dummyVar from to integrand ->
+                    summationChildren dummyVar from to integrand
+
                 _ ->
                     []
             )

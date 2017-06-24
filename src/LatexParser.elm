@@ -188,6 +188,7 @@ integral options =
                     |= oneOf
                         [ expr { options | insideIntegral = True }
                         , succeed (Real 1)
+                        , fail "a valid integrand"
                         ]
                     |. keyword "d"
                     |= variable options

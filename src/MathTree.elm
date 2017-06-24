@@ -32,6 +32,9 @@ prettyPrint val =
         Product _ _ _ _ ->
             "Product"
 
+        Integral _ _ _ _ ->
+            "Integral"
+
         elsewise ->
             toString elsewise
 

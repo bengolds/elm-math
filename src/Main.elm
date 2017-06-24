@@ -4,6 +4,7 @@ import Html exposing (..)
 import Html.Attributes exposing (rel, href)
 import Mathquill exposing (mathField, onEdit)
 import LatexParser
+import Plot.Plot exposing (..)
 import GreekLetters exposing (..)
 import String
 
@@ -65,6 +66,11 @@ view model =
     let
         autoCommands =
             [ "sum", "prod" ] ++ (greek |> List.filter isNonRoman |> names)
+
+        plotConfig =
+            { xRange = ( -10, 10 )
+            , yRange = ( 0, 100 )
+            }
     in
         div []
             [ css "index.css"
@@ -77,6 +83,7 @@ view model =
             , text model.inputString
             , br [] []
             , LatexParser.output model.inputString
+            , basicPlot (\x -> x * x) plotConfig
             ]
 
 
