@@ -24253,6 +24253,231 @@ var _user$project$TypeAnalyzer$isSuperset = F2(
 		}
 	});
 
+var _user$project$TestCompiler$func2 = F3(
+	function (name, arg1, arg2) {
+		var _p0 = name;
+		switch (_p0) {
+			case 'plus':
+				return arg1 + arg2;
+			case 'minus':
+				return arg1 - arg2;
+			case 'frac':
+				return arg1 / arg2;
+			case 'times':
+				return arg1 * arg2;
+			case 'dot':
+				return arg1 * arg2;
+			case 'exponent':
+				return Math.pow(arg1, arg2);
+			default:
+				return 0;
+		}
+	});
+var _user$project$TestCompiler$func1 = F2(
+	function (name, arg) {
+		var _p1 = name;
+		switch (_p1) {
+			case 'sin':
+				return _elm_lang$core$Basics$sin(arg);
+			case 'cos':
+				return _elm_lang$core$Basics$cos(arg);
+			default:
+				return 0;
+		}
+	});
+var _user$project$TestCompiler$getName = F2(
+	function (scope, name) {
+		return A2(_elm_lang$core$Dict$get, name, scope);
+	});
+var _user$project$TestCompiler$testScope = _elm_lang$core$Dict$fromList(
+	{
+		ctor: '::',
+		_0: {ctor: '_Tuple2', _0: 'x', _1: 1},
+		_1: {
+			ctor: '::',
+			_0: {ctor: '_Tuple2', _0: 'y', _1: 2},
+			_1: {ctor: '[]'}
+		}
+	});
+var _user$project$TestCompiler$eval = F2(
+	function (result, scope) {
+		var _p2 = result;
+		switch (_p2.ctor) {
+			case 'Constant':
+				return _elm_lang$core$Maybe$Just(_p2._0);
+			case 'Function':
+				return _p2._0(scope);
+			default:
+				return _elm_lang$core$Maybe$Nothing;
+		}
+	});
+var _user$project$TestCompiler$CompileError = {ctor: 'CompileError'};
+var _user$project$TestCompiler$Function = function (a) {
+	return {ctor: 'Function', _0: a};
+};
+var _user$project$TestCompiler$Constant = function (a) {
+	return {ctor: 'Constant', _0: a};
+};
+var _user$project$TestCompiler$compile = function (expr) {
+	var _p3 = expr;
+	switch (_p3.ctor) {
+		case 'Real':
+			return _user$project$TestCompiler$Constant(_p3._0);
+		case 'Rational':
+			return _user$project$TestCompiler$Constant(_p3._0);
+		case 'Integer':
+			return _user$project$TestCompiler$Constant(
+				_elm_lang$core$Basics$toFloat(_p3._0));
+		case 'Variable':
+			return _user$project$TestCompiler$Function(
+				function (scope) {
+					return A2(_user$project$TestCompiler$getName, scope, _p3._0);
+				});
+		case 'Differential':
+			return _user$project$TestCompiler$CompileError;
+		case 'ImaginaryUnit':
+			return _user$project$TestCompiler$CompileError;
+		case 'Sum':
+			return _user$project$TestCompiler$Function(
+				A6(
+					_user$project$TestCompiler$foldOver,
+					_p3._0,
+					_p3._1,
+					_p3._2,
+					_p3._3,
+					F2(
+						function (x, y) {
+							return x + y;
+						}),
+					0));
+		case 'Product':
+			return _user$project$TestCompiler$Function(
+				A6(
+					_user$project$TestCompiler$foldOver,
+					_p3._0,
+					_p3._1,
+					_p3._2,
+					_p3._3,
+					F2(
+						function (x, y) {
+							return x * y;
+						}),
+					1));
+		case 'Integral':
+			return _user$project$TestCompiler$CompileError;
+		case 'Equals':
+			return _user$project$TestCompiler$CompileError;
+		case 'Func1':
+			var _p5 = _p3._0;
+			var _p4 = _user$project$TestCompiler$compile(_p3._1);
+			switch (_p4.ctor) {
+				case 'Constant':
+					return _user$project$TestCompiler$Constant(
+						A2(_user$project$TestCompiler$func1, _p5, _p4._0));
+				case 'Function':
+					return _user$project$TestCompiler$Function(
+						function (scope) {
+							return A2(
+								_elm_lang$core$Maybe$map,
+								_user$project$TestCompiler$func1(_p5),
+								_p4._0(scope));
+						});
+				default:
+					return _user$project$TestCompiler$CompileError;
+			}
+		default:
+			var _p7 = _p3._0;
+			var _p6 = {
+				ctor: '_Tuple2',
+				_0: _user$project$TestCompiler$compile(_p3._1),
+				_1: _user$project$TestCompiler$compile(_p3._2)
+			};
+			_v5_3:
+			do {
+				_v5_2:
+				do {
+					switch (_p6._0.ctor) {
+						case 'Constant':
+							switch (_p6._1.ctor) {
+								case 'Constant':
+									return _user$project$TestCompiler$Constant(
+										A3(_user$project$TestCompiler$func2, _p7, _p6._0._0, _p6._1._0));
+								case 'Function':
+									break _v5_2;
+								default:
+									break _v5_3;
+							}
+						case 'Function':
+							return _user$project$TestCompiler$Function(
+								function (scope) {
+									return A3(
+										_elm_lang$core$Maybe$map2,
+										_user$project$TestCompiler$func2(_p7),
+										_p6._0._0(scope),
+										A2(_user$project$TestCompiler$eval, _p6._1, scope));
+								});
+						default:
+							if (_p6._1.ctor === 'Function') {
+								break _v5_2;
+							} else {
+								break _v5_3;
+							}
+					}
+				} while(false);
+				return _user$project$TestCompiler$Function(
+					function (scope) {
+						return A3(
+							_elm_lang$core$Maybe$map2,
+							_user$project$TestCompiler$func2(_p7),
+							A2(_user$project$TestCompiler$eval, _p6._0, scope),
+							_p6._1._0(scope));
+					});
+			} while(false);
+			return _user$project$TestCompiler$CompileError;
+	}
+};
+var _user$project$TestCompiler$foldOver = F7(
+	function (name, from, to, over, func, start, scope) {
+		var compiledOver = _user$project$TestCompiler$compile(over);
+		var maybeTo = A2(
+			_elm_lang$core$Maybe$map,
+			_elm_lang$core$Basics$round,
+			A2(
+				_user$project$TestCompiler$eval,
+				_user$project$TestCompiler$compile(to),
+				scope));
+		var maybeFrom = A2(
+			_elm_lang$core$Maybe$map,
+			_elm_lang$core$Basics$round,
+			A2(
+				_user$project$TestCompiler$eval,
+				_user$project$TestCompiler$compile(from),
+				scope));
+		var range = A3(_elm_lang$core$Maybe$map2, _elm_lang$core$List$range, maybeFrom, maybeTo);
+		return A2(
+			_elm_lang$core$Maybe$andThen,
+			A2(
+				_elm_lang$core$List$foldl,
+				F2(
+					function (index, sum) {
+						var newScope = A3(
+							_elm_lang$core$Dict$insert,
+							name,
+							_elm_lang$core$Basics$toFloat(index),
+							scope);
+						return A3(
+							_elm_lang$core$Maybe$map2,
+							func,
+							sum,
+							A2(
+								_user$project$TestCompiler$eval,
+								_user$project$TestCompiler$compile(over),
+								newScope));
+					}),
+				_elm_lang$core$Maybe$Just(start)),
+			range);
+	});
+
 var _user$project$LatexParser$spaces = A2(
 	_elm_tools$parser$Parser$ignore,
 	_elm_tools$parser$Parser$zeroOrMore,
@@ -24690,9 +24915,13 @@ var _user$project$LatexParser$functions = function (options) {
 	var func2names = {
 		ctor: '::',
 		_0: 'frac',
-		_1: {ctor: '[]'}
+		_1: {
+			ctor: '::',
+			_0: 'binom',
+			_1: {ctor: '[]'}
+		}
 	};
-	var func1names = {
+	var trigFunctions = {
 		ctor: '::',
 		_0: 'sinh',
 		_1: {
@@ -24749,9 +24978,9 @@ var _user$project$LatexParser$functions = function (options) {
 					A2(
 						_elm_lang$core$List$map,
 						function (name) {
-							return A2(_user$project$LatexParser$func1, name, options);
+							return A3(_user$project$LatexParser$func1, name, true, options);
 						},
-						func1names),
+						trigFunctions),
 					A2(
 						_elm_lang$core$Basics_ops['++'],
 						A2(
@@ -24771,19 +25000,46 @@ var _user$project$LatexParser$functions = function (options) {
 						})));
 		});
 };
-var _user$project$LatexParser$func1 = F2(
-	function (name, options) {
+var _user$project$LatexParser$func1 = F3(
+	function (name, withInfix, options) {
 		return A2(
 			_user$project$ParserUtils_ops['|%'],
 			_user$project$LatexParser$command(name),
 			A2(
 				_elm_tools$parser$Parser$inContext,
 				name,
-				A2(
-					_elm_tools$parser$Parser_ops['|='],
-					_elm_tools$parser$Parser$succeed(
-						_user$project$MathTree$Func1(name)),
-					_user$project$LatexParser$singleArg(options))));
+				_elm_tools$parser$Parser$oneOf(
+					A2(
+						_elm_lang$core$Basics_ops['++'],
+						{
+							ctor: '::',
+							_0: A2(
+								_elm_tools$parser$Parser_ops['|='],
+								_elm_tools$parser$Parser$succeed(
+									_user$project$MathTree$Func1(name)),
+								_user$project$LatexParser$singleArg(options)),
+							_1: {ctor: '[]'}
+						},
+						withInfix ? {
+							ctor: '::',
+							_0: A2(
+								_elm_tools$parser$Parser_ops['|='],
+								A2(
+									_elm_tools$parser$Parser_ops['|='],
+									A2(
+										_elm_tools$parser$Parser_ops['|.'],
+										_elm_tools$parser$Parser$succeed(
+											_elm_lang$core$Basics$flip(
+												_user$project$MathTree$Func2('exponent'))),
+										_elm_tools$parser$Parser$symbol('^')),
+									A2(_user$project$LatexParser$closeArg, _user$project$LatexParser$expr, options)),
+								A2(
+									_elm_tools$parser$Parser_ops['|='],
+									_elm_tools$parser$Parser$succeed(
+										_user$project$MathTree$Func1(name)),
+									_user$project$LatexParser$singleArg(options))),
+							_1: {ctor: '[]'}
+						} : {ctor: '[]'}))));
 	});
 var _user$project$LatexParser$singleArg = function (options) {
 	return _elm_tools$parser$Parser$oneOf(
@@ -25253,16 +25509,7 @@ var _user$project$Main$view = function (model) {
 							_1: {
 								ctor: '::',
 								_0: _user$project$LatexParser$output(model.inputString),
-								_1: {
-									ctor: '::',
-									_0: A2(
-										_user$project$Plot_Plot$basicPlot,
-										function (x) {
-											return x * x;
-										},
-										plotConfig),
-									_1: {ctor: '[]'}
-								}
+								_1: {ctor: '[]'}
 							}
 						}
 					}

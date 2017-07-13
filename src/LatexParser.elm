@@ -11,6 +11,7 @@ import Html exposing (span, div, text, Html, br, li, ul)
 import GreekLetters exposing (..)
 import MathTree exposing (..)
 import TypeAnalyzer exposing (..)
+import TestCompiler
 
 
 --Output
@@ -22,6 +23,10 @@ output inputString =
             div []
                 [ TypeAnalyzer.debugTree parsed
 
+                --, TestCompiler.compile parsed
+                --|> (flip TestCompiler.eval) TestCompiler.testScope
+                --|> toString
+                --|> text
                 --, div [] [ text <| toString <| calculate parsed ]
                 --, div []
                 --(getSignatures parsed
@@ -139,16 +144,16 @@ equation options =
 functions : ConfigurableParser Expr
 functions options =
     let
-        func1names =
+        trigFunctions =
             [ "sinh", "cosh", "tanh", "sin", "cos", "tan", "sec", "csc", "cot", "arcsin", "arccos", "arctan" ]
 
         func2names =
-            [ "frac" ]
+            [ "frac", "binom" ]
     in
         lazy <|
             \_ ->
                 oneOf <|
-                    List.map (\name -> func1 name options) func1names
+                    List.map (\name -> func1 name True options) trigFunctions
                         ++ List.map (\name -> func2 name options) func2names
                         ++ [ logarithms options
                            , fail "a function, like \\sin, \\cos, or \\tan"
@@ -258,12 +263,22 @@ variable options =
             ]
 
 
-func1 : String -> ConfigurableParser Expr
-func1 name options =
+func1 : String -> Bool -> ConfigurableParser Expr
+func1 name withInfix options =
     command name
         |% (inContext name <|
-                succeed (Func1 name)
-                    |= singleArg options
+                oneOf <|
+                    [ succeed (Func1 name)
+                        |= singleArg options
+                    ]
+                        ++ if withInfix then
+                            [ succeed (flip <| Func2 "exponent")
+                                |. symbol "^"
+                                |= closeArg expr options
+                                |= (succeed (Func1 name) |= singleArg options)
+                            ]
+                           else
+                            []
            )
 
 

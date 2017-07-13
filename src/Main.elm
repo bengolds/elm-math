@@ -83,7 +83,6 @@ view model =
             , text model.inputString
             , br [] []
             , LatexParser.output model.inputString
-            , basicPlot (\x -> x * x) plotConfig
             ]
 
 
