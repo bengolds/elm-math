@@ -4,9 +4,12 @@ import Html exposing (..)
 import Html.Attributes exposing (rel, href)
 import Mathquill exposing (mathField, onEdit)
 import LatexParser
-import Plot.Plot exposing (..)
+import MathSlider exposing (mathSlider)
 import GreekLetters exposing (..)
 import String
+import Plot.GlPlot exposing (inequality)
+import ParserDebugger
+import Dict
 
 
 main : Program Never Model Msg
@@ -24,12 +27,16 @@ main =
 
 
 type alias Model =
-    { inputString : String }
+    { inputString : String
+    , sliderVal : Float
+    }
 
 
 initialModel : Model
 initialModel =
-    { inputString = "" }
+    { inputString = ""
+    , sliderVal = 0
+    }
 
 
 init : ( Model, Cmd Msg )
@@ -43,6 +50,7 @@ init =
 
 type Msg
     = QuillEdited String
+    | SliderChange Float
 
 
 update : Msg -> Model -> ( Model, Cmd Msg )
@@ -50,6 +58,9 @@ update msg model =
     case msg of
         QuillEdited newString ->
             ( { model | inputString = newString }, Cmd.none )
+
+        SliderChange newValue ->
+            ( { model | sliderVal = newValue }, Cmd.none )
 
 
 
@@ -80,10 +91,30 @@ view model =
                 , Mathquill.spaceBehavesLikeTab True
                 ]
             , br [] []
+            , mathSlider SliderChange
+            , text (toString model.sliderVal)
+            , br [] []
             , text model.inputString
             , br [] []
-            , LatexParser.output model.inputString
+            , plot model
             ]
+
+
+plot : Model -> Html Msg
+plot model =
+    let
+        scope =
+            Dict.singleton "a" model.sliderVal
+
+        variables =
+            [ "a" ]
+    in
+        case LatexParser.parse model.inputString of
+            Ok parsed ->
+                div [] [ inequality parsed variables scope ]
+
+            Err err ->
+                ParserDebugger.prettyPrintError err
 
 
 css : String -> Html Msg

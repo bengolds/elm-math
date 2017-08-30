@@ -2,44 +2,41 @@ module LatexParser exposing (..)
 
 import Parser exposing (..)
 import ParserUtils exposing (..)
-import ParserDebugger
-import Html exposing (span, div, text, Html, br, li, ul)
 
 
 --import Calculator exposing (calculate)
 
 import GreekLetters exposing (..)
 import MathTree exposing (..)
-import TypeAnalyzer exposing (..)
-import TestCompiler
 
 
 --Output
 
 
-output inputString =
-    case run (equation default) inputString of
-        Ok parsed ->
-            div []
-                [ TypeAnalyzer.debugTree parsed
-
-                --, TestCompiler.compile parsed
-                --|> (flip TestCompiler.eval) TestCompiler.testScope
-                --|> toString
-                --|> text
-                --, div [] [ text <| toString <| calculate parsed ]
-                --, div []
-                --(getSignatures parsed
-                --|> List.map TypeAnalyzer.prettyPrint
-                --|> List.map (\sig -> div [] [ text sig ])
-                --)
-                ]
-
-        Err err ->
-            ParserDebugger.prettyPrintError err
+parse : String -> Result Error Expr
+parse inputString =
+    run (equation default) inputString
 
 
 
+--output inputString =
+--case run (equation default) inputString of
+--Ok parsed ->
+--div []
+----[ TypeAnalyzer.debugTree parsed
+----, TestCompiler.compile parsed
+----|> (flip TestCompiler.eval) TestCompiler.testScope
+----|> toString
+----|> text
+----, div [] [ text <| toString <| calculate parsed ]
+----, div []
+----(getSignatures parsed
+----|> List.map TypeAnalyzer.prettyPrint
+----|> List.map (\sig -> div [] [ text sig ])
+----)
+--]
+--Err err ->
+--ParserDebugger.prettyPrintError err
 --ConfigurableParser
 
 
@@ -68,7 +65,6 @@ factor options =
             \_ ->
                 oneOf <|
                     [ constant options
-                    , negative factor options
                     , differential options
                     , succeed Variable |= variable options
                     , parenthesized expr options
@@ -119,16 +115,27 @@ term options =
                     ]
 
 
-expr : ConfigurableParser Expr
 expr options =
     inContext "expr" <|
         lazy <|
             \_ ->
-                chainl (term options) <|
-                    oneOf
-                        [ succeed (Func2 "plus") |. symbol "+"
-                        , succeed (Func2 "minus") |. symbol "-"
-                        ]
+                succeed (flip applyl)
+                    |= oneOf [ negative term options, term options ]
+                    |= repeat zeroOrMore
+                        (oneOf
+                            [ succeed (flip <| Func2 "minus") |. symbol "-"
+                            , succeed (flip <| Func2 "plus") |. symbol "+"
+                            ]
+                            |= term options
+                        )
+
+
+
+--chainl (term options) <|
+--oneOf
+--[ succeed (Func2 "minus") |. symbol "-"
+--, succeed (Func2 "plus") |. symbol "+"
+--]
 
 
 equation : ConfigurableParser Expr
