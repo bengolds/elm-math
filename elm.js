@@ -35073,7 +35073,7 @@ var _user$project$Plot_GlPlot$implicitCurveShader = F2(
 					'\n\n        void main() {\n            float val = f(worldPosition.x, worldPosition.y);\n            float isoValue = 0.0;\n            float pxDistance = abs(isoValue-val)/fwidth(val);\n            float lineWidth=2.0;\n\n            float opacity = 1.0-smoothstep(lineWidth-1.0, lineWidth+1.0, pxDistance);\n            gl_FragColor = vec4(opacity*color, 1.0);\n\n        }\n        ')));
 	});
 var _user$project$Plot_GlPlot$vertexShader = {'src': '\n    attribute vec3 position;\n\n    varying vec3 worldPosition;\n\n    uniform mat4 transform;\n\n    void main () {\n        gl_Position = transform * vec4(position, 1.0);\n        worldPosition = position;\n    }\n    '};
-var _user$project$Plot_GlPlot$translationDict = function (scope) {
+var _user$project$Plot_GlPlot$translationDict = function (variables) {
 	return _elm_lang$core$Dict$fromList(
 		A2(
 			_elm_lang$core$List$indexedMap,
@@ -35088,11 +35088,7 @@ var _user$project$Plot_GlPlot$translationDict = function (scope) {
 							_elm_lang$core$Basics$toString(n + 1))
 					};
 				}),
-			A2(
-				_elm_lang$core$List$map,
-				_elm_lang$core$Tuple$first,
-				_elm_lang$core$List$sort(
-					_elm_lang$core$Dict$toList(scope)))));
+			_elm_lang$core$List$sort(variables)));
 };
 var _user$project$Plot_GlPlot$scopeVal = F2(
 	function (scope, n) {
@@ -35119,10 +35115,10 @@ var _user$project$Plot_GlPlot$uniforms = function (scope) {
 				A3(_elm_community$linear_algebra$Math_Vector3$vec3, 0, 0, 0),
 				A3(_elm_community$linear_algebra$Math_Vector3$vec3, 0, 1, 0))),
 		color: _user$project$Plot_Util$toVec3(_elm_lang$core$Color$blue),
-		slot1: A2(_user$project$Plot_GlPlot$scopeVal, scope, 1),
-		slot2: A2(_user$project$Plot_GlPlot$scopeVal, scope, 2),
-		slot3: A2(_user$project$Plot_GlPlot$scopeVal, scope, 3),
-		slot4: A2(_user$project$Plot_GlPlot$scopeVal, scope, 4)
+		slot1: A2(_user$project$Plot_GlPlot$scopeVal, scope, 0),
+		slot2: A2(_user$project$Plot_GlPlot$scopeVal, scope, 1),
+		slot3: A2(_user$project$Plot_GlPlot$scopeVal, scope, 2),
+		slot4: A2(_user$project$Plot_GlPlot$scopeVal, scope, 3)
 	};
 };
 var _user$project$Plot_GlPlot$Attributes = function (a) {
@@ -35149,8 +35145,8 @@ var _user$project$Plot_GlPlot$fullScreenQuad = _user$project$WebGL$triangleStrip
 				}
 			}
 		}));
-var _user$project$Plot_GlPlot$inequality = F2(
-	function (expr, scope) {
+var _user$project$Plot_GlPlot$inequality = F3(
+	function (expr, variables, scope) {
 		return A2(
 			_elm_lang$html$Html$div,
 			{
@@ -35199,7 +35195,7 @@ var _user$project$Plot_GlPlot$inequality = F2(
 								A2(
 									_user$project$Plot_GlPlot$implicitCurveShader,
 									expr,
-									_user$project$Plot_GlPlot$translationDict(scope))),
+									_user$project$Plot_GlPlot$translationDict(variables))),
 							_user$project$Plot_GlPlot$fullScreenQuad,
 							_user$project$Plot_GlPlot$uniforms(scope)),
 						_1: {ctor: '[]'}
@@ -35827,6 +35823,11 @@ var _user$project$Main$css = function (path) {
 		{ctor: '[]'});
 };
 var _user$project$Main$plot = function (model) {
+	var variables = {
+		ctor: '::',
+		_0: 'a',
+		_1: {ctor: '[]'}
+	};
 	var scope = A2(_elm_lang$core$Dict$singleton, 'a', model.sliderVal);
 	var _p0 = _user$project$LatexParser$parse(model.inputString);
 	if (_p0.ctor === 'Ok') {
@@ -35835,7 +35836,7 @@ var _user$project$Main$plot = function (model) {
 			{ctor: '[]'},
 			{
 				ctor: '::',
-				_0: A2(_user$project$Plot_GlPlot$inequality, _p0._0, scope),
+				_0: A3(_user$project$Plot_GlPlot$inequality, _p0._0, variables, scope),
 				_1: {ctor: '[]'}
 			});
 	} else {
