@@ -258,7 +258,7 @@ variable options =
             oneOf <|
                 List.map
                     (\{ name, symbol } ->
-                        succeed (toString symbol)
+                        succeed (String.fromChar symbol)
                             |. command name
                     )
                     (greek |> List.filter isNonRoman)
