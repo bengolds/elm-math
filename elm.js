@@ -8560,6 +8560,452 @@ var _elm_community$linear_algebra$Math_Matrix4$identity = _elm_community$linear_
 var _elm_community$linear_algebra$Math_Matrix4$transform = _elm_community$linear_algebra$Native_MJS.v3mul4x4;
 var _elm_community$linear_algebra$Math_Matrix4$Mat4 = {ctor: 'Mat4'};
 
+
+/*
+ * Copyright (c) 2010 Mozilla Corporation
+ * Copyright (c) 2010 Vladimir Vukicevic
+ *
+ * Permission is hereby granted, free of charge, to any person
+ * obtaining a copy of this software and associated documentation
+ * files (the "Software"), to deal in the Software without
+ * restriction, including without limitation the rights to use,
+ * copy, modify, merge, publish, distribute, sublicense, and/or sell
+ * copies of the Software, and to permit persons to whom the
+ * Software is furnished to do so, subject to the following
+ * conditions:
+ *
+ * The above copyright notice and this permission notice shall be
+ * included in all copies or substantial portions of the Software.
+ *
+ * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND,
+ * EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES
+ * OF MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND
+ * NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT
+ * HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY,
+ * WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING
+ * FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR
+ * OTHER DEALINGS IN THE SOFTWARE.
+ */
+
+/*
+ * File: mjs
+ *
+ * Vector and Matrix math utilities for JavaScript, optimized for WebGL.
+ * Edited to work with the Elm Programming Language
+ */
+
+var _elm_community$linear_algebra$Native_Math_Vector2 = function() {
+
+    var MJS_FLOAT_ARRAY_TYPE = Float32Array;
+
+    var V2 = { };
+
+    if (MJS_FLOAT_ARRAY_TYPE == Array) {
+        V2.$ = function V2_$(x, y) {
+            return [x, y];
+        };
+    } else {
+        V2.$ = function V2_$(x, y) {
+            return new MJS_FLOAT_ARRAY_TYPE([x, y]);
+        };
+    }
+
+    V2.getX = function V2_getX(a) {
+        return a[0];
+    }
+    V2.getY = function V2_getY(a) {
+        return a[1];
+    }
+    V2.setX = function V2_setX(x, a) {
+        return new MJS_FLOAT_ARRAY_TYPE([x, a[1]]);
+    }
+    V2.setY = function V2_setY(y, a) {
+        return new MJS_FLOAT_ARRAY_TYPE([a[0], y]);
+    }
+
+    V2.toTuple = function V2_toTuple(a) {
+        return {
+            ctor:"_Tuple2",
+            _0:a[0],
+            _1:a[1]
+        };
+    };
+    V2.fromTuple = function V2_fromTuple(t) {
+        return new MJS_FLOAT_ARRAY_TYPE([t._0, t._1]);
+    };
+
+    V2.toRecord = function V2_toRecord(a) {
+        return {
+            _:{},
+            x:a[0],
+            y:a[1]
+        };
+    };
+    V2.fromRecord = function V2_fromRecord(r) {
+        return new MJS_FLOAT_ARRAY_TYPE([r.x, r.y]);
+    };
+
+    V2.add = function V2_add(a, b) {
+        var r = new MJS_FLOAT_ARRAY_TYPE(2);
+        r[0] = a[0] + b[0];
+        r[1] = a[1] + b[1];
+        return r;
+    };
+
+    V2.sub = function V2_sub(a, b) {
+        var r = new MJS_FLOAT_ARRAY_TYPE(2);
+        r[0] = a[0] - b[0];
+        r[1] = a[1] - b[1];
+        return r;
+    };
+
+    V2.neg = function V2_neg(a) {
+        var r = new MJS_FLOAT_ARRAY_TYPE(2);
+        r[0] = - a[0];
+        r[1] = - a[1];
+        return r;
+    };
+
+    V2.direction = function V2_direction(a, b) {
+        var r = new MJS_FLOAT_ARRAY_TYPE(2);
+        r[0] = a[0] - b[0];
+        r[1] = a[1] - b[1];
+        var im = 1.0 / V2.length(r);
+        r[0] = r[0] * im;
+        r[1] = r[1] * im;
+        return r;
+    };
+
+    V2.length = function V2_length(a) {
+        return Math.sqrt(a[0]*a[0] + a[1]*a[1]);
+    };
+
+    V2.lengthSquared = function V2_lengthSquared(a) {
+        return a[0]*a[0] + a[1]*a[1];
+    };
+
+    V2.distance = function V2_distance(a, b) {
+        var dx = a[0] - b[0];
+        var dy = a[1] - b[1];
+        return Math.sqrt(dx * dx + dy * dy);
+    };
+
+    V2.distanceSquared = function V2_distanceSquared(a, b) {
+        var dx = a[0] - b[0];
+        var dy = a[1] - b[1];
+        return dx * dx + dy * dy;
+    };
+
+    V2.normalize = function V2_normalize(a) {
+        var r = new MJS_FLOAT_ARRAY_TYPE(2);
+        var im = 1.0 / V2.length(a);
+        r[0] = a[0] * im;
+        r[1] = a[1] * im;
+        return r;
+    };
+
+    V2.scale = function V2_scale(k, a) {
+        var r = new MJS_FLOAT_ARRAY_TYPE(2);
+        r[0] = a[0] * k;
+        r[1] = a[1] * k;
+        return r;
+    };
+
+    V2.dot = function V2_dot(a, b) {
+        return a[0] * b[0] + a[1] * b[1];
+    };
+
+    return {
+        vec2: F2(V2.$),
+        getX: V2.getX,
+        getY: V2.getY,
+        setX: F2(V2.setX),
+        setY: F2(V2.setY),
+        toTuple: V2.toTuple,
+        toRecord: V2.toRecord,
+        fromTuple: V2.fromTuple,
+        fromRecord: V2.fromRecord,
+        add: F2(V2.add),
+        sub: F2(V2.sub),
+        neg: V2.neg,
+        direction: F2(V2.direction),
+        length: V2.length,
+        lengthSquared: V2.lengthSquared,
+        distance: F2(V2.distance),
+        distanceSquared: F2(V2.distanceSquared),
+        normalize: V2.normalize,
+        scale: F2(V2.scale),
+        dot: F2(V2.dot)
+    };
+
+}();
+
+var _elm_community$linear_algebra$Math_Vector2$dot = _elm_community$linear_algebra$Native_Math_Vector2.dot;
+var _elm_community$linear_algebra$Math_Vector2$scale = _elm_community$linear_algebra$Native_Math_Vector2.scale;
+var _elm_community$linear_algebra$Math_Vector2$normalize = _elm_community$linear_algebra$Native_Math_Vector2.normalize;
+var _elm_community$linear_algebra$Math_Vector2$distanceSquared = _elm_community$linear_algebra$Native_Math_Vector2.distanceSquared;
+var _elm_community$linear_algebra$Math_Vector2$distance = _elm_community$linear_algebra$Native_Math_Vector2.distance;
+var _elm_community$linear_algebra$Math_Vector2$lengthSquared = _elm_community$linear_algebra$Native_Math_Vector2.lengthSquared;
+var _elm_community$linear_algebra$Math_Vector2$length = _elm_community$linear_algebra$Native_Math_Vector2.length;
+var _elm_community$linear_algebra$Math_Vector2$direction = _elm_community$linear_algebra$Native_Math_Vector2.direction;
+var _elm_community$linear_algebra$Math_Vector2$negate = _elm_community$linear_algebra$Native_Math_Vector2.neg;
+var _elm_community$linear_algebra$Math_Vector2$sub = _elm_community$linear_algebra$Native_Math_Vector2.sub;
+var _elm_community$linear_algebra$Math_Vector2$add = _elm_community$linear_algebra$Native_Math_Vector2.add;
+var _elm_community$linear_algebra$Math_Vector2$fromRecord = _elm_community$linear_algebra$Native_Math_Vector2.fromRecord;
+var _elm_community$linear_algebra$Math_Vector2$fromTuple = _elm_community$linear_algebra$Native_Math_Vector2.fromTuple;
+var _elm_community$linear_algebra$Math_Vector2$toRecord = _elm_community$linear_algebra$Native_Math_Vector2.toRecord;
+var _elm_community$linear_algebra$Math_Vector2$toTuple = _elm_community$linear_algebra$Native_Math_Vector2.toTuple;
+var _elm_community$linear_algebra$Math_Vector2$setY = _elm_community$linear_algebra$Native_Math_Vector2.setY;
+var _elm_community$linear_algebra$Math_Vector2$setX = _elm_community$linear_algebra$Native_Math_Vector2.setX;
+var _elm_community$linear_algebra$Math_Vector2$getY = _elm_community$linear_algebra$Native_Math_Vector2.getY;
+var _elm_community$linear_algebra$Math_Vector2$getX = _elm_community$linear_algebra$Native_Math_Vector2.getX;
+var _elm_community$linear_algebra$Math_Vector2$vec2 = _elm_community$linear_algebra$Native_Math_Vector2.vec2;
+var _elm_community$linear_algebra$Math_Vector2$Vec2 = {ctor: 'Vec2'};
+
+
+/*
+ * Copyright (c) 2010 Mozilla Corporation
+ * Copyright (c) 2010 Vladimir Vukicevic
+ *
+ * Permission is hereby granted, free of charge, to any person
+ * obtaining a copy of this software and associated documentation
+ * files (the "Software"), to deal in the Software without
+ * restriction, including without limitation the rights to use,
+ * copy, modify, merge, publish, distribute, sublicense, and/or sell
+ * copies of the Software, and to permit persons to whom the
+ * Software is furnished to do so, subject to the following
+ * conditions:
+ *
+ * The above copyright notice and this permission notice shall be
+ * included in all copies or substantial portions of the Software.
+ *
+ * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND,
+ * EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES
+ * OF MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND
+ * NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT
+ * HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY,
+ * WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING
+ * FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR
+ * OTHER DEALINGS IN THE SOFTWARE.
+ */
+
+/*
+ * File: mjs
+ *
+ * Vector and Matrix math utilities for JavaScript, optimized for WebGL.
+ * Edited to work with the Elm Programming Language
+ */
+
+var _elm_community$linear_algebra$Native_Math_Vector4 = function() {
+
+    var MJS_FLOAT_ARRAY_TYPE = Float32Array;
+
+    var V4 = { };
+
+    if (MJS_FLOAT_ARRAY_TYPE == Array) {
+        V4.$ = function V4_$(x, y, z, w) {
+            return [x, y, z, w];
+        };
+    } else {
+        V4.$ = function V4_$(x, y, z, w) {
+            return new MJS_FLOAT_ARRAY_TYPE([x, y, z, w]);
+        };
+    }
+
+    V4.getX = function V4_getX(a) {
+        return a[0];
+    }
+    V4.getY = function V4_getY(a) {
+        return a[1];
+    }
+    V4.getZ = function V4_getZ(a) {
+        return a[2];
+    }
+    V4.getW = function V4_getW(a) {
+        return a[3];
+    }
+    V4.setX = function V4_setX(x, a) {
+        return new MJS_FLOAT_ARRAY_TYPE([x, a[1], a[2], a[3]]);
+    }
+    V4.setY = function V4_setY(y, a) {
+        return new MJS_FLOAT_ARRAY_TYPE([a[0], y, a[2], a[3]]);
+    }
+    V4.setZ = function V4_setZ(z, a) {
+        return new MJS_FLOAT_ARRAY_TYPE([a[0], a[1], z, a[3]]);
+    }
+    V4.setW = function V4_setW(w, a) {
+        return new MJS_FLOAT_ARRAY_TYPE([a[0], a[1], a[2], w]);
+    }
+
+    V4.toTuple = function V4_toTuple(a) {
+        return {
+            ctor:"_Tuple4",
+            _0:a[0],
+            _1:a[1],
+            _2:a[2],
+            _3:a[3]
+        };
+    };
+    V4.fromTuple = function V4_fromTuple(t) {
+        return new MJS_FLOAT_ARRAY_TYPE([t._0, t._1, t._2, t._3]);
+    };
+
+    V4.toRecord = function V4_toRecord(a) {
+        return {
+            _:{},
+            x:a[0],
+            y:a[1],
+            z:a[2],
+            w:a[3]
+        };
+    };
+    V4.fromRecord = function V4_fromRecord(r) {
+        return new MJS_FLOAT_ARRAY_TYPE([r.x, r.y, r.z, r.w]);
+    };
+
+    V4.add = function V4_add(a, b) {
+        var r = new MJS_FLOAT_ARRAY_TYPE(4);
+        r[0] = a[0] + b[0];
+        r[1] = a[1] + b[1];
+        r[2] = a[2] + b[2];
+        r[3] = a[3] + b[3];
+        return r;
+    };
+
+    V4.sub = function V4_sub(a, b) {
+        var r = new MJS_FLOAT_ARRAY_TYPE(4);
+        r[0] = a[0] - b[0];
+        r[1] = a[1] - b[1];
+        r[2] = a[2] - b[2];
+        r[3] = a[3] - b[3];
+        return r;
+    };
+
+    V4.neg = function V4_neg(a) {
+        var r = new MJS_FLOAT_ARRAY_TYPE(4);
+        r[0] = - a[0];
+        r[1] = - a[1];
+        r[2] = - a[2];
+        r[3] = - a[3];
+        return r;
+    };
+
+    V4.direction = function V4_direction(a, b) {
+        var r = new MJS_FLOAT_ARRAY_TYPE(4);
+        r[0] = a[0] - b[0];
+        r[1] = a[1] - b[1];
+        r[2] = a[2] - b[2];
+        r[3] = a[3] - b[3];
+        var im = 1.0 / V4.length(r);
+        r[0] = r[0] * im;
+        r[1] = r[1] * im;
+        r[2] = r[2] * im;
+        r[3] = r[3] * im;
+        return r;
+    };
+
+    V4.length = function V4_length(a) {
+        return Math.sqrt(a[0]*a[0] + a[1]*a[1] + a[2]*a[2] + a[3]*a[3]);
+    };
+
+    V4.lengthSquared = function V4_lengthSquared(a) {
+        return a[0]*a[0] + a[1]*a[1] + a[2]*a[2] + a[3]*a[3];
+    };
+
+    V4.distance = function V4_distance(a, b) {
+        var dx = a[0] - b[0];
+        var dy = a[1] - b[1];
+        var dz = a[2] - b[2];
+        var dw = a[3] - b[3];
+        return Math.sqrt(dx * dx + dy * dy + dz * dz + dw * dw);
+    };
+
+    V4.distanceSquared = function V4_distanceSquared(a, b) {
+        var dx = a[0] - b[0];
+        var dy = a[1] - b[1];
+        var dz = a[2] - b[2];
+        var dw = a[3] - b[3];
+        return dx * dx + dy * dy + dz * dz + dw * dw;
+    };
+
+    V4.normalize = function V4_normalize(a) {
+        var r = new MJS_FLOAT_ARRAY_TYPE(4);
+        var im = 1.0 / V4.length(a);
+        r[0] = a[0] * im;
+        r[1] = a[1] * im;
+        r[2] = a[2] * im;
+        r[3] = a[3] * im;
+        return r;
+    };
+
+    V4.scale = function V4_scale(k, a) {
+        var r = new MJS_FLOAT_ARRAY_TYPE(4);
+        r[0] = a[0] * k;
+        r[1] = a[1] * k;
+        r[2] = a[2] * k;
+        r[3] = a[3] * k;
+        return r;
+    };
+
+    V4.dot = function V4_dot(a, b) {
+        return a[0] * b[0] + a[1] * b[1] + a[2] * b[2] + a[3] * b[3];
+    };
+
+    return {
+        vec4: F4(V4.$),
+        getX: V4.getX,
+        getY: V4.getY,
+        getZ: V4.getZ,
+        getW: V4.getW,
+        setX: F2(V4.setX),
+        setY: F2(V4.setY),
+        setZ: F2(V4.setZ),
+        setW: F2(V4.setW),
+        toTuple: V4.toTuple,
+        toRecord: V4.toRecord,
+        fromTuple: V4.fromTuple,
+        fromRecord: V4.fromRecord,
+        add: F2(V4.add),
+        sub: F2(V4.sub),
+        neg: V4.neg,
+        direction: F2(V4.direction),
+        length: V4.length,
+        lengthSquared: V4.lengthSquared,
+        distance: F2(V4.distance),
+        distanceSquared: F2(V4.distanceSquared),
+        normalize: V4.normalize,
+        scale: F2(V4.scale),
+        dot: F2(V4.dot)
+    };
+
+}();
+
+var _elm_community$linear_algebra$Math_Vector4$dot = _elm_community$linear_algebra$Native_Math_Vector4.dot;
+var _elm_community$linear_algebra$Math_Vector4$scale = _elm_community$linear_algebra$Native_Math_Vector4.scale;
+var _elm_community$linear_algebra$Math_Vector4$normalize = _elm_community$linear_algebra$Native_Math_Vector4.normalize;
+var _elm_community$linear_algebra$Math_Vector4$distanceSquared = _elm_community$linear_algebra$Native_Math_Vector4.distanceSquared;
+var _elm_community$linear_algebra$Math_Vector4$distance = _elm_community$linear_algebra$Native_Math_Vector4.distance;
+var _elm_community$linear_algebra$Math_Vector4$lengthSquared = _elm_community$linear_algebra$Native_Math_Vector4.lengthSquared;
+var _elm_community$linear_algebra$Math_Vector4$length = _elm_community$linear_algebra$Native_Math_Vector4.length;
+var _elm_community$linear_algebra$Math_Vector4$direction = _elm_community$linear_algebra$Native_Math_Vector4.direction;
+var _elm_community$linear_algebra$Math_Vector4$negate = _elm_community$linear_algebra$Native_Math_Vector4.neg;
+var _elm_community$linear_algebra$Math_Vector4$sub = _elm_community$linear_algebra$Native_Math_Vector4.sub;
+var _elm_community$linear_algebra$Math_Vector4$add = _elm_community$linear_algebra$Native_Math_Vector4.add;
+var _elm_community$linear_algebra$Math_Vector4$fromRecord = _elm_community$linear_algebra$Native_Math_Vector4.fromRecord;
+var _elm_community$linear_algebra$Math_Vector4$fromTuple = _elm_community$linear_algebra$Native_Math_Vector4.fromTuple;
+var _elm_community$linear_algebra$Math_Vector4$toRecord = _elm_community$linear_algebra$Native_Math_Vector4.toRecord;
+var _elm_community$linear_algebra$Math_Vector4$toTuple = _elm_community$linear_algebra$Native_Math_Vector4.toTuple;
+var _elm_community$linear_algebra$Math_Vector4$setW = _elm_community$linear_algebra$Native_Math_Vector4.setW;
+var _elm_community$linear_algebra$Math_Vector4$setZ = _elm_community$linear_algebra$Native_Math_Vector4.setZ;
+var _elm_community$linear_algebra$Math_Vector4$setY = _elm_community$linear_algebra$Native_Math_Vector4.setY;
+var _elm_community$linear_algebra$Math_Vector4$setX = _elm_community$linear_algebra$Native_Math_Vector4.setX;
+var _elm_community$linear_algebra$Math_Vector4$getW = _elm_community$linear_algebra$Native_Math_Vector4.getW;
+var _elm_community$linear_algebra$Math_Vector4$getZ = _elm_community$linear_algebra$Native_Math_Vector4.getZ;
+var _elm_community$linear_algebra$Math_Vector4$getY = _elm_community$linear_algebra$Native_Math_Vector4.getY;
+var _elm_community$linear_algebra$Math_Vector4$getX = _elm_community$linear_algebra$Native_Math_Vector4.getX;
+var _elm_community$linear_algebra$Math_Vector4$vec4 = _elm_community$linear_algebra$Native_Math_Vector4.vec4;
+var _elm_community$linear_algebra$Math_Vector4$Vec4 = {ctor: 'Vec4'};
+
 var _elm_community$list_extra$List_Extra$greedyGroupsOfWithStep = F3(
 	function (size, step, xs) {
 		var okayXs = _elm_lang$core$Native_Utils.cmp(
@@ -33935,6 +34381,110 @@ var _user$project$Mathquill$Default = {ctor: 'Default'};
 var _user$project$Mathquill$Down = {ctor: 'Down'};
 var _user$project$Mathquill$Up = {ctor: 'Up'};
 
+// eslint-disable-next-line camelcase, wrap-iife, no-unused-vars
+var _user$project$Native_UnsafeUniforms = function () {
+  function encodeVec2 (val) {
+    return val
+  }
+
+  function encodeVec3 (val) {
+    return val
+  }
+
+  function encodeVec4 (val) {
+    return val
+  }
+
+  function encodeMat4 (val) {
+    return val
+  }
+
+  return {
+    encodeVec2: encodeVec2,
+    encodeVec3: encodeVec3,
+    encodeVec4: encodeVec4,
+    encodeMat4: encodeMat4
+  }
+}()
+
+var _user$project$UnsafeUniforms$encodeParam = function (param) {
+	var _p0 = param;
+	switch (_p0.ctor) {
+		case 'FloatParam':
+			return _elm_lang$core$Json_Encode$float(_p0._0);
+		case 'Vec2Param':
+			return _user$project$Native_UnsafeUniforms.encodeVec2(_p0._0);
+		case 'Vec3Param':
+			return _user$project$Native_UnsafeUniforms.encodeVec3(_p0._0);
+		case 'Vec4Param':
+			return _user$project$Native_UnsafeUniforms.encodeVec4(_p0._0);
+		default:
+			return _user$project$Native_UnsafeUniforms.encodeMat4(_p0._0);
+	}
+};
+var _user$project$UnsafeUniforms$toUnsafeUniforms = function (params) {
+	return _elm_lang$core$Json_Encode$object(
+		_elm_lang$core$Dict$toList(
+			A2(
+				_elm_lang$core$Dict$map,
+				F2(
+					function (_p1, param) {
+						return _user$project$UnsafeUniforms$encodeParam(param);
+					}),
+				params)));
+};
+var _user$project$UnsafeUniforms$uniformShaderDeclaration = function (params) {
+	var glslType = function (param) {
+		var _p2 = param;
+		switch (_p2.ctor) {
+			case 'FloatParam':
+				return 'float';
+			case 'Vec2Param':
+				return 'vec2';
+			case 'Vec3Param':
+				return 'vec3';
+			case 'Vec4Param':
+				return 'vec4';
+			default:
+				return 'mat4';
+		}
+	};
+	return A2(
+		_elm_lang$core$String$join,
+		'\n',
+		A2(
+			_elm_lang$core$List$map,
+			function (_p3) {
+				var _p4 = _p3;
+				return A2(
+					_elm_lang$core$Basics_ops['++'],
+					'uniform ',
+					A2(
+						_elm_lang$core$Basics_ops['++'],
+						glslType(_p4._1),
+						A2(
+							_elm_lang$core$Basics_ops['++'],
+							' ',
+							A2(_elm_lang$core$Basics_ops['++'], _p4._0, ';'))));
+			},
+			_elm_lang$core$Dict$toList(params)));
+};
+var _user$project$UnsafeUniforms$Mat4Param = function (a) {
+	return {ctor: 'Mat4Param', _0: a};
+};
+var _user$project$UnsafeUniforms$Vec4Param = function (a) {
+	return {ctor: 'Vec4Param', _0: a};
+};
+var _user$project$UnsafeUniforms$Vec3Param = function (a) {
+	return {ctor: 'Vec3Param', _0: a};
+};
+var _user$project$UnsafeUniforms$Vec2Param = function (a) {
+	return {ctor: 'Vec2Param', _0: a};
+};
+var _user$project$UnsafeUniforms$FloatParam = function (a) {
+	return {ctor: 'FloatParam', _0: a};
+};
+
 var _user$project$MathSlider$step = function (val) {
 	return A2(
 		_mdgriffith$style_elements$Element_Attributes$attribute,
@@ -34931,148 +35481,142 @@ var _user$project$Plot_Util$normalMatrix = function (mat) {
 				_user$project$Plot_Util$upperLeft(mat))));
 };
 
-var _user$project$Plot_GlPlot$toGlExpr = F2(
-	function (expr, uniformNames) {
-		var withOneDec = function (val) {
-			return (_elm_lang$core$Native_Utils.cmp(
-				val - _elm_lang$core$Basics$toFloat(
-					_elm_lang$core$Basics$floor(val)),
-				1.0e-5) < 0) ? A2(
-				_elm_lang$core$Basics_ops['++'],
-				_elm_lang$core$Basics$toString(
-					_elm_lang$core$Basics$floor(val)),
-				'.0') : _elm_lang$core$Basics$toString(val);
-		};
-		var _p0 = expr;
-		switch (_p0.ctor) {
-			case 'Real':
-				return withOneDec(_p0._0);
-			case 'Rational':
-				return withOneDec(_p0._0);
-			case 'Integer':
-				return withOneDec(
-					_elm_lang$core$Basics$toFloat(_p0._0));
-			case 'Variable':
-				var _p2 = _p0._0;
-				var _p1 = A2(_elm_lang$core$Dict$get, _p2, uniformNames);
-				if (_p1.ctor === 'Just') {
-					return _p1._0;
-				} else {
-					return _p2;
-				}
-			case 'Equals':
-				return A2(
-					_elm_lang$core$Basics_ops['++'],
-					'(',
-					A2(
-						_elm_lang$core$Basics_ops['++'],
-						A2(_user$project$Plot_GlPlot$toGlExpr, _p0._0, uniformNames),
-						A2(
-							_elm_lang$core$Basics_ops['++'],
-							'-',
-							A2(
-								_elm_lang$core$Basics_ops['++'],
-								A2(_user$project$Plot_GlPlot$toGlExpr, _p0._1, uniformNames),
-								')'))));
-			case 'Func1':
-				var _p4 = _p0._0;
-				var val = A2(_user$project$Plot_GlPlot$toGlExpr, _p0._1, uniformNames);
-				var _p3 = _p4;
-				if (_p3 === 'negative') {
-					return A2(
-						_elm_lang$core$Basics_ops['++'],
-						'(-',
-						A2(_elm_lang$core$Basics_ops['++'], val, ')'));
-				} else {
-					return A2(
-						_elm_lang$core$Basics_ops['++'],
-						_p4,
-						A2(
-							_elm_lang$core$Basics_ops['++'],
-							'(',
-							A2(_elm_lang$core$Basics_ops['++'], val, ')')));
-				}
-			case 'Func2':
-				var b = A2(_user$project$Plot_GlPlot$toGlExpr, _p0._2, uniformNames);
-				var a = A2(_user$project$Plot_GlPlot$toGlExpr, _p0._1, uniformNames);
-				return A2(
-					_elm_lang$core$Basics_ops['++'],
-					'(',
-					A2(
-						_elm_lang$core$Basics_ops['++'],
-						function () {
-							var _p5 = _p0._0;
-							switch (_p5) {
-								case 'plus':
-									return A2(
-										_elm_lang$core$Basics_ops['++'],
-										a,
-										A2(_elm_lang$core$Basics_ops['++'], '+', b));
-								case 'minus':
-									return A2(
-										_elm_lang$core$Basics_ops['++'],
-										a,
-										A2(_elm_lang$core$Basics_ops['++'], '-', b));
-								case 'times':
-									return A2(
-										_elm_lang$core$Basics_ops['++'],
-										a,
-										A2(_elm_lang$core$Basics_ops['++'], '*', b));
-								case 'dot':
-									return A2(
-										_elm_lang$core$Basics_ops['++'],
-										a,
-										A2(_elm_lang$core$Basics_ops['++'], '*', b));
-								case 'frac':
-									return A2(
-										_elm_lang$core$Basics_ops['++'],
-										a,
-										A2(_elm_lang$core$Basics_ops['++'], '/', b));
-								case 'exponent':
-									return A2(
-										_elm_lang$core$Basics_ops['++'],
-										'pow(',
-										A2(
-											_elm_lang$core$Basics_ops['++'],
-											a,
-											A2(
-												_elm_lang$core$Basics_ops['++'],
-												',',
-												A2(_elm_lang$core$Basics_ops['++'], b, ')'))));
-								default:
-									return '1';
-							}
-						}(),
-						')'));
-			default:
-				return '1';
-		}
-	});
-var _user$project$Plot_GlPlot$toGlFunc = F2(
-	function (expr, uniformNames) {
-		return A2(
+var _user$project$Plot_GlPlot$toGlExpr = function (expr) {
+	var withOneDec = function (val) {
+		return (_elm_lang$core$Native_Utils.cmp(
+			val - _elm_lang$core$Basics$toFloat(
+				_elm_lang$core$Basics$floor(val)),
+			1.0e-5) < 0) ? A2(
 			_elm_lang$core$Basics_ops['++'],
-			'\n    float f(in float x, in float y) {\n        return ',
-			A2(
+			_elm_lang$core$Basics$toString(
+				_elm_lang$core$Basics$floor(val)),
+			'.0') : _elm_lang$core$Basics$toString(val);
+	};
+	var _p0 = expr;
+	switch (_p0.ctor) {
+		case 'Real':
+			return withOneDec(_p0._0);
+		case 'Rational':
+			return withOneDec(_p0._0);
+		case 'Integer':
+			return withOneDec(
+				_elm_lang$core$Basics$toFloat(_p0._0));
+		case 'Variable':
+			return _p0._0;
+		case 'Equals':
+			return A2(
 				_elm_lang$core$Basics_ops['++'],
-				A2(_user$project$Plot_GlPlot$toGlExpr, expr, uniformNames),
-				';\n        }\n        '));
-	});
-var _user$project$Plot_GlPlot$uniformSlots = '\n    uniform float slot1;\n    uniform float slot2;\n    uniform float slot3;\n    uniform float slot4;\n    ';
-var _user$project$Plot_GlPlot$implicitCurveShader = F2(
-	function (expr, uniformsDict) {
-		return A2(
-			_elm_lang$core$Basics_ops['++'],
-			'\n        #extension GL_OES_standard_derivatives : enable\n        precision highp float;\n\n        uniform vec3 color;\n\n        varying vec3 worldPosition;\n\n        float threshold = 0.0;\n\n        ',
-			A2(
-				_elm_lang$core$Basics_ops['++'],
-				_user$project$Plot_GlPlot$uniformSlots,
+				'(',
 				A2(
 					_elm_lang$core$Basics_ops['++'],
-					A2(_user$project$Plot_GlPlot$toGlFunc, expr, uniformsDict),
-					'\n\n        void main() {\n            float val = f(worldPosition.x, worldPosition.y);\n            float isoValue = 0.0;\n            float pxDistance = abs(isoValue-val)/fwidth(val);\n            float lineWidth=2.0;\n\n            float opacity = 1.0-smoothstep(lineWidth-1.0, lineWidth+1.0, pxDistance);\n            gl_FragColor = vec4(opacity*color, 1.0);\n\n        }\n        ')));
+					_user$project$Plot_GlPlot$toGlExpr(_p0._0),
+					A2(
+						_elm_lang$core$Basics_ops['++'],
+						'-',
+						A2(
+							_elm_lang$core$Basics_ops['++'],
+							_user$project$Plot_GlPlot$toGlExpr(_p0._1),
+							')'))));
+		case 'Func1':
+			var _p2 = _p0._0;
+			var val = _user$project$Plot_GlPlot$toGlExpr(_p0._1);
+			var _p1 = _p2;
+			if (_p1 === 'negative') {
+				return A2(
+					_elm_lang$core$Basics_ops['++'],
+					'(-',
+					A2(_elm_lang$core$Basics_ops['++'], val, ')'));
+			} else {
+				return A2(
+					_elm_lang$core$Basics_ops['++'],
+					_p2,
+					A2(
+						_elm_lang$core$Basics_ops['++'],
+						'(',
+						A2(_elm_lang$core$Basics_ops['++'], val, ')')));
+			}
+		case 'Func2':
+			var b = _user$project$Plot_GlPlot$toGlExpr(_p0._2);
+			var a = _user$project$Plot_GlPlot$toGlExpr(_p0._1);
+			return A2(
+				_elm_lang$core$Basics_ops['++'],
+				'(',
+				A2(
+					_elm_lang$core$Basics_ops['++'],
+					function () {
+						var _p3 = _p0._0;
+						switch (_p3) {
+							case 'plus':
+								return A2(
+									_elm_lang$core$Basics_ops['++'],
+									a,
+									A2(_elm_lang$core$Basics_ops['++'], '+', b));
+							case 'minus':
+								return A2(
+									_elm_lang$core$Basics_ops['++'],
+									a,
+									A2(_elm_lang$core$Basics_ops['++'], '-', b));
+							case 'times':
+								return A2(
+									_elm_lang$core$Basics_ops['++'],
+									a,
+									A2(_elm_lang$core$Basics_ops['++'], '*', b));
+							case 'dot':
+								return A2(
+									_elm_lang$core$Basics_ops['++'],
+									a,
+									A2(_elm_lang$core$Basics_ops['++'], '*', b));
+							case 'frac':
+								return A2(
+									_elm_lang$core$Basics_ops['++'],
+									a,
+									A2(_elm_lang$core$Basics_ops['++'], '/', b));
+							case 'exponent':
+								return A2(
+									_elm_lang$core$Basics_ops['++'],
+									'pow(',
+									A2(
+										_elm_lang$core$Basics_ops['++'],
+										a,
+										A2(
+											_elm_lang$core$Basics_ops['++'],
+											',',
+											A2(_elm_lang$core$Basics_ops['++'], b, ')'))));
+							default:
+								return '1';
+						}
+					}(),
+					')'));
+		default:
+			return '1';
+	}
+};
+var _user$project$Plot_GlPlot$toGlFunc = function (expr) {
+	return A2(
+		_elm_lang$core$Basics_ops['++'],
+		'\n    float f(in float x, in float y) {\n        return ',
+		A2(
+			_elm_lang$core$Basics_ops['++'],
+			_user$project$Plot_GlPlot$toGlExpr(expr),
+			';\n        }\n        '));
+};
+var _user$project$Plot_GlPlot$uniformSlots = '\n    uniform float slot1;\n    uniform float slot2;\n    uniform float slot3;\n    uniform float slot4;\n    ';
+var _user$project$Plot_GlPlot$fragmentShader = F2(
+	function (expr, uniformsDict) {
+		return _user$project$WebGL$unsafeShader(
+			A2(
+				_elm_lang$core$Basics_ops['++'],
+				'\n        #extension GL_OES_standard_derivatives : enable\n        precision highp float;\n\n        varying vec3 worldPosition;\n\n        float threshold = 0.0;\n\n        ',
+				A2(
+					_elm_lang$core$Basics_ops['++'],
+					_user$project$UnsafeUniforms$uniformShaderDeclaration(uniformsDict),
+					A2(
+						_elm_lang$core$Basics_ops['++'],
+						_user$project$Plot_GlPlot$toGlFunc(expr),
+						'\n\n        void main() {\n            float val = f(worldPosition.x, worldPosition.y);\n            float isoValue = 0.0;\n            float pxDistance = abs(isoValue-val)/fwidth(val);\n            float lineWidth=2.0;\n\n            float opacity = 1.0-smoothstep(lineWidth-1.0, lineWidth+1.0, pxDistance);\n            gl_FragColor = vec4(opacity*color, 1.0);\n\n        }\n        '))));
 	});
-var _user$project$Plot_GlPlot$vertexShader = {'src': '\n    attribute vec3 position;\n\n    varying vec3 worldPosition;\n\n    uniform mat4 transform;\n\n    void main () {\n        gl_Position = transform * vec4(position, 1.0);\n        worldPosition = position;\n    }\n    '};
+var _user$project$Plot_GlPlot$emptyShader = {'src': '\n    precision highp float;\n    varying vec3 worldPosition;\n    void main () {\n        gl_FragColor = vec4(0,0,0,0);\n    }\n    '};
+var _user$project$Plot_GlPlot$vertexShader = _user$project$WebGL$unsafeShader('\n    attribute vec3 position;\n\n    varying vec3 worldPosition;\n\n    uniform mat4 transform;\n\n    void main () {\n        gl_Position = transform * vec4(position, 1.0);\n        worldPosition = position;\n    }\n    ');
 var _user$project$Plot_GlPlot$translationDict = function (variables) {
 	return _elm_lang$core$Dict$fromList(
 		A2(
@@ -35104,23 +35648,6 @@ var _user$project$Plot_GlPlot$scopeVal = F2(
 					_elm_lang$core$List$sort(
 						_elm_lang$core$Dict$toList(scope)))));
 	});
-var _user$project$Plot_GlPlot$uniforms = function (scope) {
-	return {
-		transform: A2(
-			_elm_community$linear_algebra$Math_Matrix4$mul,
-			A4(_elm_community$linear_algebra$Math_Matrix4$makePerspective, 60, 1, 0.1, 100),
-			A3(
-				_elm_community$linear_algebra$Math_Matrix4$makeLookAt,
-				A3(_elm_community$linear_algebra$Math_Vector3$vec3, 0, 0, 2),
-				A3(_elm_community$linear_algebra$Math_Vector3$vec3, 0, 0, 0),
-				A3(_elm_community$linear_algebra$Math_Vector3$vec3, 0, 1, 0))),
-		color: _user$project$Plot_Util$toVec3(_elm_lang$core$Color$blue),
-		slot1: A2(_user$project$Plot_GlPlot$scopeVal, scope, 0),
-		slot2: A2(_user$project$Plot_GlPlot$scopeVal, scope, 1),
-		slot3: A2(_user$project$Plot_GlPlot$scopeVal, scope, 2),
-		slot4: A2(_user$project$Plot_GlPlot$scopeVal, scope, 3)
-	};
-};
 var _user$project$Plot_GlPlot$Attributes = function (a) {
 	return {position: a};
 };
@@ -35145,8 +35672,8 @@ var _user$project$Plot_GlPlot$fullScreenQuad = _user$project$WebGL$triangleStrip
 				}
 			}
 		}));
-var _user$project$Plot_GlPlot$inequality = F3(
-	function (expr, variables, scope) {
+var _user$project$Plot_GlPlot$inequality = F2(
+	function (fragShader, scope) {
 		return A2(
 			_elm_lang$html$Html$div,
 			{
@@ -35191,21 +35718,13 @@ var _user$project$Plot_GlPlot$inequality = F3(
 						_0: A4(
 							_user$project$WebGL$entity,
 							_user$project$Plot_GlPlot$vertexShader,
-							_user$project$WebGL$unsafeShader(
-								A2(
-									_user$project$Plot_GlPlot$implicitCurveShader,
-									expr,
-									_user$project$Plot_GlPlot$translationDict(variables))),
+							fragShader,
 							_user$project$Plot_GlPlot$fullScreenQuad,
-							_user$project$Plot_GlPlot$uniforms(scope)),
+							_user$project$UnsafeUniforms$toUnsafeUniforms(scope)),
 						_1: {ctor: '[]'}
 					}),
 				_1: {ctor: '[]'}
 			});
-	});
-var _user$project$Plot_GlPlot$Uniforms = F6(
-	function (a, b, c, d, e, f) {
-		return {transform: a, color: b, slot1: c, slot2: d, slot3: e, slot4: f};
 	});
 var _user$project$Plot_GlPlot$Varying = function (a) {
 	return {worldPosition: a};
@@ -35822,39 +36341,67 @@ var _user$project$Main$css = function (path) {
 		},
 		{ctor: '[]'});
 };
-var _user$project$Main$plot = function (model) {
-	var variables = {
-		ctor: '::',
-		_0: 'a',
-		_1: {ctor: '[]'}
-	};
-	var scope = A2(_elm_lang$core$Dict$singleton, 'a', model.sliderVal);
-	var _p0 = _user$project$LatexParser$parse(model.inputString);
-	if (_p0.ctor === 'Ok') {
-		return A2(
-			_elm_lang$html$Html$div,
-			{ctor: '[]'},
-			{
-				ctor: '::',
-				_0: A3(_user$project$Plot_GlPlot$inequality, _p0._0, variables, scope),
-				_1: {ctor: '[]'}
-			});
-	} else {
-		return _user$project$ParserDebugger$prettyPrintError(_p0._0);
-	}
-};
 var _user$project$Main$subscriptions = function (model) {
 	return _elm_lang$core$Platform_Sub$none;
 };
+var _user$project$Main$uniforms = function (model) {
+	return _elm_lang$core$Dict$fromList(
+		{
+			ctor: '::',
+			_0: {
+				ctor: '_Tuple2',
+				_0: 'a',
+				_1: _user$project$UnsafeUniforms$FloatParam(model.sliderVal)
+			},
+			_1: {
+				ctor: '::',
+				_0: {
+					ctor: '_Tuple2',
+					_0: 'color',
+					_1: _user$project$UnsafeUniforms$Vec3Param(
+						_user$project$Plot_Util$toVec3(_elm_lang$core$Color$blue))
+				},
+				_1: {
+					ctor: '::',
+					_0: {
+						ctor: '_Tuple2',
+						_0: 'transform',
+						_1: _user$project$UnsafeUniforms$Mat4Param(
+							A2(
+								_elm_community$linear_algebra$Math_Matrix4$mul,
+								A4(_elm_community$linear_algebra$Math_Matrix4$makePerspective, 60, 1, 0.1, 100),
+								A3(
+									_elm_community$linear_algebra$Math_Matrix4$makeLookAt,
+									A3(_elm_community$linear_algebra$Math_Vector3$vec3, 0, 0, 2),
+									A3(_elm_community$linear_algebra$Math_Vector3$vec3, 0, 0, 0),
+									A3(_elm_community$linear_algebra$Math_Vector3$vec3, 0, 1, 0))))
+					},
+					_1: {ctor: '[]'}
+				}
+			}
+		});
+};
 var _user$project$Main$update = F2(
 	function (msg, model) {
-		var _p1 = msg;
-		if (_p1.ctor === 'QuillEdited') {
+		var _p0 = msg;
+		if (_p0.ctor === 'QuillEdited') {
+			var parsed = _user$project$LatexParser$parse(_p0._0);
+			var newFragShader = function () {
+				var _p1 = parsed;
+				if (_p1.ctor === 'Ok') {
+					return A2(
+						_user$project$Plot_GlPlot$fragmentShader,
+						_p1._0,
+						_user$project$Main$uniforms(model));
+				} else {
+					return model.compiledFragmentShader;
+				}
+			}();
 			return {
 				ctor: '_Tuple2',
 				_0: _elm_lang$core$Native_Utils.update(
 					model,
-					{inputString: _p1._0}),
+					{formula: parsed, compiledFragmentShader: newFragShader}),
 				_1: _elm_lang$core$Platform_Cmd$none
 			};
 		} else {
@@ -35862,16 +36409,39 @@ var _user$project$Main$update = F2(
 				ctor: '_Tuple2',
 				_0: _elm_lang$core$Native_Utils.update(
 					model,
-					{sliderVal: _p1._0}),
+					{sliderVal: _p0._0}),
 				_1: _elm_lang$core$Platform_Cmd$none
 			};
 		}
 	});
-var _user$project$Main$initialModel = {inputString: '', sliderVal: 0};
+var _user$project$Main$plot = function (model) {
+	var _p2 = model.formula;
+	if (_p2.ctor === 'Ok') {
+		return A2(
+			_elm_lang$html$Html$div,
+			{ctor: '[]'},
+			{
+				ctor: '::',
+				_0: A2(
+					_user$project$Plot_GlPlot$inequality,
+					model.compiledFragmentShader,
+					_user$project$Main$uniforms(model)),
+				_1: {ctor: '[]'}
+			});
+	} else {
+		return _user$project$ParserDebugger$prettyPrintError(_p2._0);
+	}
+};
+var _user$project$Main$initialModel = {
+	formula: _elm_lang$core$Result$Ok(
+		_user$project$MathTree$Real(0)),
+	sliderVal: 0,
+	compiledFragmentShader: _user$project$Plot_GlPlot$emptyShader
+};
 var _user$project$Main$init = {ctor: '_Tuple2', _0: _user$project$Main$initialModel, _1: _elm_lang$core$Platform_Cmd$none};
-var _user$project$Main$Model = F2(
-	function (a, b) {
-		return {inputString: a, sliderVal: b};
+var _user$project$Main$Model = F3(
+	function (a, b, c) {
+		return {formula: a, sliderVal: b, compiledFragmentShader: c};
 	});
 var _user$project$Main$SliderChange = function (a) {
 	return {ctor: 'SliderChange', _0: a};
@@ -35941,19 +36511,8 @@ var _user$project$Main$view = function (model) {
 									{ctor: '[]'}),
 								_1: {
 									ctor: '::',
-									_0: _elm_lang$html$Html$text(model.inputString),
-									_1: {
-										ctor: '::',
-										_0: A2(
-											_elm_lang$html$Html$br,
-											{ctor: '[]'},
-											{ctor: '[]'}),
-										_1: {
-											ctor: '::',
-											_0: _user$project$Main$plot(model),
-											_1: {ctor: '[]'}
-										}
-									}
+									_0: _user$project$Main$plot(model),
+									_1: {ctor: '[]'}
 								}
 							}
 						}

@@ -5,6 +5,7 @@ import Json.Encode exposing (Value)
 import Math.Vector2 exposing (Vec2)
 import Math.Vector3 exposing (Vec3)
 import Math.Vector4 exposing (Vec4)
+import Math.Matrix4 exposing (Mat4)
 import Dict exposing (Dict)
 import String
 
@@ -18,6 +19,7 @@ type UniformParam
     | Vec2Param Vec2
     | Vec3Param Vec3
     | Vec4Param Vec4
+    | Mat4Param Mat4
 
 
 uniformShaderDeclaration : Dict String UniformParam -> String
@@ -36,6 +38,9 @@ uniformShaderDeclaration params =
 
                 Vec4Param _ ->
                     "vec4"
+
+                Mat4Param _ ->
+                    "mat4"
     in
         Dict.toList params
             |> List.map
@@ -66,3 +71,6 @@ encodeParam param =
 
         Vec4Param val ->
             Native.UnsafeUniforms.encodeVec4 (val)
+
+        Mat4Param val ->
+            Native.UnsafeUniforms.encodeMat4 (val)

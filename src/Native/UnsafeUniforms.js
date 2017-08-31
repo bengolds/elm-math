@@ -12,9 +12,14 @@ var _user$project$Native_UnsafeUniforms = function () {
     return val
   }
 
+  function encodeMat4 (val) {
+    return val
+  }
+
   return {
     encodeVec2: encodeVec2,
     encodeVec3: encodeVec3,
-    encodeVec4: encodeVec4
+    encodeVec4: encodeVec4,
+    encodeMat4: encodeMat4
   }
 }()
