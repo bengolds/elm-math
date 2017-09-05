@@ -1,7 +1,8 @@
-module GreekLetters exposing (isLower, isUpper, isNonRoman, symbols, names, greek)
+module GreekLetters exposing (isLower, isUpper, isNonRoman, symbols, names, greek, toName, toSymbol, toNameFromString)
 
 import StringUtils exposing (toSentenceCase)
 import Char
+import Dict exposing (Dict)
 
 
 type alias GreekLetter =
@@ -82,3 +83,39 @@ uppercaseLetters_ =
 greek : List GreekLetter
 greek =
     lowercaseLetters_ ++ uppercaseLetters_
+
+
+nameDict : Dict Char String
+nameDict =
+    greek
+        |> List.map (\{ name, symbol } -> ( symbol, name ))
+        |> Dict.fromList
+
+
+toName : Char -> Maybe String
+toName symbol =
+    Dict.get symbol nameDict
+
+
+nameStringDict : Dict String String
+nameStringDict =
+    greek
+        |> List.map (\{ name, symbol } -> ( String.fromChar symbol, name ))
+        |> Dict.fromList
+
+
+toNameFromString : String -> Maybe String
+toNameFromString symbol =
+    Dict.get symbol nameStringDict
+
+
+symbolDict : Dict String Char
+symbolDict =
+    greek
+        |> List.map (\{ name, symbol } -> ( name, symbol ))
+        |> Dict.fromList
+
+
+toSymbol : String -> Maybe Char
+toSymbol name =
+    Dict.get name symbolDict

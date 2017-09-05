@@ -1,6 +1,7 @@
-module MathTree exposing (..)
+module MathTree exposing (Expr(..), prettyPrint, getVariables)
 
 import StringUtils exposing (toSentenceCase)
+import Set exposing (Set)
 
 
 type Expr
@@ -19,8 +20,8 @@ type Expr
 
 
 prettyPrint : Expr -> String
-prettyPrint val =
-    case val of
+prettyPrint expr =
+    case expr of
         Func1 func _ ->
             toSentenceCase func
 
@@ -43,32 +44,54 @@ prettyPrint val =
             toString elsewise
 
 
+getVariables : Expr -> List String
+getVariables expr =
+    getVariablesHelper expr
+    |> Set.toList
+    |> List.sort
 
---type SummationIndex
---= Infinity
---|
---type Func1
---= Negative
---| Sin
---| Cos
---| Tan
---| Sec
---| Csc
---| Cot
---| Sinh
---| Cosh
---| Tanh
---| Arcsin
---| Arccos
---| Arctan
---| Abs
---| Factorial
---type Func2
---= Plus
---| Minus
---| Times
---| Dot
---| Divide
---| Exponent
---| Log
---| NthRoot
+
+getVariablesHelper : Expr -> Set String
+getVariablesHelper expr =
+    let
+        summationVariables dummyVar from to expr =
+            Set.union (getVariablesHelper from) (getVariablesHelper to)
+                |> Set.union (getVariablesHelper expr)
+                |> Set.remove dummyVar
+    in
+        case expr of
+            Real _ ->
+                Set.empty
+
+            Rational _ ->
+                Set.empty
+
+            Integer _ ->
+                Set.empty
+
+            Variable name ->
+                Set.singleton name
+
+            Differential expr _ ->
+                getVariablesHelper expr
+
+            ImaginaryUnit ->
+                Set.empty
+
+            Sum dummyVar from to expr ->
+                summationVariables dummyVar from to expr
+
+            Product dummyVar from to expr ->
+                summationVariables dummyVar from to expr
+
+            Integral dummyVar from to expr ->
+                summationVariables dummyVar from to expr
+
+            Equals expr1 expr2 ->
+                Set.union (getVariablesHelper expr1) (getVariablesHelper expr2)
+
+            Func1 _ expr ->
+                getVariablesHelper expr
+
+            Func2 _ expr1 expr2 ->
+                Set.union (getVariablesHelper expr1) (getVariablesHelper expr2)

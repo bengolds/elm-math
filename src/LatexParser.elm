@@ -63,17 +63,19 @@ factor options =
     inContext "factor" <|
         lazy <|
             \_ ->
-                oneOf <|
-                    [ constant options
-                    , differential options
-                    , succeed Variable |= variable options
-                    , parenthesized expr options
-                    , functions options
-                    , absolute options
-                    , summations options
-                    , integral options
-                    , fail "a factor"
-                    ]
+                succeed identity
+                    |. spaces
+                    |= oneOf
+                        [ constant options
+                        , differential options
+                        , succeed Variable |= variable options
+                        , parenthesized expr options
+                        , functions options
+                        , absolute options
+                        , summations options
+                        , integral options
+                        , fail "a factor"
+                        ]
 
 
 expo : ConfigurableParser Expr

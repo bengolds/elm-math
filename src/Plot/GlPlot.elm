@@ -182,7 +182,7 @@ toGlExpr expr =
                 withOneDec <| toFloat val
 
             Variable name ->
-                name
+                UnsafeUniforms.sanitize name
 
             Equals exprA exprB ->
                 "(" ++ (toGlExpr exprA) ++ "-" ++ (toGlExpr exprB) ++ ")"

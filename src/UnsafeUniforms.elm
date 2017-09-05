@@ -1,4 +1,4 @@
-module UnsafeUniforms exposing (UnsafeUniforms, UniformParam(..), uniformShaderDeclaration, toUnsafeUniforms)
+module UnsafeUniforms exposing (UnsafeUniforms, UniformParam(..), uniformShaderDeclaration, toUnsafeUniforms, sanitize)
 
 import Native.UnsafeUniforms
 import Json.Encode exposing (Value)
@@ -8,6 +8,8 @@ import Math.Vector4 exposing (Vec4)
 import Math.Matrix4 exposing (Mat4)
 import Dict exposing (Dict)
 import String
+import Regex
+import GreekLetters exposing (greek, isNonRoman, symbols, toNameFromString)
 
 
 type alias UnsafeUniforms =
@@ -42,18 +44,20 @@ uniformShaderDeclaration params =
                 Mat4Param _ ->
                     "mat4"
     in
-        Dict.toList params
+        params
+            |> Dict.toList
             |> List.map
                 (\( name, val ) ->
-                    "uniform " ++ glslType val ++ " " ++ name ++ ";"
+                    "uniform " ++ glslType val ++ " " ++ sanitize name ++ ";"
                 )
             |> String.join "\n"
 
 
 toUnsafeUniforms : Dict String UniformParam -> UnsafeUniforms
 toUnsafeUniforms params =
-    Dict.map (\_ param -> encodeParam param) params
+    params
         |> Dict.toList
+        |> List.map (\( name, param ) -> ( sanitize name, encodeParam param ))
         |> Json.Encode.object
 
 
@@ -74,3 +78,26 @@ encodeParam param =
 
         Mat4Param val ->
             Native.UnsafeUniforms.encodeMat4 (val)
+
+
+sanitize : String -> String
+sanitize name =
+    let
+        greekLetters =
+            greek
+                |> symbols
+                |> String.fromList
+
+        regex =
+            Regex.regex ("[" ++ greekLetters ++ "]")
+    in
+        Regex.replace Regex.All
+            regex
+            (\match ->
+                let
+                    replacement =
+                        Maybe.withDefault "unknown" (toNameFromString match.match)
+                in
+                    "greek_" ++ replacement ++ "_"
+            )
+            name

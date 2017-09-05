@@ -35,6 +35,7 @@ main =
 
 type alias Model =
     { formula : Result Error Expr
+    , rawText : String
     , sliderVal : Float
     , compiledFragmentShader : FragmentShader
     }
@@ -43,6 +44,7 @@ type alias Model =
 initialModel : Model
 initialModel =
     { formula = Ok (Real 0)
+    , rawText = ""
     , sliderVal = 0
     , compiledFragmentShader = emptyShader
     }
@@ -65,7 +67,7 @@ type Msg
 uniforms : Model -> Dict String UniformParam
 uniforms model =
     Dict.fromList
-        [ ( "a", FloatParam model.sliderVal )
+        [ ( "α", FloatParam model.sliderVal )
         , ( "color", Vec3Param <| toVec3 Color.blue )
         , ( "transform"
           , Mat4Param <|
@@ -95,6 +97,7 @@ update msg model =
                 ( { model
                     | formula = parsed
                     , compiledFragmentShader = newFragShader
+                    , rawText = newString
                   }
                 , Cmd.none
                 )
