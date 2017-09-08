@@ -151,5 +151,5 @@ mathField attributes =
 staticMath : List (Html.Attribute msg) -> String -> Html msg
 staticMath attributes content =
     Html.Keyed.node "div"
-        (List.append attributes [ class "elm-mq-static" ])
-        [ ( "content", text content ) ]
+        (List.append attributes [ class "elm-mq-static", attribute "content" content ])
+        []

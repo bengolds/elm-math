@@ -86,7 +86,16 @@ function initializeMathFields () {
 function initializeStaticMaths () {
   let nodes = document.querySelectorAll('.elm-mq-static:not(.mq-math-mode)')
   for (let node of nodes) {
-    MQ.StaticMath(node)
+    let field = MQ.StaticMath(node)
+    if (node.hasAttribute('content')) {
+      field.latex(node.getAttribute('content'))
+    }
+    let observer = new MutationObserver(function (mutations) {
+      if (node.hasAttribute('content')) {
+        field.latex(node.getAttribute('content'))
+      }
+    })
+    observer.observe(node, {attributes: true})
   }
 }
 

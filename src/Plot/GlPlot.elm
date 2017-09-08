@@ -1,36 +1,38 @@
 module Plot.GlPlot exposing (..)
 
-import Html exposing (Html)
-import Html.Attributes exposing (width, height, style)
+import Element exposing (el, html, Element)
+import Html.Attributes
 import Dict exposing (Dict)
 import WebGL exposing (Mesh, Shader)
 import UnsafeUniforms exposing (UniformParam(..))
-import Math.Matrix4 as Mat4 exposing (Mat4)
 import Math.Vector3 as Vec3 exposing (Vec3, vec3)
-import Color
+import Math.Matrix4 as Mat4 exposing (Mat4)
 import MathTree exposing (Expr(..))
-import Plot.Util exposing (toVec3)
 import List.Extra
 
 
 --inequality : Expr -> Dict String Float -> Html msg
 
 
-inequality : FragmentShader -> Dict String UniformParam -> Html msg
+inequality : FragmentShader -> Dict String UniformParam -> Element styles variation msg
 inequality fragShader scope =
-    Html.div [ style [ ( "white-space", "pre" ) ] ]
-        --[ Html.text <| fragmentShader expr
-        [ WebGL.toHtmlWith [ WebGL.standardDerivatives ]
-            [ width 800
-            , height 800
-            , style [ ( "display", "block" ) ]
+    --Html.div [ style [ ( "white-space", "pre" ) ] ]
+    html <|
+        WebGL.toHtmlWith [ WebGL.standardDerivatives ]
+            [ Html.Attributes.style
+                [ ( "height", "100%" )
+                , ( "width", "100%" )
+                ]
             ]
             [ WebGL.entity vertexShader
                 fragShader
                 fullScreenQuad
                 (UnsafeUniforms.toUnsafeUniforms scope)
             ]
-        ]
+
+
+
+--]
 
 
 type alias Attributes =
@@ -79,6 +81,13 @@ fullScreenQuad =
         , vec3 1 -1 0
         ]
         |> WebGL.triangleStrip
+
+
+cameraMatrix : Mat4
+cameraMatrix =
+    Mat4.mul
+        (Mat4.makeOrtho -1 1 -1 1 -1 1)
+        (Mat4.makeLookAt (vec3 0 0 1) (vec3 0 0 0) (vec3 0 1 0))
 
 
 vertexShader : Shader Attributes Uniforms Varying
@@ -136,15 +145,6 @@ fragmentShader expr uniformsDict =
 
         }
         """
-
-
-uniformSlots =
-    """
-    uniform float slot1;
-    uniform float slot2;
-    uniform float slot3;
-    uniform float slot4;
-    """
 
 
 

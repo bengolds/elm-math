@@ -151,6 +151,5 @@ staticMath : style -> List (Element.Attribute variation msg) -> String -> Elemen
 staticMath style attributes content =
     Element.el style [] <|
         Keyed.row style
-            (List.append attributes [ class "elm-mq-static" ])
-            [ ( "content", text content )
-            ]
+            (List.append attributes [ class "elm-mq-static", attribute "content" content ])
+            []
