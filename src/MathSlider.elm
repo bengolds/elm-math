@@ -1,31 +1,18 @@
 module MathSlider exposing (mathSlider)
 
-import Html exposing (Html)
 import Element exposing (..)
 import Element.Attributes exposing (..)
 import Element.Events exposing (on, targetValue)
-import Style exposing (StyleSheet, styleSheet)
+import Html exposing (Html)
 import Json.Decode as Json
 import Json.Decode.Extra exposing (parseFloat)
 import String
+import Style exposing (StyleSheet, styleSheet)
+import Styles exposing (Styles(..))
 
 
-mathSlider : (Float -> msg) -> Html msg
+mathSlider : (Float -> msg) -> Element Styles variations msg
 mathSlider msg =
-    Element.layout stylesheet (element msg)
-
-
-type Styles
-    = None
-
-
-stylesheet : StyleSheet Styles variations
-stylesheet =
-    styleSheet []
-
-
-element : (Float -> msg) -> Element Styles variations msg
-element msg =
     slider None [ width <| px 200, onInput msg, Element.Attributes.max "10", Element.Attributes.min "-10", step Any ] empty
 
 

@@ -3240,6 +3240,39 @@ var _Skinney$murmur3$Murmur3$hashString = F2(
 				str));
 	});
 
+//import Result //
+
+var _elm_lang$core$Native_Date = function() {
+
+function fromString(str)
+{
+	var date = new Date(str);
+	return isNaN(date.getTime())
+		? _elm_lang$core$Result$Err('Unable to parse \'' + str + '\' as a date. Dates must be in the ISO 8601 format.')
+		: _elm_lang$core$Result$Ok(date);
+}
+
+var dayTable = ['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat'];
+var monthTable =
+	['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun',
+	 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'];
+
+
+return {
+	fromString: fromString,
+	year: function(d) { return d.getFullYear(); },
+	month: function(d) { return { ctor: monthTable[d.getMonth()] }; },
+	day: function(d) { return d.getDate(); },
+	hour: function(d) { return d.getHours(); },
+	minute: function(d) { return d.getMinutes(); },
+	second: function(d) { return d.getSeconds(); },
+	millisecond: function(d) { return d.getMilliseconds(); },
+	toTime: function(d) { return d.getTime(); },
+	fromTime: function(t) { return new Date(t); },
+	dayOfWeek: function(d) { return { ctor: dayTable[d.getDay()] }; }
+};
+
+}();
 var _elm_lang$core$Task$onError = _elm_lang$core$Native_Scheduler.onError;
 var _elm_lang$core$Task$andThen = _elm_lang$core$Native_Scheduler.andThen;
 var _elm_lang$core$Task$spawnCmd = F2(
@@ -4568,6 +4601,39 @@ var _elm_lang$core$Time$subMap = F2(
 			});
 	});
 _elm_lang$core$Native_Platform.effectManagers['Time'] = {pkg: 'elm-lang/core', init: _elm_lang$core$Time$init, onEffects: _elm_lang$core$Time$onEffects, onSelfMsg: _elm_lang$core$Time$onSelfMsg, tag: 'sub', subMap: _elm_lang$core$Time$subMap};
+
+var _elm_lang$core$Date$millisecond = _elm_lang$core$Native_Date.millisecond;
+var _elm_lang$core$Date$second = _elm_lang$core$Native_Date.second;
+var _elm_lang$core$Date$minute = _elm_lang$core$Native_Date.minute;
+var _elm_lang$core$Date$hour = _elm_lang$core$Native_Date.hour;
+var _elm_lang$core$Date$dayOfWeek = _elm_lang$core$Native_Date.dayOfWeek;
+var _elm_lang$core$Date$day = _elm_lang$core$Native_Date.day;
+var _elm_lang$core$Date$month = _elm_lang$core$Native_Date.month;
+var _elm_lang$core$Date$year = _elm_lang$core$Native_Date.year;
+var _elm_lang$core$Date$fromTime = _elm_lang$core$Native_Date.fromTime;
+var _elm_lang$core$Date$toTime = _elm_lang$core$Native_Date.toTime;
+var _elm_lang$core$Date$fromString = _elm_lang$core$Native_Date.fromString;
+var _elm_lang$core$Date$now = A2(_elm_lang$core$Task$map, _elm_lang$core$Date$fromTime, _elm_lang$core$Time$now);
+var _elm_lang$core$Date$Date = {ctor: 'Date'};
+var _elm_lang$core$Date$Sun = {ctor: 'Sun'};
+var _elm_lang$core$Date$Sat = {ctor: 'Sat'};
+var _elm_lang$core$Date$Fri = {ctor: 'Fri'};
+var _elm_lang$core$Date$Thu = {ctor: 'Thu'};
+var _elm_lang$core$Date$Wed = {ctor: 'Wed'};
+var _elm_lang$core$Date$Tue = {ctor: 'Tue'};
+var _elm_lang$core$Date$Mon = {ctor: 'Mon'};
+var _elm_lang$core$Date$Dec = {ctor: 'Dec'};
+var _elm_lang$core$Date$Nov = {ctor: 'Nov'};
+var _elm_lang$core$Date$Oct = {ctor: 'Oct'};
+var _elm_lang$core$Date$Sep = {ctor: 'Sep'};
+var _elm_lang$core$Date$Aug = {ctor: 'Aug'};
+var _elm_lang$core$Date$Jul = {ctor: 'Jul'};
+var _elm_lang$core$Date$Jun = {ctor: 'Jun'};
+var _elm_lang$core$Date$May = {ctor: 'May'};
+var _elm_lang$core$Date$Apr = {ctor: 'Apr'};
+var _elm_lang$core$Date$Mar = {ctor: 'Mar'};
+var _elm_lang$core$Date$Feb = {ctor: 'Feb'};
+var _elm_lang$core$Date$Jan = {ctor: 'Jan'};
 
 //import Native.List //
 
@@ -6371,6 +6437,147 @@ var _elm_lang$core$Set$partition = F2(
 			_1: _elm_lang$core$Set$Set_elm_builtin(p2)
 		};
 	});
+
+var _elm_community$json_extra$Json_Decode_Extra$fromResult = function (result) {
+	var _p0 = result;
+	if (_p0.ctor === 'Ok') {
+		return _elm_lang$core$Json_Decode$succeed(_p0._0);
+	} else {
+		return _elm_lang$core$Json_Decode$fail(_p0._0);
+	}
+};
+var _elm_community$json_extra$Json_Decode_Extra$parseInt = A2(
+	_elm_lang$core$Json_Decode$andThen,
+	function (_p1) {
+		return _elm_community$json_extra$Json_Decode_Extra$fromResult(
+			_elm_lang$core$String$toInt(_p1));
+	},
+	_elm_lang$core$Json_Decode$string);
+var _elm_community$json_extra$Json_Decode_Extra$parseFloat = A2(
+	_elm_lang$core$Json_Decode$andThen,
+	function (_p2) {
+		return _elm_community$json_extra$Json_Decode_Extra$fromResult(
+			_elm_lang$core$String$toFloat(_p2));
+	},
+	_elm_lang$core$Json_Decode$string);
+var _elm_community$json_extra$Json_Decode_Extra$doubleEncoded = function (decoder) {
+	return A2(
+		_elm_lang$core$Json_Decode$andThen,
+		function (_p3) {
+			return _elm_community$json_extra$Json_Decode_Extra$fromResult(
+				A2(_elm_lang$core$Json_Decode$decodeString, decoder, _p3));
+		},
+		_elm_lang$core$Json_Decode$string);
+};
+var _elm_community$json_extra$Json_Decode_Extra$sequenceHelp = F2(
+	function (decoders, jsonValues) {
+		return (!_elm_lang$core$Native_Utils.eq(
+			_elm_lang$core$List$length(jsonValues),
+			_elm_lang$core$List$length(decoders))) ? _elm_lang$core$Json_Decode$fail('Number of decoders does not match number of values') : _elm_community$json_extra$Json_Decode_Extra$fromResult(
+			A3(
+				_elm_lang$core$List$foldr,
+				_elm_lang$core$Result$map2(
+					F2(
+						function (x, y) {
+							return {ctor: '::', _0: x, _1: y};
+						})),
+				_elm_lang$core$Result$Ok(
+					{ctor: '[]'}),
+				A3(_elm_lang$core$List$map2, _elm_lang$core$Json_Decode$decodeValue, decoders, jsonValues)));
+	});
+var _elm_community$json_extra$Json_Decode_Extra$sequence = function (decoders) {
+	return A2(
+		_elm_lang$core$Json_Decode$andThen,
+		_elm_community$json_extra$Json_Decode_Extra$sequenceHelp(decoders),
+		_elm_lang$core$Json_Decode$list(_elm_lang$core$Json_Decode$value));
+};
+var _elm_community$json_extra$Json_Decode_Extra$indexedList = function (indexedDecoder) {
+	return A2(
+		_elm_lang$core$Json_Decode$andThen,
+		function (values) {
+			return _elm_community$json_extra$Json_Decode_Extra$sequence(
+				A2(
+					_elm_lang$core$List$map,
+					indexedDecoder,
+					A2(
+						_elm_lang$core$List$range,
+						0,
+						_elm_lang$core$List$length(values) - 1)));
+		},
+		_elm_lang$core$Json_Decode$list(_elm_lang$core$Json_Decode$value));
+};
+var _elm_community$json_extra$Json_Decode_Extra$optionalField = F2(
+	function (fieldName, decoder) {
+		var finishDecoding = function (json) {
+			var _p4 = A2(
+				_elm_lang$core$Json_Decode$decodeValue,
+				A2(_elm_lang$core$Json_Decode$field, fieldName, _elm_lang$core$Json_Decode$value),
+				json);
+			if (_p4.ctor === 'Ok') {
+				return A2(
+					_elm_lang$core$Json_Decode$map,
+					_elm_lang$core$Maybe$Just,
+					A2(_elm_lang$core$Json_Decode$field, fieldName, decoder));
+			} else {
+				return _elm_lang$core$Json_Decode$succeed(_elm_lang$core$Maybe$Nothing);
+			}
+		};
+		return A2(_elm_lang$core$Json_Decode$andThen, finishDecoding, _elm_lang$core$Json_Decode$value);
+	});
+var _elm_community$json_extra$Json_Decode_Extra$withDefault = F2(
+	function (fallback, decoder) {
+		return A2(
+			_elm_lang$core$Json_Decode$map,
+			_elm_lang$core$Maybe$withDefault(fallback),
+			_elm_lang$core$Json_Decode$maybe(decoder));
+	});
+var _elm_community$json_extra$Json_Decode_Extra$decodeDictFromTuples = F2(
+	function (keyDecoder, tuples) {
+		var _p5 = tuples;
+		if (_p5.ctor === '[]') {
+			return _elm_lang$core$Json_Decode$succeed(_elm_lang$core$Dict$empty);
+		} else {
+			var _p6 = A2(_elm_lang$core$Json_Decode$decodeString, keyDecoder, _p5._0._0);
+			if (_p6.ctor === 'Ok') {
+				return A2(
+					_elm_lang$core$Json_Decode$andThen,
+					function (_p7) {
+						return _elm_lang$core$Json_Decode$succeed(
+							A3(_elm_lang$core$Dict$insert, _p6._0, _p5._0._1, _p7));
+					},
+					A2(_elm_community$json_extra$Json_Decode_Extra$decodeDictFromTuples, keyDecoder, _p5._1));
+			} else {
+				return _elm_lang$core$Json_Decode$fail(_p6._0);
+			}
+		}
+	});
+var _elm_community$json_extra$Json_Decode_Extra$dict2 = F2(
+	function (keyDecoder, valueDecoder) {
+		return A2(
+			_elm_lang$core$Json_Decode$andThen,
+			_elm_community$json_extra$Json_Decode_Extra$decodeDictFromTuples(keyDecoder),
+			_elm_lang$core$Json_Decode$keyValuePairs(valueDecoder));
+	});
+var _elm_community$json_extra$Json_Decode_Extra$set = function (decoder) {
+	return A2(
+		_elm_lang$core$Json_Decode$map,
+		_elm_lang$core$Set$fromList,
+		_elm_lang$core$Json_Decode$list(decoder));
+};
+var _elm_community$json_extra$Json_Decode_Extra$date = A2(
+	_elm_lang$core$Json_Decode$andThen,
+	function (_p8) {
+		return _elm_community$json_extra$Json_Decode_Extra$fromResult(
+			_elm_lang$core$Date$fromString(_p8));
+	},
+	_elm_lang$core$Json_Decode$string);
+var _elm_community$json_extra$Json_Decode_Extra$andMap = _elm_lang$core$Json_Decode$map2(
+	F2(
+		function (x, y) {
+			return y(x);
+		}));
+var _elm_community$json_extra$Json_Decode_Extra_ops = _elm_community$json_extra$Json_Decode_Extra_ops || {};
+_elm_community$json_extra$Json_Decode_Extra_ops['|:'] = _elm_lang$core$Basics$flip(_elm_community$json_extra$Json_Decode_Extra$andMap);
 
 
 /*
@@ -28571,6 +28778,14 @@ var _user$project$ParserUtils$pairwiseMap = F2(
 		}
 	});
 
+var _user$project$MathTree$isImplicitEquation = function (expr) {
+	var _p0 = expr;
+	if (_p0.ctor === 'Equals') {
+		return true;
+	} else {
+		return false;
+	}
+};
 var _user$project$MathTree$getVariablesHelper = function (expr) {
 	getVariablesHelper:
 	while (true) {
@@ -28587,8 +28802,8 @@ var _user$project$MathTree$getVariablesHelper = function (expr) {
 							_user$project$MathTree$getVariablesHelper(from),
 							_user$project$MathTree$getVariablesHelper(to))));
 			});
-		var _p0 = expr;
-		switch (_p0.ctor) {
+		var _p1 = expr;
+		switch (_p1.ctor) {
 			case 'Real':
 				return _elm_lang$core$Set$empty;
 			case 'Rational':
@@ -28596,33 +28811,33 @@ var _user$project$MathTree$getVariablesHelper = function (expr) {
 			case 'Integer':
 				return _elm_lang$core$Set$empty;
 			case 'Variable':
-				return _elm_lang$core$Set$singleton(_p0._0);
+				return _elm_lang$core$Set$singleton(_p1._0);
 			case 'Differential':
-				var _v1 = _p0._0;
-				expr = _v1;
+				var _v2 = _p1._0;
+				expr = _v2;
 				continue getVariablesHelper;
 			case 'ImaginaryUnit':
 				return _elm_lang$core$Set$empty;
 			case 'Sum':
-				return A4(summationVariables, _p0._0, _p0._1, _p0._2, _p0._3);
+				return A4(summationVariables, _p1._0, _p1._1, _p1._2, _p1._3);
 			case 'Product':
-				return A4(summationVariables, _p0._0, _p0._1, _p0._2, _p0._3);
+				return A4(summationVariables, _p1._0, _p1._1, _p1._2, _p1._3);
 			case 'Integral':
-				return A4(summationVariables, _p0._0, _p0._1, _p0._2, _p0._3);
+				return A4(summationVariables, _p1._0, _p1._1, _p1._2, _p1._3);
 			case 'Equals':
 				return A2(
 					_elm_lang$core$Set$union,
-					_user$project$MathTree$getVariablesHelper(_p0._0),
-					_user$project$MathTree$getVariablesHelper(_p0._1));
+					_user$project$MathTree$getVariablesHelper(_p1._0),
+					_user$project$MathTree$getVariablesHelper(_p1._1));
 			case 'Func1':
-				var _v2 = _p0._1;
-				expr = _v2;
+				var _v3 = _p1._1;
+				expr = _v3;
 				continue getVariablesHelper;
 			default:
 				return A2(
 					_elm_lang$core$Set$union,
-					_user$project$MathTree$getVariablesHelper(_p0._1),
-					_user$project$MathTree$getVariablesHelper(_p0._2));
+					_user$project$MathTree$getVariablesHelper(_p1._1),
+					_user$project$MathTree$getVariablesHelper(_p1._2));
 		}
 	}
 };
@@ -28632,12 +28847,12 @@ var _user$project$MathTree$getVariables = function (expr) {
 			_user$project$MathTree$getVariablesHelper(expr)));
 };
 var _user$project$MathTree$prettyPrint = function (expr) {
-	var _p1 = expr;
-	switch (_p1.ctor) {
+	var _p2 = expr;
+	switch (_p2.ctor) {
 		case 'Func1':
-			return _user$project$StringUtils$toSentenceCase(_p1._0);
+			return _user$project$StringUtils$toSentenceCase(_p2._0);
 		case 'Func2':
-			return _user$project$StringUtils$toSentenceCase(_p1._0);
+			return _user$project$StringUtils$toSentenceCase(_p2._0);
 		case 'Equals':
 			return 'Equals';
 		case 'Sum':
@@ -28647,7 +28862,7 @@ var _user$project$MathTree$prettyPrint = function (expr) {
 		case 'Integral':
 			return 'Integral';
 		default:
-			return _elm_lang$core$Basics$toString(_p1);
+			return _elm_lang$core$Basics$toString(_p2);
 	}
 };
 var _user$project$MathTree$Func2 = F3(
@@ -29488,140 +29703,6 @@ var _user$project$LatexParser$parse = function (inputString) {
 };
 var _user$project$LatexParser$Options = function (a) {
 	return {insideIntegral: a};
-};
-
-// eslint-disable-next-line camelcase, wrap-iife, no-unused-vars
-var _user$project$Native_UnsafeUniforms = function () {
-  function encodeVec2 (val) {
-    return val
-  }
-
-  function encodeVec3 (val) {
-    return val
-  }
-
-  function encodeVec4 (val) {
-    return val
-  }
-
-  function encodeMat4 (val) {
-    return val
-  }
-
-  return {
-    encodeVec2: encodeVec2,
-    encodeVec3: encodeVec3,
-    encodeVec4: encodeVec4,
-    encodeMat4: encodeMat4
-  }
-}()
-
-var _user$project$UnsafeUniforms$sanitize = function (name) {
-	var greekLetters = _elm_lang$core$String$fromList(
-		_user$project$GreekLetters$symbols(_user$project$GreekLetters$greek));
-	var regex = _elm_lang$core$Regex$regex(
-		A2(
-			_elm_lang$core$Basics_ops['++'],
-			'[',
-			A2(_elm_lang$core$Basics_ops['++'], greekLetters, ']')));
-	return A4(
-		_elm_lang$core$Regex$replace,
-		_elm_lang$core$Regex$All,
-		regex,
-		function (match) {
-			var replacement = A2(
-				_elm_lang$core$Maybe$withDefault,
-				'unknown',
-				_user$project$GreekLetters$toNameFromString(match.match));
-			return A2(
-				_elm_lang$core$Basics_ops['++'],
-				'greek_',
-				A2(_elm_lang$core$Basics_ops['++'], replacement, '_'));
-		},
-		name);
-};
-var _user$project$UnsafeUniforms$encodeParam = function (param) {
-	var _p0 = param;
-	switch (_p0.ctor) {
-		case 'FloatParam':
-			return _elm_lang$core$Json_Encode$float(_p0._0);
-		case 'Vec2Param':
-			return _user$project$Native_UnsafeUniforms.encodeVec2(_p0._0);
-		case 'Vec3Param':
-			return _user$project$Native_UnsafeUniforms.encodeVec3(_p0._0);
-		case 'Vec4Param':
-			return _user$project$Native_UnsafeUniforms.encodeVec4(_p0._0);
-		default:
-			return _user$project$Native_UnsafeUniforms.encodeMat4(_p0._0);
-	}
-};
-var _user$project$UnsafeUniforms$toUnsafeUniforms = function (params) {
-	return _elm_lang$core$Json_Encode$object(
-		A2(
-			_elm_lang$core$List$map,
-			function (_p1) {
-				var _p2 = _p1;
-				return {
-					ctor: '_Tuple2',
-					_0: _user$project$UnsafeUniforms$sanitize(_p2._0),
-					_1: _user$project$UnsafeUniforms$encodeParam(_p2._1)
-				};
-			},
-			_elm_lang$core$Dict$toList(params)));
-};
-var _user$project$UnsafeUniforms$uniformShaderDeclaration = function (params) {
-	var glslType = function (param) {
-		var _p3 = param;
-		switch (_p3.ctor) {
-			case 'FloatParam':
-				return 'float';
-			case 'Vec2Param':
-				return 'vec2';
-			case 'Vec3Param':
-				return 'vec3';
-			case 'Vec4Param':
-				return 'vec4';
-			default:
-				return 'mat4';
-		}
-	};
-	return A2(
-		_elm_lang$core$String$join,
-		'\n',
-		A2(
-			_elm_lang$core$List$map,
-			function (_p4) {
-				var _p5 = _p4;
-				return A2(
-					_elm_lang$core$Basics_ops['++'],
-					'uniform ',
-					A2(
-						_elm_lang$core$Basics_ops['++'],
-						glslType(_p5._1),
-						A2(
-							_elm_lang$core$Basics_ops['++'],
-							' ',
-							A2(
-								_elm_lang$core$Basics_ops['++'],
-								_user$project$UnsafeUniforms$sanitize(_p5._0),
-								';'))));
-			},
-			_elm_lang$core$Dict$toList(params)));
-};
-var _user$project$UnsafeUniforms$Mat4Param = function (a) {
-	return {ctor: 'Mat4Param', _0: a};
-};
-var _user$project$UnsafeUniforms$Vec4Param = function (a) {
-	return {ctor: 'Vec4Param', _0: a};
-};
-var _user$project$UnsafeUniforms$Vec3Param = function (a) {
-	return {ctor: 'Vec3Param', _0: a};
-};
-var _user$project$UnsafeUniforms$Vec2Param = function (a) {
-	return {ctor: 'Vec2Param', _0: a};
-};
-var _user$project$UnsafeUniforms$FloatParam = function (a) {
-	return {ctor: 'FloatParam', _0: a};
 };
 
 var _user$project$WebGL_Settings_Internal$SampleAlphaToCoverage = {ctor: 'SampleAlphaToCoverage'};
@@ -30494,6 +30575,140 @@ var _user$project$WebGL$toHtml = _user$project$WebGL$toHtmlWith(
 		}
 	});
 
+// eslint-disable-next-line camelcase, wrap-iife, no-unused-vars
+var _user$project$Native_UnsafeUniforms = function () {
+  function encodeVec2 (val) {
+    return val
+  }
+
+  function encodeVec3 (val) {
+    return val
+  }
+
+  function encodeVec4 (val) {
+    return val
+  }
+
+  function encodeMat4 (val) {
+    return val
+  }
+
+  return {
+    encodeVec2: encodeVec2,
+    encodeVec3: encodeVec3,
+    encodeVec4: encodeVec4,
+    encodeMat4: encodeMat4
+  }
+}()
+
+var _user$project$UnsafeUniforms$sanitize = function (name) {
+	var greekLetters = _elm_lang$core$String$fromList(
+		_user$project$GreekLetters$symbols(_user$project$GreekLetters$greek));
+	var regex = _elm_lang$core$Regex$regex(
+		A2(
+			_elm_lang$core$Basics_ops['++'],
+			'[',
+			A2(_elm_lang$core$Basics_ops['++'], greekLetters, ']')));
+	return A4(
+		_elm_lang$core$Regex$replace,
+		_elm_lang$core$Regex$All,
+		regex,
+		function (match) {
+			var replacement = A2(
+				_elm_lang$core$Maybe$withDefault,
+				'unknown',
+				_user$project$GreekLetters$toNameFromString(match.match));
+			return A2(
+				_elm_lang$core$Basics_ops['++'],
+				'greek_',
+				A2(_elm_lang$core$Basics_ops['++'], replacement, '_'));
+		},
+		name);
+};
+var _user$project$UnsafeUniforms$encodeParam = function (param) {
+	var _p0 = param;
+	switch (_p0.ctor) {
+		case 'FloatParam':
+			return _elm_lang$core$Json_Encode$float(_p0._0);
+		case 'Vec2Param':
+			return _user$project$Native_UnsafeUniforms.encodeVec2(_p0._0);
+		case 'Vec3Param':
+			return _user$project$Native_UnsafeUniforms.encodeVec3(_p0._0);
+		case 'Vec4Param':
+			return _user$project$Native_UnsafeUniforms.encodeVec4(_p0._0);
+		default:
+			return _user$project$Native_UnsafeUniforms.encodeMat4(_p0._0);
+	}
+};
+var _user$project$UnsafeUniforms$toUnsafeUniforms = function (params) {
+	return _elm_lang$core$Json_Encode$object(
+		A2(
+			_elm_lang$core$List$map,
+			function (_p1) {
+				var _p2 = _p1;
+				return {
+					ctor: '_Tuple2',
+					_0: _user$project$UnsafeUniforms$sanitize(_p2._0),
+					_1: _user$project$UnsafeUniforms$encodeParam(_p2._1)
+				};
+			},
+			_elm_lang$core$Dict$toList(params)));
+};
+var _user$project$UnsafeUniforms$uniformShaderDeclaration = function (params) {
+	var glslType = function (param) {
+		var _p3 = param;
+		switch (_p3.ctor) {
+			case 'FloatParam':
+				return 'float';
+			case 'Vec2Param':
+				return 'vec2';
+			case 'Vec3Param':
+				return 'vec3';
+			case 'Vec4Param':
+				return 'vec4';
+			default:
+				return 'mat4';
+		}
+	};
+	return A2(
+		_elm_lang$core$String$join,
+		'\n',
+		A2(
+			_elm_lang$core$List$map,
+			function (_p4) {
+				var _p5 = _p4;
+				return A2(
+					_elm_lang$core$Basics_ops['++'],
+					'uniform ',
+					A2(
+						_elm_lang$core$Basics_ops['++'],
+						glslType(_p5._1),
+						A2(
+							_elm_lang$core$Basics_ops['++'],
+							' ',
+							A2(
+								_elm_lang$core$Basics_ops['++'],
+								_user$project$UnsafeUniforms$sanitize(_p5._0),
+								';'))));
+			},
+			_elm_lang$core$Dict$toList(params)));
+};
+var _user$project$UnsafeUniforms$Mat4Param = function (a) {
+	return {ctor: 'Mat4Param', _0: a};
+};
+var _user$project$UnsafeUniforms$Vec4Param = function (a) {
+	return {ctor: 'Vec4Param', _0: a};
+};
+var _user$project$UnsafeUniforms$Vec3Param = function (a) {
+	return {ctor: 'Vec3Param', _0: a};
+};
+var _user$project$UnsafeUniforms$Vec2Param = function (a) {
+	return {ctor: 'Vec2Param', _0: a};
+};
+var _user$project$UnsafeUniforms$FloatParam = function (a) {
+	return {ctor: 'FloatParam', _0: a};
+};
+
 var _user$project$Plot_GlPlot$toGlExpr = function (expr) {
 	var withOneDec = function (val) {
 		return (_elm_lang$core$Native_Utils.cmp(
@@ -30764,46 +30979,175 @@ var _user$project$Plot_Util$normalMatrix = function (mat) {
 				_user$project$Plot_Util$upperLeft(mat))));
 };
 
-var _user$project$MathModule$uniforms = function (mathModule) {
-	return _elm_lang$core$Dict$fromList(
-		{
-			ctor: '::',
-			_0: {
-				ctor: '_Tuple2',
-				_0: 'color',
-				_1: _user$project$UnsafeUniforms$Vec3Param(
-					_user$project$Plot_Util$toVec3(_elm_lang$core$Color$blue))
-			},
-			_1: {
-				ctor: '::',
-				_0: {
-					ctor: '_Tuple2',
-					_0: 'transform',
-					_1: _user$project$UnsafeUniforms$Mat4Param(_user$project$Plot_GlPlot$cameraMatrix)
-				},
-				_1: {ctor: '[]'}
-			}
-		});
+var _user$project$Scope$pinnedVariables = function (_p0) {
+	var _p1 = _p0;
+	return A2(
+		_elm_lang$core$Dict$map,
+		F2(
+			function (_p3, _p2) {
+				var _p4 = _p2;
+				return _p4.value;
+			}),
+		A2(
+			_elm_lang$core$Dict$filter,
+			F2(
+				function (_p6, _p5) {
+					var _p7 = _p5;
+					return _p7.pinned;
+				}),
+			_p1._0));
 };
-var _user$project$MathModule$update = F2(
-	function (msg, mathModule) {
+var _user$project$Scope$allVariables = function (_p8) {
+	var _p9 = _p8;
+	return _elm_lang$core$Dict$toList(_p9._0);
+};
+var _user$project$Scope$isEmpty = function (_p10) {
+	var _p11 = _p10;
+	return _elm_lang$core$Dict$isEmpty(_p11._0);
+};
+var _user$project$Scope$toUniformParam = function (param) {
+	var _p12 = param;
+	return _user$project$UnsafeUniforms$FloatParam(_p12._0);
+};
+var _user$project$Scope$asUniforms = function (scope) {
+	var _p13 = A2(
+		_elm_lang$core$Debug$log,
+		'scope',
+		_user$project$Scope$pinnedVariables(scope));
+	return A2(
+		_elm_lang$core$Dict$map,
+		F2(
+			function (_p14, value) {
+				return _user$project$Scope$toUniformParam(value);
+			}),
+		_user$project$Scope$pinnedVariables(scope));
+};
+var _user$project$Scope$Real = function (a) {
+	return {ctor: 'Real', _0: a};
+};
+var _user$project$Scope$defaultParameter = _user$project$Scope$Real(0);
+var _user$project$Scope$Scope = function (a) {
+	return {ctor: 'Scope', _0: a};
+};
+var _user$project$Scope$empty = _user$project$Scope$Scope(_elm_lang$core$Dict$empty);
+var _user$project$Scope$changePinned_ = F3(
+	function (name, pinned, _p15) {
+		var _p16 = _p15;
+		return _user$project$Scope$Scope(
+			A3(
+				_elm_lang$core$Dict$update,
+				name,
+				function (maybeVar) {
+					var _p17 = maybeVar;
+					if (_p17.ctor === 'Just') {
+						return _elm_lang$core$Maybe$Just(
+							_elm_lang$core$Native_Utils.update(
+								_p17._0,
+								{pinned: pinned}));
+					} else {
+						return _elm_lang$core$Maybe$Just(
+							{pinned: pinned, value: _user$project$Scope$defaultParameter});
+					}
+				},
+				_p16._0));
+	});
+var _user$project$Scope$pin = F2(
+	function (name, scope) {
+		return A3(_user$project$Scope$changePinned_, name, true, scope);
+	});
+var _user$project$Scope$unpin = F2(
+	function (name, scope) {
+		return A3(_user$project$Scope$changePinned_, name, false, scope);
+	});
+var _user$project$Scope$addFreeVariables = F2(
+	function (names, _p18) {
+		var _p19 = _p18;
+		return _user$project$Scope$Scope(
+			A2(
+				_elm_lang$core$Dict$union,
+				_p19._0,
+				_elm_lang$core$Dict$fromList(
+					A2(
+						_elm_lang$core$List$map,
+						function (name) {
+							return {
+								ctor: '_Tuple2',
+								_0: name,
+								_1: {pinned: false, value: _user$project$Scope$defaultParameter}
+							};
+						},
+						names))));
+	});
+var _user$project$Scope$set = F3(
+	function (name, value, _p20) {
+		var _p21 = _p20;
+		return _user$project$Scope$Scope(
+			A3(
+				_elm_lang$core$Dict$update,
+				name,
+				function (maybeVar) {
+					var _p22 = maybeVar;
+					if (_p22.ctor === 'Just') {
+						return _elm_lang$core$Maybe$Just(
+							_elm_lang$core$Native_Utils.update(
+								_p22._0,
+								{value: value}));
+					} else {
+						return _elm_lang$core$Maybe$Just(
+							{pinned: true, value: value});
+					}
+				},
+				_p21._0));
+	});
+
+var _user$project$MathModule$uniforms = F2(
+	function (scope, mathModule) {
+		return A2(
+			_elm_lang$core$Dict$union,
+			_user$project$Scope$asUniforms(scope),
+			_elm_lang$core$Dict$fromList(
+				{
+					ctor: '::',
+					_0: {
+						ctor: '_Tuple2',
+						_0: 'color',
+						_1: _user$project$UnsafeUniforms$Vec3Param(
+							_user$project$Plot_Util$toVec3(_elm_lang$core$Color$blue))
+					},
+					_1: {
+						ctor: '::',
+						_0: {
+							ctor: '_Tuple2',
+							_0: 'transform',
+							_1: _user$project$UnsafeUniforms$Mat4Param(_user$project$Plot_GlPlot$cameraMatrix)
+						},
+						_1: {ctor: '[]'}
+					}
+				}));
+	});
+var _user$project$MathModule$update = F3(
+	function (msg, scope, mathModule) {
 		var _p0 = msg;
-		var _p2 = _p0._0;
-		var parsed = _user$project$LatexParser$parse(_p2);
-		var newFragShader = function () {
-			var _p1 = parsed;
-			if (_p1.ctor === 'Ok') {
-				return A2(
-					_user$project$Plot_GlPlot$fragmentShader,
-					_p1._0,
-					_user$project$MathModule$uniforms(mathModule));
-			} else {
-				return mathModule.compiledFragmentShader;
-			}
-		}();
-		return _elm_lang$core$Native_Utils.update(
-			mathModule,
-			{formula: parsed, compiledFragmentShader: newFragShader, rawText: _p2});
+		if (_p0.ctor === 'QuillEdited') {
+			var _p2 = _p0._0;
+			var parsed = _user$project$LatexParser$parse(_p2);
+			var newFragShader = function () {
+				var _p1 = parsed;
+				if (_p1.ctor === 'Ok') {
+					return A2(
+						_user$project$Plot_GlPlot$fragmentShader,
+						_p1._0,
+						A2(_user$project$MathModule$uniforms, scope, mathModule));
+				} else {
+					return mathModule.compiledFragmentShader;
+				}
+			}();
+			return _elm_lang$core$Native_Utils.update(
+				mathModule,
+				{formula: parsed, compiledFragmentShader: newFragShader, rawText: _p2});
+		} else {
+			return mathModule;
+		}
 	});
 var _user$project$MathModule$emptyModule = {
 	formula: _elm_lang$core$Result$Ok(
@@ -30815,6 +31159,7 @@ var _user$project$MathModule$MathModule = F3(
 	function (a, b, c) {
 		return {formula: a, rawText: b, compiledFragmentShader: c};
 	});
+var _user$project$MathModule$Recompile = {ctor: 'Recompile'};
 var _user$project$MathModule$QuillEdited = function (a) {
 	return {ctor: 'QuillEdited', _0: a};
 };
@@ -31119,7 +31464,7 @@ var _user$project$Styles$FunctionName = {ctor: 'FunctionName'};
 var _user$project$Styles$DebugBox = {ctor: 'DebugBox'};
 var _user$project$Styles$AddButtonIcon = {ctor: 'AddButtonIcon'};
 var _user$project$Styles$AddButton = {ctor: 'AddButton'};
-var _user$project$Styles$MathRow = {ctor: 'MathRow'};
+var _user$project$Styles$Card = {ctor: 'Card'};
 var _user$project$Styles$Header = {ctor: 'Header'};
 var _user$project$Styles$Background = {ctor: 'Background'};
 var _user$project$Styles$None = {ctor: 'None'};
@@ -31169,7 +31514,7 @@ var _user$project$Styles$stylesheet = _mdgriffith$style_elements$Style$styleshee
 					ctor: '::',
 					_0: A2(
 						_mdgriffith$style_elements$Style$style,
-						_user$project$Styles$MathRow,
+						_user$project$Styles$Card,
 						A2(
 							_elm_lang$core$Basics_ops['++'],
 							{
@@ -31289,6 +31634,90 @@ var _user$project$Styles$stylesheet = _mdgriffith$style_elements$Style$styleshee
 			}
 		}
 	});
+
+var _user$project$MathSlider$step = function (val) {
+	return A2(
+		_mdgriffith$style_elements$Element_Attributes$attribute,
+		'step',
+		function () {
+			var _p0 = val;
+			if (_p0.ctor === 'Any') {
+				return 'any';
+			} else {
+				return _elm_lang$core$Basics$toString(_p0._0);
+			}
+		}());
+};
+var _user$project$MathSlider$onInput = function (tagger) {
+	return A2(
+		_mdgriffith$style_elements$Element_Events$on,
+		'input',
+		A2(
+			_elm_lang$core$Json_Decode$map,
+			tagger,
+			A2(
+				_elm_lang$core$Json_Decode$at,
+				{
+					ctor: '::',
+					_0: 'target',
+					_1: {
+						ctor: '::',
+						_0: 'value',
+						_1: {ctor: '[]'}
+					}
+				},
+				_elm_community$json_extra$Json_Decode_Extra$parseFloat)));
+};
+var _user$project$MathSlider$slider = F3(
+	function (style, attrs, child) {
+		return A2(
+			_mdgriffith$style_elements$Element$node,
+			'input',
+			A3(
+				_mdgriffith$style_elements$Element$el,
+				style,
+				A2(
+					_elm_lang$core$Basics_ops['++'],
+					attrs,
+					{
+						ctor: '::',
+						_0: _mdgriffith$style_elements$Element_Attributes$type_('range'),
+						_1: {ctor: '[]'}
+					}),
+				child));
+	});
+var _user$project$MathSlider$Any = {ctor: 'Any'};
+var _user$project$MathSlider$mathSlider = function (msg) {
+	return A3(
+		_user$project$MathSlider$slider,
+		_user$project$Styles$None,
+		{
+			ctor: '::',
+			_0: _mdgriffith$style_elements$Element_Attributes$width(
+				_mdgriffith$style_elements$Element_Attributes$px(200)),
+			_1: {
+				ctor: '::',
+				_0: _user$project$MathSlider$onInput(msg),
+				_1: {
+					ctor: '::',
+					_0: _mdgriffith$style_elements$Element_Attributes$max('10'),
+					_1: {
+						ctor: '::',
+						_0: _mdgriffith$style_elements$Element_Attributes$min('-10'),
+						_1: {
+							ctor: '::',
+							_0: _user$project$MathSlider$step(_user$project$MathSlider$Any),
+							_1: {ctor: '[]'}
+						}
+					}
+				}
+			}
+		},
+		_mdgriffith$style_elements$Element$empty);
+};
+var _user$project$MathSlider$Step = function (a) {
+	return {ctor: 'Step', _0: a};
+};
 
 var _user$project$Mathquill_Common$Left = {ctor: 'Left'};
 var _user$project$Mathquill_Common$Right = {ctor: 'Right'};
@@ -31424,6 +31853,16 @@ var _user$project$Mathquill_StyleElements$onEdit = function (msg) {
 };
 
 var _user$project$Msg$Noop = {ctor: 'Noop'};
+var _user$project$Msg$SliderChanged = F2(
+	function (a, b) {
+		return {ctor: 'SliderChanged', _0: a, _1: b};
+	});
+var _user$project$Msg$UnpinVariable = function (a) {
+	return {ctor: 'UnpinVariable', _0: a};
+};
+var _user$project$Msg$PinVariable = function (a) {
+	return {ctor: 'PinVariable', _0: a};
+};
 var _user$project$Msg$DeleteModule = function (a) {
 	return {ctor: 'DeleteModule', _0: a};
 };
@@ -31451,39 +31890,43 @@ var _user$project$MathViews$matIcon = F3(
 					}),
 				_mdgriffith$style_elements$Element$text(name)));
 	});
-var _user$project$MathViews$plot = function (mathModule) {
-	var _p0 = mathModule.formula;
-	if (_p0.ctor === 'Ok') {
-		return A2(
-			_user$project$Plot_GlPlot$inequality,
-			mathModule.compiledFragmentShader,
-			_user$project$MathModule$uniforms(mathModule));
-	} else {
-		return _mdgriffith$style_elements$Element$text('uhoh');
-	}
-};
+var _user$project$MathViews$plot = F2(
+	function (scope, mathModule) {
+		var _p0 = mathModule.formula;
+		if (_p0.ctor === 'Ok') {
+			return A2(
+				_user$project$Plot_GlPlot$inequality,
+				mathModule.compiledFragmentShader,
+				A2(_user$project$MathModule$uniforms, scope, mathModule));
+		} else {
+			return _mdgriffith$style_elements$Element$text('uhoh');
+		}
+	});
 var _user$project$MathViews$functionSignature = function (mathModule) {
-	return A3(
-		_user$project$Mathquill_StyleElements$staticMath,
-		_user$project$Styles$FunctionName,
-		{ctor: '[]'},
-		A2(
-			_elm_lang$core$Basics_ops['++'],
-			'f(',
+	var _p1 = mathModule.formula;
+	if (_p1.ctor === 'Ok') {
+		var _p2 = _p1._0;
+		return _user$project$MathTree$isImplicitEquation(_p2) ? _mdgriffith$style_elements$Element$empty : A3(
+			_user$project$Mathquill_StyleElements$staticMath,
+			_user$project$Styles$FunctionName,
+			{ctor: '[]'},
 			A2(
 				_elm_lang$core$Basics_ops['++'],
-				function () {
-					var _p1 = mathModule.formula;
-					if (_p1.ctor === 'Ok') {
-						return A2(
-							_elm_lang$core$String$join,
-							',',
-							_user$project$MathTree$getVariables(_p1._0));
-					} else {
-						return '-';
-					}
-				}(),
-				')=')));
+				'f(',
+				A2(
+					_elm_lang$core$Basics_ops['++'],
+					A2(
+						_elm_lang$core$String$join,
+						',',
+						_user$project$MathTree$getVariables(_p2)),
+					')=')));
+	} else {
+		return A3(
+			_user$project$Mathquill_StyleElements$staticMath,
+			_user$project$Styles$FunctionName,
+			{ctor: '[]'},
+			'f(-)');
+	}
 };
 var _user$project$MathViews$iconButton = F2(
 	function (iconName, onClick) {
@@ -31538,19 +31981,19 @@ var _user$project$MathViews$formulaField = function (index) {
 				_1: {
 					ctor: '::',
 					_0: _user$project$Mathquill_StyleElements$onEdit(
-						function (_p2) {
+						function (_p3) {
 							return A2(
 								_user$project$Msg$ModuleEdited,
 								index,
-								_user$project$MathModule$QuillEdited(_p2));
+								_user$project$MathModule$QuillEdited(_p3));
 						}),
 					_1: {ctor: '[]'}
 				}
 			}
 		});
 };
-var _user$project$MathViews$mathRow = F2(
-	function (index, mathModule) {
+var _user$project$MathViews$mathRow = F3(
+	function (scope, index, mathModule) {
 		return A2(
 			_mdgriffith$style_elements$Element$within,
 			{
@@ -31591,7 +32034,7 @@ var _user$project$MathViews$mathRow = F2(
 			},
 			A3(
 				_mdgriffith$style_elements$Element$row,
-				_user$project$Styles$MathRow,
+				_user$project$Styles$Card,
 				{
 					ctor: '::',
 					_0: _mdgriffith$style_elements$Element_Attributes$height(
@@ -31668,12 +32111,88 @@ var _user$project$MathViews$mathRow = F2(
 									_1: {ctor: '[]'}
 								}
 							},
-							_user$project$MathViews$plot(mathModule)),
+							A2(_user$project$MathViews$plot, scope, mathModule)),
 						_1: {ctor: '[]'}
 					}
 				}));
 	});
 
+var _user$project$Main$varCard = function (_p0) {
+	var _p1 = _p0;
+	var _p2 = _p1._0;
+	return _p1._1.pinned ? A3(
+		_mdgriffith$style_elements$Element$el,
+		_user$project$Styles$Card,
+		{
+			ctor: '::',
+			_0: _mdgriffith$style_elements$Element_Attributes$height(
+				_mdgriffith$style_elements$Element_Attributes$px(80)),
+			_1: {
+				ctor: '::',
+				_0: _mdgriffith$style_elements$Element_Attributes$width(
+					_mdgriffith$style_elements$Element_Attributes$px(240)),
+				_1: {ctor: '[]'}
+			}
+		},
+		A3(
+			_mdgriffith$style_elements$Element$el,
+			_user$project$Styles$None,
+			{
+				ctor: '::',
+				_0: _mdgriffith$style_elements$Element_Attributes$verticalCenter,
+				_1: {
+					ctor: '::',
+					_0: _mdgriffith$style_elements$Element_Attributes$center,
+					_1: {ctor: '[]'}
+				}
+			},
+			_user$project$MathSlider$mathSlider(
+				_user$project$Msg$SliderChanged(_p2)))) : A3(
+		_mdgriffith$style_elements$Element$el,
+		_user$project$Styles$Card,
+		{
+			ctor: '::',
+			_0: _mdgriffith$style_elements$Element_Attributes$height(
+				_mdgriffith$style_elements$Element_Attributes$px(80)),
+			_1: {
+				ctor: '::',
+				_0: _mdgriffith$style_elements$Element_Attributes$width(
+					_mdgriffith$style_elements$Element_Attributes$px(80)),
+				_1: {
+					ctor: '::',
+					_0: _mdgriffith$style_elements$Element_Events$onClick(
+						_user$project$Msg$PinVariable(_p2)),
+					_1: {ctor: '[]'}
+				}
+			}
+		},
+		A3(
+			_mdgriffith$style_elements$Element$el,
+			_user$project$Styles$None,
+			{
+				ctor: '::',
+				_0: _mdgriffith$style_elements$Element_Attributes$verticalCenter,
+				_1: {
+					ctor: '::',
+					_0: _mdgriffith$style_elements$Element_Attributes$center,
+					_1: {ctor: '[]'}
+				}
+			},
+			_mdgriffith$style_elements$Element$text(_p2)));
+};
+var _user$project$Main$getAllVariables = function (modules) {
+	return _elm_community$list_extra$List_Extra$unique(
+		_elm_lang$core$List$concat(
+			A2(
+				_elm_lang$core$List$map,
+				function (mathModule) {
+					return A2(
+						_elm_lang$core$Result$withDefault,
+						{ctor: '[]'},
+						A2(_elm_lang$core$Result$map, _user$project$MathTree$getVariables, mathModule.formula));
+				},
+				modules)));
+};
 var _user$project$Main$header = function (model) {
 	return A3(
 		_mdgriffith$style_elements$Element$wrappedRow,
@@ -31688,15 +32207,22 @@ var _user$project$Main$header = function (model) {
 				_1: {
 					ctor: '::',
 					_0: _mdgriffith$style_elements$Element_Attributes$verticalCenter,
-					_1: {ctor: '[]'}
+					_1: {
+						ctor: '::',
+						_0: _mdgriffith$style_elements$Element_Attributes$spacing(8),
+						_1: {ctor: '[]'}
+					}
 				}
 			}
 		},
-		{
+		_user$project$Scope$isEmpty(model.scope) ? {
 			ctor: '::',
 			_0: _mdgriffith$style_elements$Element$text('No variables pinned yet.'),
 			_1: {ctor: '[]'}
-		});
+		} : A2(
+			_elm_lang$core$List$map,
+			_user$project$Main$varCard,
+			_user$project$Scope$allVariables(model.scope)));
 };
 var _user$project$Main$addButton = A4(
 	_mdgriffith$style_elements$Element$circle,
@@ -31771,7 +32297,10 @@ var _user$project$Main$view = function (model) {
 									}
 								}
 							},
-							A2(_elm_lang$core$List$indexedMap, _user$project$MathViews$mathRow, model)),
+							A2(
+								_elm_lang$core$List$indexedMap,
+								_user$project$MathViews$mathRow(model.scope),
+								model.modules)),
 						_1: {
 							ctor: '::',
 							_0: _user$project$Main$addButton,
@@ -31785,37 +32314,86 @@ var _user$project$Main$subscriptions = function (model) {
 };
 var _user$project$Main$update = F2(
 	function (msg, model) {
-		var _p0 = msg;
-		switch (_p0.ctor) {
+		var _p3 = msg;
+		switch (_p3.ctor) {
 			case 'ModuleEdited':
+				var newModules = A2(
+					_elm_lang$core$List$indexedMap,
+					F2(
+						function (i, mathModule) {
+							return _elm_lang$core$Native_Utils.eq(i, _p3._0) ? A3(_user$project$MathModule$update, _p3._1, model.scope, mathModule) : mathModule;
+						}),
+					model.modules);
+				var newScope = A2(
+					_user$project$Scope$addFreeVariables,
+					_user$project$Main$getAllVariables(newModules),
+					model.scope);
 				return {
 					ctor: '_Tuple2',
-					_0: A2(
-						_elm_lang$core$List$indexedMap,
-						F2(
-							function (i, mathModule) {
-								return _elm_lang$core$Native_Utils.eq(i, _p0._0) ? A2(_user$project$MathModule$update, _p0._1, mathModule) : mathModule;
-							}),
-						model),
+					_0: _elm_lang$core$Native_Utils.update(
+						model,
+						{modules: newModules, scope: newScope}),
 					_1: _elm_lang$core$Platform_Cmd$none
 				};
 			case 'AddModule':
 				return {
 					ctor: '_Tuple2',
-					_0: A2(
-						_elm_lang$core$Basics_ops['++'],
+					_0: _elm_lang$core$Native_Utils.update(
 						model,
 						{
-							ctor: '::',
-							_0: _user$project$MathModule$emptyModule,
-							_1: {ctor: '[]'}
+							modules: A2(
+								_elm_lang$core$Basics_ops['++'],
+								model.modules,
+								{
+									ctor: '::',
+									_0: _user$project$MathModule$emptyModule,
+									_1: {ctor: '[]'}
+								})
 						}),
 					_1: _elm_lang$core$Platform_Cmd$none
 				};
 			case 'DeleteModule':
 				return {
 					ctor: '_Tuple2',
-					_0: A2(_elm_community$list_extra$List_Extra$removeAt, _p0._0, model),
+					_0: _elm_lang$core$Native_Utils.update(
+						model,
+						{
+							modules: A2(_elm_community$list_extra$List_Extra$removeAt, _p3._0, model.modules)
+						}),
+					_1: _elm_lang$core$Platform_Cmd$none
+				};
+			case 'PinVariable':
+				return {
+					ctor: '_Tuple2',
+					_0: _elm_lang$core$Native_Utils.update(
+						model,
+						{
+							scope: A2(_user$project$Scope$pin, _p3._0, model.scope)
+						}),
+					_1: _elm_lang$core$Platform_Cmd$none
+				};
+			case 'UnpinVariable':
+				return {
+					ctor: '_Tuple2',
+					_0: _elm_lang$core$Native_Utils.update(
+						model,
+						{
+							scope: A2(_user$project$Scope$unpin, _p3._0, model.scope)
+						}),
+					_1: _elm_lang$core$Platform_Cmd$none
+				};
+			case 'SliderChanged':
+				return {
+					ctor: '_Tuple2',
+					_0: _elm_lang$core$Native_Utils.update(
+						model,
+						{
+							scope: A3(
+								_user$project$Scope$set,
+								_p3._0,
+								_user$project$Scope$Real(_p3._1),
+								model.scope)
+						}),
 					_1: _elm_lang$core$Platform_Cmd$none
 				};
 			default:
@@ -31823,18 +32401,25 @@ var _user$project$Main$update = F2(
 		}
 	});
 var _user$project$Main$initialModel = {
-	ctor: '::',
-	_0: _user$project$MathModule$emptyModule,
-	_1: {ctor: '[]'}
+	modules: {
+		ctor: '::',
+		_0: _user$project$MathModule$emptyModule,
+		_1: {ctor: '[]'}
+	},
+	scope: _user$project$Scope$empty
 };
 var _user$project$Main$init = {ctor: '_Tuple2', _0: _user$project$Main$initialModel, _1: _elm_lang$core$Platform_Cmd$none};
 var _user$project$Main$main = _elm_lang$html$Html$program(
 	{init: _user$project$Main$init, view: _user$project$Main$view, update: _user$project$Main$update, subscriptions: _user$project$Main$subscriptions})();
+var _user$project$Main$Model = F2(
+	function (a, b) {
+		return {modules: a, scope: b};
+	});
 
 var Elm = {};
 Elm['Main'] = Elm['Main'] || {};
 if (typeof _user$project$Main$main !== 'undefined') {
-    _user$project$Main$main(Elm['Main'], 'Main', {"types":{"unions":{"Msg.Msg":{"args":[],"tags":{"ModuleEdited":["Int","MathModule.Msg"],"DeleteModule":["Int"],"AddModule":[],"Noop":[]}},"MathModule.Msg":{"args":[],"tags":{"QuillEdited":["String"]}}},"aliases":{},"message":"Msg.Msg"},"versions":{"elm":"0.18.0"}});
+    _user$project$Main$main(Elm['Main'], 'Main', {"types":{"unions":{"Msg.Msg":{"args":[],"tags":{"ModuleEdited":["Int","MathModule.Msg"],"UnpinVariable":["String"],"DeleteModule":["Int"],"PinVariable":["String"],"SliderChanged":["String","Float"],"AddModule":[],"Noop":[]}},"MathModule.Msg":{"args":[],"tags":{"QuillEdited":["String"],"Recompile":[]}}},"aliases":{},"message":"Msg.Msg"},"versions":{"elm":"0.18.0"}});
 }
 
 if (typeof define === "function" && define['amd'])

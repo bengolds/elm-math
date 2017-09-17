@@ -12,7 +12,7 @@ type Styles
     = None
     | Background
     | Header
-    | MathRow
+    | Card
     | AddButton
     | AddButtonIcon
     | DebugBox
@@ -34,7 +34,7 @@ stylesheet =
             , Font.typeface [ "Symbola" ]
             , Font.size 20
             ]
-        , style MathRow <|
+        , style Card <|
             [ Color.background Color.white
             ]
                 ++ MaterialShadow.e2
@@ -62,7 +62,8 @@ stylesheet =
         , style FormulaField
             [ Font.size 30 ]
         , style FunctionName
-            [ Font.size 30 ]
+            [ Font.size 30
+            ]
         , style Plot []
         ]
 

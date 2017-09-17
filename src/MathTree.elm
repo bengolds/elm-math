@@ -1,4 +1,4 @@
-module MathTree exposing (Expr(..), prettyPrint, getVariables)
+module MathTree exposing (Expr(..), prettyPrint, getVariables, isImplicitEquation)
 
 import StringUtils exposing (toSentenceCase)
 import Set exposing (Set)
@@ -47,8 +47,8 @@ prettyPrint expr =
 getVariables : Expr -> List String
 getVariables expr =
     getVariablesHelper expr
-    |> Set.toList
-    |> List.sort
+        |> Set.toList
+        |> List.sort
 
 
 getVariablesHelper : Expr -> Set String
@@ -95,3 +95,13 @@ getVariablesHelper expr =
 
             Func2 _ expr1 expr2 ->
                 Set.union (getVariablesHelper expr1) (getVariablesHelper expr2)
+
+
+isImplicitEquation : Expr -> Bool
+isImplicitEquation expr =
+    case expr of
+        Equals _ _ ->
+            True
+
+        _ ->
+            False

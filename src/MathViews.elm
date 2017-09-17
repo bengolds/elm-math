@@ -1,15 +1,16 @@
 module MathViews exposing (mathRow)
 
-import MathModule exposing (MathModule, uniforms)
-import GreekLetters exposing (greek, isNonRoman, names)
-import Element as El exposing (column, row, wrappedRow, text, el, empty)
-import Element.Attributes as Attr exposing (px, percent, fill)
+import Element as El exposing (column, el, empty, row, text, wrappedRow)
+import Element.Attributes as Attr exposing (fill, percent, px)
 import Element.Events as Events
-import Styles exposing (Styles(..))
-import Mathquill.StyleElements as Mathquill exposing (staticMath, mathField, onEdit)
-import MathTree
-import Plot.GlPlot exposing (inequality)
+import GreekLetters exposing (greek, isNonRoman, names)
+import MathModule exposing (MathModule, uniforms)
+import MathTree exposing (isImplicitEquation)
+import Mathquill.StyleElements as Mathquill exposing (mathField, onEdit, staticMath)
 import Msg exposing (Msg(..))
+import Plot.GlPlot exposing (inequality)
+import Scope exposing (Scope)
+import Styles exposing (Styles(..))
 
 
 autoCommands : List String
@@ -17,9 +18,12 @@ autoCommands =
     [ "sum", "prod" ] ++ (greek |> List.filter isNonRoman |> names)
 
 
-mathRow : Int -> MathModule -> El.Element Styles variation Msg
-mathRow index mathModule =
-    row MathRow
+
+--mathRow : Int -> MathModule -> El.Element Styles variation Msg
+
+
+mathRow scope index mathModule =
+    row Card
         [ Attr.height (px 192), Attr.maxWidth (px 1280), Attr.width (fill 1) ]
         [ el None [ Attr.width (fill 1) ] <|
             el None
@@ -30,13 +34,13 @@ mathRow index mathModule =
                     , formulaField index
                     ]
                 )
-        , el Plot [ Attr.width (fill 1), Attr.maxWidth (px 480) ] (plot mathModule)
+        , el Plot [ Attr.width (fill 1), Attr.maxWidth (px 480) ] (plot scope mathModule)
         ]
         |> El.within
             [ row None
                 [ Attr.padding 8, Attr.spacing 8, Attr.alignLeft, Attr.alignTop ]
                 [ iconButton "close" (DeleteModule index)
-                , iconButton "speaker_notes" (Noop)
+                , iconButton "speaker_notes" Noop
                 ]
             ]
 
@@ -46,19 +50,22 @@ iconButton iconName onClick =
 
 
 functionSignature mathModule =
-    staticMath FunctionName
-        []
-        ("f("
-            ++ (case mathModule.formula of
-                    Ok expr ->
-                        MathTree.getVariables expr
-                            |> String.join ","
+    case mathModule.formula of
+        Ok expr ->
+            if isImplicitEquation expr then
+                empty
+            else
+                staticMath FunctionName
+                    []
+                    ("f("
+                        ++ (MathTree.getVariables expr
+                                |> String.join ","
+                           )
+                        ++ ")="
+                    )
 
-                    Err err ->
-                        "-"
-               )
-            ++ ")="
-        )
+        Err _ ->
+            staticMath FunctionName [] "f(-)"
 
 
 formulaField index =
@@ -69,11 +76,10 @@ formulaField index =
         ]
 
 
-plot : MathModule -> El.Element style variation msg
-plot mathModule =
+plot scope mathModule =
     case mathModule.formula of
         Ok tree ->
-            inequality mathModule.compiledFragmentShader (uniforms mathModule)
+            inequality mathModule.compiledFragmentShader (uniforms scope mathModule)
 
         Err err ->
             text "uhoh"
