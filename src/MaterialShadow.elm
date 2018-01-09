@@ -1,9 +1,9 @@
-module MaterialShadow exposing (e0, e2, e3, e4, e6, e8, e12, e16, e24)
+module MaterialShadow exposing (e0, e12, e16, e2, e24, e3, e4, e6, e8)
 
+import Color
 import Style
 import Style.Shadow as Shadow exposing (box)
 import Style.Transition as Transition
-import Color
 import Time exposing (second)
 
 
@@ -42,8 +42,7 @@ alpha14 =
 
 matShadow shadows =
     transition
-        :: [ Style.shadows shadows
-           ]
+        :: shadows
 
 
 e0 =

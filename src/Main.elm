@@ -32,6 +32,16 @@ main =
 
 
 
+--test : Element.Input.Menu
+--test : Element.Input.Menu Taco Styles variation msg
+
+
+type Taco
+    = Taco
+    | Burrito
+
+
+
 -- MODEL
 
 
@@ -139,14 +149,14 @@ addButton =
     El.circle 32
         AddButton
         [ Events.onClick AddModule ]
-        (el AddButtonIcon [ Attr.verticalCenter, Attr.center ] (text "+"))
+        (el AddButtonIcon [ Attr.verticalCenter, Attr.center ] (El.text "+"))
 
 
 header : Model -> El.Element Styles variation Msg
 header model =
     wrappedRow Header [ Attr.minHeight (px 160), Attr.center, Attr.verticalCenter, Attr.spacing 8 ] <|
         if Scope.isEmpty model.scope then
-            [ text "No variables pinned yet." ]
+            [ El.text "No variables pinned yet." ]
         else
             Scope.allVariables model.scope
                 |> List.map varCard
@@ -183,5 +193,5 @@ varCard ( name, { pinned, value } ) =
             ]
             (el None
                 [ Attr.verticalCenter, Attr.center ]
-                (text name)
+                (El.text name)
             )

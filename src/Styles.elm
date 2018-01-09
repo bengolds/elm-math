@@ -1,11 +1,11 @@
 module Styles exposing (Styles(..), stylesheet)
 
+import Color
+import MaterialShadow
 import Style exposing (style)
 import Style.Border as Border
 import Style.Color as Color
 import Style.Font as Font
-import MaterialShadow
-import Color
 
 
 type Styles
@@ -24,14 +24,14 @@ type Styles
 
 stylesheet : Style.StyleSheet Styles variation
 stylesheet =
-    Style.stylesheet
+    Style.styleSheet
         [ style None []
         , style Background
             [ Color.background (intGray 238)
             ]
         , style Header
             [ Color.text (intGray 117)
-            , Font.typeface [ "Symbola" ]
+            , Font.typeface [ Font.font "Symbola" ]
             , Font.size 20
             ]
         , style Card <|
@@ -70,4 +70,4 @@ stylesheet =
 
 intGray : Int -> Color.Color
 intGray val =
-    Color.grayscale <| 1.0 - (toFloat val) / 255.0
+    Color.grayscale <| 1.0 - toFloat val / 255.0

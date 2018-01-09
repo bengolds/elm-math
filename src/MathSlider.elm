@@ -13,11 +13,11 @@ import Styles exposing (Styles(..))
 
 mathSlider : (Float -> msg) -> Element Styles variations msg
 mathSlider msg =
-    slider None [ width <| px 200, onInput msg, Element.Attributes.max "10", Element.Attributes.min "-10", step Any ] empty
+    slider None [ width <| px 200, onInput msg, Element.Attributes.attribute "max" "10", Element.Attributes.attribute "min" "-10", step Any ] empty
 
 
 slider style attrs child =
-    node "input" <| el style (attrs ++ [ type_ "range" ]) child
+    node "input" <| el style (attrs ++ [ Element.Attributes.attribute "type" "range" ]) child
 
 
 onInput : (Float -> msg) -> Attribute variation msg

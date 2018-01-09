@@ -24,17 +24,28 @@ autoCommands =
 
 mathRow scope index mathModule =
     row Card
-        [ Attr.height (px 192), Attr.maxWidth (px 1280), Attr.width (fill 1) ]
-        [ el None [ Attr.width (fill 1) ] <|
-            el None
-                [ Attr.alignLeft, Attr.verticalCenter, Attr.paddingLeft 24 ]
-                (row None
-                    [ Attr.verticalCenter ]
-                    [ functionSignature mathModule
-                    , formulaField index
-                    ]
-                )
-        , el Plot [ Attr.width (fill 1), Attr.maxWidth (px 480) ] (plot scope mathModule)
+        [ Attr.height (px 192), Attr.maxWidth (px 1280), Attr.width fill ]
+        [ row None
+            [ Attr.width fill, Attr.height fill, Attr.alignLeft, Attr.verticalCenter, Attr.paddingLeft 24 ]
+            [ row None
+                [ Attr.verticalCenter ]
+                [ functionSignature mathModule
+                , formulaField index
+                ]
+            ]
+
+        {--
+          -[ el None [ Attr.width fill ] <|
+          -    row None
+          -        [ Attr.alignLeft, Attr.verticalCenter, Attr.paddingLeft 24 ]
+          -        [ row None
+          -            [ Attr.verticalCenter ]
+          -            [ functionSignature mathModule
+          -            , formulaField index
+          -            ]
+          -        ]
+          --}
+        , el Plot [ Attr.width fill, Attr.maxWidth (px 480) ] (plot scope mathModule)
         ]
         |> El.within
             [ row None
