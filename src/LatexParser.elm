@@ -1,13 +1,11 @@
 module LatexParser exposing (..)
 
-import Parser exposing (..)
-import ParserUtils exposing (..)
-
-
 --import Calculator exposing (calculate)
 
 import GreekLetters exposing (..)
 import MathTree exposing (..)
+import Parser exposing (..)
+import ParserUtils exposing (..)
 
 
 --Output
@@ -72,6 +70,7 @@ factor options =
                         , parenthesized expr options
                         , functions options
                         , absolute options
+                        , sqrt options
                         , summations options
                         , integral options
                         , fail "a factor"
@@ -93,9 +92,9 @@ expo options =
                                 |= closeArg expr options
                             ]
                 in
-                    succeed (flip applyl)
-                        |= factor options
-                        |= repeat zeroOrMore suffix
+                succeed (flip applyl)
+                    |= factor options
+                    |= repeat zeroOrMore suffix
 
 
 term : ConfigurableParser Expr
@@ -109,10 +108,10 @@ term options =
                         (succeed identity
                             |. command "cdot"
                             |. spaces
-                            |= (term options)
+                            |= term options
                         )
                     , delayedCommitMap (Func2 "times") (expo options) (term options)
-                    , (expo options)
+                    , expo options
                     , fail "a multiplicative term"
                     ]
 
@@ -159,14 +158,14 @@ functions options =
         func2names =
             [ "frac", "binom" ]
     in
-        lazy <|
-            \_ ->
-                oneOf <|
-                    List.map (\name -> func1 name True options) trigFunctions
-                        ++ List.map (\name -> func2 name options) func2names
-                        ++ [ logarithms options
-                           , fail "a function, like \\sin, \\cos, or \\tan"
-                           ]
+    lazy <|
+        \_ ->
+            oneOf <|
+                List.map (\name -> func1 name True options) trigFunctions
+                    ++ List.map (\name -> func2 name options) func2names
+                    ++ [ logarithms options
+                       , fail "a function, like \\sin, \\cos, or \\tan"
+                       ]
 
 
 singleArg : ConfigurableParser Expr
@@ -184,15 +183,15 @@ logarithms options =
         ln =
             Func2 "log" (Real e)
     in
-        oneOf
-            [ succeed ln |. command "ln" |= singleArg options
-            , succeed ln |= delayedCommit (command "log") (singleArg options)
-            , succeed (Func2 "log")
-                |. command "log"
-                |. symbol "_"
-                |= closeArg expr options
-                |= singleArg options
-            ]
+    oneOf
+        [ succeed ln |. command "ln" |= singleArg options
+        , succeed ln |= delayedCommit (command "log") (singleArg options)
+        , succeed (Func2 "log")
+            |. command "log"
+            |. symbol "_"
+            |= closeArg expr options
+            |= singleArg options
+        ]
 
 
 integral : ConfigurableParser Expr
@@ -265,11 +264,11 @@ variable options =
                     )
                     (greek |> List.filter isNonRoman)
     in
-        oneOf
-            [ identifier options
-            , greekVariable
-            , fail "a variable, like x or voltage"
-            ]
+    oneOf
+        [ identifier options
+        , greekVariable
+        , fail "a variable, like x or voltage"
+        ]
 
 
 func1 : String -> Bool -> ConfigurableParser Expr
@@ -280,14 +279,15 @@ func1 name withInfix options =
                     [ succeed (Func1 name)
                         |= singleArg options
                     ]
-                        ++ if withInfix then
-                            [ succeed (flip <| Func2 "exponent")
-                                |. symbol "^"
-                                |= closeArg expr options
-                                |= (succeed (Func1 name) |= singleArg options)
-                            ]
-                           else
-                            []
+                        ++ (if withInfix then
+                                [ succeed (flip <| Func2 "exponent")
+                                    |. symbol "^"
+                                    |= closeArg expr options
+                                    |= (succeed (Func1 name) |= singleArg options)
+                                ]
+                            else
+                                []
+                           )
            )
 
 
@@ -320,6 +320,15 @@ negative parser options =
                 |= parser options
 
 
+sqrt : ConfigurableParser Expr
+sqrt options =
+    lazy <|
+        \_ ->
+            succeed (Func1 "sqrt")
+                |. command "sqrt"
+                |= arg expr options
+
+
 constant : ConfigurableParser Expr
 constant options =
     let
@@ -330,19 +339,19 @@ constant options =
             else
                 Nothing
     in
-        oneOf
-            [ specialConstants options
-            , float
-                |> map
-                    (\val ->
-                        case toInt val of
-                            Nothing ->
-                                Rational val
+    oneOf
+        [ specialConstants options
+        , float
+            |> map
+                (\val ->
+                    case toInt val of
+                        Nothing ->
+                            Rational val
 
-                            Just int ->
-                                Integer int
-                    )
-            ]
+                        Just int ->
+                            Integer int
+                )
+        ]
 
 
 specialConstants : ConfigurableParser Expr
@@ -350,7 +359,7 @@ specialConstants options =
     oneOf
         [ succeed (Real pi) |. command "pi"
         , succeed (Real e) |. symbol "e"
-        , succeed (ImaginaryUnit) |. symbol "i"
+        , succeed ImaginaryUnit |. symbol "i"
         , fail "a special constant, like i, e or pi"
         ]
 
@@ -376,12 +385,12 @@ parenthesized parser options =
                 |= parser modifiedOptions
                 |. command ("right" ++ rightChar)
     in
-        oneOf
-            [ leftRight "(" ")"
-            , leftRight "\\{" "\\}"
-            , leftRight "[" "]"
-            , fail "a parentheses, like \\left(, \\left[, or \\left{"
-            ]
+    oneOf
+        [ leftRight "(" ")"
+        , leftRight "\\{" "\\}"
+        , leftRight "[" "]"
+        , fail "a parentheses, like \\left(, \\left[, or \\left{"
+        ]
 
 
 command : String -> Parser ()
@@ -409,13 +418,13 @@ parseSubstring count parser =
                                 succeed parsed
 
                             Err err ->
-                                fail <| "substring of " ++ (toString count) ++ " characters"
+                                fail <| "substring of " ++ toString count ++ " characters"
                     )
 
         first =
             always
     in
-        delayedCommitMap first instaCommitParser (succeed ())
+    delayedCommitMap first instaCommitParser (succeed ())
 
 
 closeArg : ConfigurableParser a -> Options -> Parser a

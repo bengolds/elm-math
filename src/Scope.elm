@@ -1,18 +1,33 @@
-module Scope exposing (Parameter(..), Scope, addFreeVariables, allVariables, asUniforms, empty, isEmpty, pin, pinnedVariables, set, unpin)
+module Scope
+    exposing
+        ( Parameter(..)
+        , Scope
+        , addFreeVariables
+        , allVariables
+        , asUniforms
+        , empty
+        , get
+        , isEmpty
+        , pin
+        , pinnedVariables
+        , set
+        , unpin
+        , update
+        )
 
 import Dict exposing (Dict)
 import UnsafeUniforms exposing (UniformParam(..))
 
 
--- Parameters
+-- Floats
 
 
 type Parameter
     = Real Float
 
 
-defaultParameter : Parameter
-defaultParameter =
+defaultFloat : Parameter
+defaultFloat =
     Real 0
 
 
@@ -28,7 +43,7 @@ toUniformParam param =
 
 
 type Scope
-    = Scope (Dict String { pinned : Bool, value : Parameter })
+    = Scope (Dict String { pinned : Bool, value : Float })
 
 
 empty : Scope
@@ -60,7 +75,7 @@ changePinned_ name pinned (Scope scope) =
                     Just { var | pinned = pinned }
 
                 Nothing ->
-                    Just { pinned = pinned, value = defaultParameter }
+                    Just { pinned = pinned, value = 0 }
         )
         scope
         |> Scope
@@ -68,24 +83,24 @@ changePinned_ name pinned (Scope scope) =
 
 addFreeVariables : List String -> Scope -> Scope
 addFreeVariables names (Scope scope) =
-    List.map (\name -> ( name, { pinned = False, value = defaultParameter } )) names
+    List.map (\name -> ( name, { pinned = False, value = 0 } )) names
         |> Dict.fromList
         |> Dict.union scope
         |> Scope
 
 
-allVariables : Scope -> List ( String, { pinned : Bool, value : Parameter } )
+allVariables : Scope -> List ( String, { pinned : Bool, value : Float } )
 allVariables (Scope scope) =
     Dict.toList scope
 
 
-pinnedVariables : Scope -> Dict String Parameter
+pinnedVariables : Scope -> Dict String Float
 pinnedVariables (Scope scope) =
     Dict.filter (\_ { pinned } -> pinned) scope
         |> Dict.map (\_ { value } -> value)
 
 
-set : String -> Parameter -> Scope -> Scope
+set : String -> Float -> Scope -> Scope
 set name value (Scope scope) =
     Dict.update name
         (\maybeVar ->
@@ -100,6 +115,24 @@ set name value (Scope scope) =
         |> Scope
 
 
+update : String -> (Float -> Float) -> Scope -> Scope
+update name fn (Scope scope) =
+    Dict.update name
+        (Maybe.map
+            (\{ pinned, value } ->
+                { pinned = pinned, value = fn value }
+            )
+        )
+        scope
+        |> Scope
+
+
+get : String -> Scope -> Maybe Float
+get name (Scope scope) =
+    Dict.get name scope
+        |> Maybe.map .value
+
+
 asUniforms : Scope -> Dict String UniformParam
 asUniforms scope =
     let
@@ -107,4 +140,4 @@ asUniforms scope =
             Debug.log "scope" (pinnedVariables scope)
     in
     pinnedVariables scope
-        |> Dict.map (\_ value -> toUniformParam value)
+        |> Dict.map (\_ value -> toUniformParam (Real value))

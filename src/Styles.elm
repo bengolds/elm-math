@@ -1,11 +1,16 @@
-module Styles exposing (Styles(..), stylesheet)
+module Styles exposing (Styles(..), Variations, pxUnits, stylesheet, units)
 
 import Color
+import Element.Attributes exposing (Length, px)
 import MaterialShadow
 import Style exposing (style)
 import Style.Border as Border
 import Style.Color as Color
 import Style.Font as Font
+
+
+type Variations
+    = Standard
 
 
 type Styles
@@ -20,6 +25,16 @@ type Styles
     | FormulaField
     | Plot
     | IconButton
+
+
+units : number -> number
+units n =
+    8 * n
+
+
+pxUnits : Float -> Length
+pxUnits n =
+    px (8 * n)
 
 
 stylesheet : Style.StyleSheet Styles variation

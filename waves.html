@@ -1,0 +1,14 @@
+<head><meta charset="UTF-8"></head>
+<div id="main"></div>
+<link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
+<link rel="import" href="src/mathquill-import.html">
+<script src="/_compile/src/Waves.elm"></script>
+<style>
+    .elm-mq-edit:not(.mq-editable-field) {
+        display: none;
+    }
+</style>
+<script>
+    var node = document.getElementById('main');
+    var app = Elm.Waves.embed(node);
+</script>

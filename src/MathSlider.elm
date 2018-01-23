@@ -3,11 +3,8 @@ module MathSlider exposing (mathSlider)
 import Element exposing (..)
 import Element.Attributes exposing (..)
 import Element.Events exposing (on, targetValue)
-import Html exposing (Html)
 import Json.Decode as Json
 import Json.Decode.Extra exposing (parseFloat)
-import String
-import Style exposing (StyleSheet, styleSheet)
 import Styles exposing (Styles(..))
 
 
@@ -17,7 +14,14 @@ mathSlider msg =
 
 
 slider style attrs child =
-    node "input" <| el style (attrs ++ [ Element.Attributes.attribute "type" "range" ]) child
+    node "input" <|
+        el style
+            (attrs
+                ++ [ Element.Attributes.attribute "type" "range"
+                   , Element.Attributes.attribute "value" "1"
+                   ]
+            )
+            child
 
 
 onInput : (Float -> msg) -> Attribute variation msg
