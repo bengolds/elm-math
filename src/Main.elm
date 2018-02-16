@@ -179,9 +179,6 @@ varCard ( name, { pinned, value } ) =
         el Card
             [ Attr.height (px 80)
             , Attr.width (px 240)
-
-            --, Events.onClick
-            --(UnpinVariable name)
             ]
             (el None [ Attr.verticalCenter, Attr.center ] <| MathSlider.mathSlider (SliderChanged name))
     else

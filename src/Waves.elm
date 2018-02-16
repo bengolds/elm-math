@@ -9,8 +9,10 @@ import List.Extra exposing (unique)
 import MathModule exposing (MathModule, emptyModule, uniforms)
 import MathSlider exposing (mathSlider)
 import MathTree exposing (Expr(..))
+import MathViews exposing (iconButton)
 import Mathquill.StyleElements as Mathquill
 import Scope exposing (Parameter, Scope)
+import Set exposing (Set)
 import Styles exposing (..)
 import Task
 import Time exposing (Time)
@@ -35,6 +37,7 @@ main =
 type alias Model =
     { formula : Expr
     , scope : Scope
+    , playingVars : Set String
     , device : Device
     }
 
@@ -43,6 +46,7 @@ initialModel : Model
 initialModel =
     { formula = Func1 "cos" (Variable "x")
     , scope = Scope.empty |> Scope.set "t" 0
+    , playingVars = Set.empty
     , device = classifyDevice { width = 1024, height = 768 }
     }
 
@@ -57,6 +61,8 @@ type Msg
     | FormulaChanged String
     | SliderChanged String Float
     | Tick Time
+    | Play String
+    | Pause String
     | Noop
 
 
@@ -73,10 +79,31 @@ update msg model =
         Tick dt ->
             ( { model
                 | scope =
-                    Scope.update
-                        "t"
-                        ((+) (Time.inSeconds dt))
+                    Set.foldl
+                        (\name scopeAcc ->
+                            Scope.update
+                                name
+                                ((+) (Time.inSeconds dt))
+                                scopeAcc
+                        )
                         model.scope
+                        model.playingVars
+              }
+            , Cmd.none
+            )
+
+        Play name ->
+            ( { model
+                | playingVars =
+                    Set.insert name model.playingVars
+              }
+            , Cmd.none
+            )
+
+        Pause name ->
+            ( { model
+                | playingVars =
+                    Set.remove name model.playingVars
               }
             , Cmd.none
             )
@@ -112,10 +139,13 @@ update msg model =
 
 subscriptions : Model -> Sub Msg
 subscriptions model =
-    Sub.batch
-        [ Window.resizes Resize
-        , AnimationFrame.diffs Tick
-        ]
+    Sub.batch <|
+        [ Window.resizes Resize ]
+            ++ (if Set.isEmpty model.playingVars then
+                    []
+                else
+                    [ AnimationFrame.diffs Tick ]
+               )
 
 
 view : Model -> Html Msg
@@ -164,19 +194,26 @@ varsZone model =
             MathTree.getVariables model.formula
                 |> List.filter
                     (\name ->
-                        name /= "x" && name /= "t"
+                        name /= "x"
                     )
     in
     row None
         [ spacing (units 2) ]
-        (List.map (sliderCard model.scope) constants)
+        (List.map
+            (\name ->
+                sliderCard model.scope
+                    name
+                    (Set.member name model.playingVars)
+            )
+            constants
+        )
 
 
-sliderCard : Scope -> String -> Element Styles Variations Msg
-sliderCard scope name =
+sliderCard : Scope -> String -> Bool -> Element Styles Variations Msg
+sliderCard scope name isPlaying =
     el Card
         [ width (pxUnits 30)
-        , height (pxUnits 15)
+        , height (pxUnits 16)
         , padding (units 1)
         ]
     <|
@@ -184,7 +221,22 @@ sliderCard scope name =
             None
             [ width fill
             , center
+            , spacing (units 2)
             ]
             [ el FunctionName [] (text name)
             , mathSlider (SliderChanged name)
+            , if isPlaying then
+                pauseButton (Pause name)
+              else
+                playButton (Play name)
             ]
+
+
+playButton : Msg -> Element Styles Variations Msg
+playButton msg =
+    iconButton "play_circle_filled" msg
+
+
+pauseButton : Msg -> Element Styles Variations Msg
+pauseButton msg =
+    iconButton "pause_circle_filled" msg

@@ -1,4 +1,4 @@
-module MathViews exposing (mathRow)
+module MathViews exposing (iconButton, mathRow)
 
 import Element as El exposing (column, el, empty, row, text, wrappedRow)
 import Element.Attributes as Attr exposing (fill, percent, px)
@@ -57,7 +57,12 @@ mathRow scope index mathModule =
 
 
 iconButton iconName onClick =
-    el IconButton [ Attr.width (px 24), Attr.height (px 24), Events.onClick onClick ] (matIcon iconName None [])
+    el IconButton
+        [ Attr.width (px 24)
+        , Attr.height (px 24)
+        , Events.onClick onClick
+        ]
+        (matIcon iconName None [])
 
 
 functionSignature mathModule =

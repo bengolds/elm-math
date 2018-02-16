@@ -73,6 +73,7 @@ stylesheet =
             [ Color.text (intGray 117)
             , Font.size 24
             , Style.cursor "pointer"
+            , Style.prop "user-select" "none"
             ]
         , style FormulaField
             [ Font.size 30 ]
