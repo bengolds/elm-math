@@ -25,6 +25,7 @@ type Styles
     | FormulaField
     | Plot
     | IconButton
+    | MathText
 
 
 units : number -> number
@@ -80,6 +81,8 @@ stylesheet =
         , style FunctionName
             [ Font.size 30
             ]
+        , style MathText
+            [ Font.typeface [ Font.font "Symbola" ] ]
         , style Plot []
         ]
 

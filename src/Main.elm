@@ -32,16 +32,6 @@ main =
 
 
 
---test : Element.Input.Menu
---test : Element.Input.Menu Taco Styles variation msg
-
-
-type Taco
-    = Taco
-    | Burrito
-
-
-
 -- MODEL
 
 
