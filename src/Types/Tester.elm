@@ -1,4 +1,4 @@
-module TypeTester exposing (..)
+module Types.Tester exposing (..)
 
 import Dict
 import Element exposing (..)
@@ -8,7 +8,8 @@ import LatexParser exposing (parse)
 import MathTree exposing (Expr)
 import Mathquill.StyleElements as Mathquill
 import Styles exposing (..)
-import TypeInference exposing (PossibleType, Type(..), getPossibleTypes)
+import Types.Inference exposing (PossibleType, getPossibleTypes)
+import Types.BaseType exposing (BaseType(..))
 
 
 main : Program Never Model Msg
@@ -123,9 +124,9 @@ functionSignature formula =
         variables =
             MathTree.getVariables formula
     in
-    el MathText
-        []
-        (text <| "f(" ++ String.join "," variables ++ ")=")
+        el MathText
+            []
+            (text <| "f(" ++ String.join "," variables ++ ")=")
 
 
 renderPossibleType : PossibleType -> Element Styles Variations Msg
@@ -140,7 +141,7 @@ renderPossibleType { context, tipe } =
         )
 
 
-getSetSymbol : Type -> String
+getSetSymbol : BaseType -> String
 getSetSymbol tipe =
     case tipe of
         Integer ->
