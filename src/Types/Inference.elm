@@ -44,7 +44,7 @@ getPossibleTypes expr =
             matchOperandToUnaryFunction operand funcName
 
         MathTree.Func2 funcName operand1 operand2 ->
-            matchOperandToFunc2 operand1 operand2 funcName
+            matchOperandsToFunc2 operand1 operand2 funcName
 
         --
         -- if contexts are compatible, merge contexts
@@ -53,19 +53,8 @@ getPossibleTypes expr =
             []
 
 
-findLowestMatchingType functionTypes tipe1 tipe2 =
-    List.filter
-        (\func2Type ->
-            isSubtype tipe1 func2Type.input1
-                && isSubtype tipe2 func2Type.input2
-        )
-        functionTypes
-        |> BinaryFunction.sort
-        |> List.head
-
-
-mapOverAllPairs =
-    List.lift2
+makeAllPairs list1 list2 =
+    List.lift2 (,) list1 list2
 
 
 contextFreeType : BaseType -> PossibleType
@@ -81,39 +70,51 @@ matchOperandToUnaryFunction operand funcName =
         |> List.filterMap
             (\{ context, tipe } ->
                 UnaryFunction.findMatchingType tipe funcName
-                    |> Maybe.map .outputType
-                    |> Maybe.map (PossibleType context)
+                    |> Maybe.map (\{ outputType } -> PossibleType context outputType)
             )
 
 
-matchOperandToFunc2 : Expr -> Expr -> String -> List PossibleType
-matchOperandToFunc2 operand1 operand2 funcName =
+matchOperandsToFunc2 : Expr -> Expr -> String -> List PossibleType
+matchOperandsToFunc2 operand1 operand2 funcName =
     let
         isCompatible tipe1 tipe2 funcType =
             isSubtype tipe1 funcType.input1
                 && isSubtype tipe2 funcType.input2
-
-        functionTypes =
-            BinaryFunction.getTypes funcName
     in
-        mapOverAllPairs
-            (\op1Signature op2Signature ->
-                if areContextsCompatible op1Signature.context op2Signature.context then
-                    findLowestMatchingType
-                        functionTypes
-                        op1Signature.tipe
-                        op2Signature.tipe
-                        |> Maybe.map
-                            (PossibleType
-                                (mergeContexts op1Signature.context op2Signature.context)
-                                << .output
-                            )
-                else
-                    Nothing
-            )
+        makeAllPairs
             (getPossibleTypes operand1)
             (getPossibleTypes operand2)
-            |> List.filterMap identity
+            |> removeIncompatiblePairs
+            |> List.map mergeContexts
+            |> List.filterMap (findMatchingBinaryFunctionType funcName)
+
+
+mergeContexts : ( PossibleType, PossibleType ) -> ( BaseType, BaseType, Context )
+mergeContexts ( possibleType1, possibleType2 ) =
+    ( possibleType1.tipe
+    , possibleType2.tipe
+    , Dict.union possibleType1.context possibleType2.context
+    )
+
+
+removeIncompatiblePairs : List ( PossibleType, PossibleType ) -> List ( PossibleType, PossibleType )
+removeIncompatiblePairs possiblePairs =
+    List.filter
+        (\( possibleType1, possibleType2 ) ->
+            areContextsCompatible
+                possibleType1.context
+                possibleType2.context
+        )
+        possiblePairs
+
+
+findMatchingBinaryFunctionType : String -> ( BaseType, BaseType, Context ) -> Maybe PossibleType
+findMatchingBinaryFunctionType funcName ( tipe1, tipe2, context ) =
+    BinaryFunction.findMatchingType
+        tipe1
+        tipe2
+        funcName
+        |> Maybe.map (\{ output } -> PossibleType context output)
 
 
 areContextsCompatible : Context -> Context -> Bool
@@ -132,8 +133,3 @@ areContextsCompatible context1 context2 =
         )
         True
         context1
-
-
-mergeContexts : Context -> Context -> Context
-mergeContexts context1 context2 =
-    Dict.union context1 context2

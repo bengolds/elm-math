@@ -53,3 +53,15 @@ getTypes funcName =
             _ ->
                 []
                     |> sort
+
+
+findMatchingType : BaseType -> BaseType -> String -> Maybe BinaryFunctionType
+findMatchingType tipe1 tipe2 funcName =
+    List.filter
+        (\func2Type ->
+            isSubtype tipe1 func2Type.input1
+                && isSubtype tipe2 func2Type.input2
+        )
+        (getTypes funcName)
+        |> sort
+        |> List.head
